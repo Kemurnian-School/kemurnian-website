@@ -1,15 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Merriweather, Raleway } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Components
+import Navbar from "./components/Navbar"
+
+const merriweather = Merriweather({
   subsets: ["latin"],
+  weight: ["300", "400", "700"],
+  variable: "--font-merriweather",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const raleway = Raleway({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "900"],
+  variable: "--font-raleway",
 });
 
 export const metadata: Metadata = {
@@ -25,8 +30,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${merriweather.variable} ${raleway.variable} antialiased`}
       >
+        <Navbar />    
         {children}
       </body>
     </html>
