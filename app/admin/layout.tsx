@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import "../globals.css"; // reuse global styles
+import "../globals.css";
+
+import Sidebar from "./components/Sidebar"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -20,8 +22,8 @@ export default function AdminLayout({
 }) {
   return (
     <div className={`${poppins.variable} font-sans antialiased`}>
-      <div className="min-h-screen flex flex-col">
-        {/* Admin navbar/sidebar can go here */}
+      <div className="min-h-screen flex">
+        <Sidebar />      
         <main className="flex-1">{children}</main>
       </div>
     </div>
