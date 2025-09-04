@@ -19,13 +19,11 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${poppins.variable} font-sans antialiased`}>
-        <div className="min-h-screen flex flex-col">
-          {/* Admin navbar/sidebar can go here */}
-          <main className="flex-1">{children}</main>
-        </div>
-      </body>
-    </html>
+    <div className={`${poppins.variable} font-sans antialiased`}>
+      <div className="min-h-screen flex flex-col">
+        {/* Admin navbar/sidebar can go here */}
+        <main className="flex-1">{children}</main>
+      </div>
+    </div>
   );
 }

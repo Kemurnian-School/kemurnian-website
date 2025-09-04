@@ -1,7 +1,7 @@
-import HeroSliders from "./components/HeroSliders";
-import SchoolsInfo from "./components/SchoolsInfo"
-import SectionHeader from "./components/SectionHeader";
-import ButtonPrimary from "./components/ButtonPrimary";
+import HeroSliders from "../components/HeroSliders";
+import SchoolsInfo from "../components/SchoolsInfo"
+import SectionHeader from "../components/SectionHeader";
+import ButtonPrimary from "../components/ButtonPrimary";
 
 export default function Home() {
   return (

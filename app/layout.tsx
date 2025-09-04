@@ -2,9 +2,6 @@ import type { Metadata } from "next";
 import { Merriweather, Raleway } from "next/font/google";
 import "./globals.css";
 
-// Components
-import Navbar from "./components/Navbar"
-
 const merriweather = Merriweather({
   subsets: ["latin"],
   weight: ["300", "400", "700"],
@@ -32,7 +29,6 @@ export default function RootLayout({
       <body
         className={`${merriweather.variable} ${raleway.variable} antialiased`}
       >
-        <Navbar />    
         {children}
       </body>
     </html>
