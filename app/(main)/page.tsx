@@ -3,7 +3,6 @@ import SchoolsInfo from "../components/SchoolsInfo";
 import SectionHeader from "../components/SectionHeader";
 import ButtonPrimary from "../components/ButtonPrimary";
 
-import { createClient } from "@/utils/supabase/client";
 
 export default function Home() {
   return (

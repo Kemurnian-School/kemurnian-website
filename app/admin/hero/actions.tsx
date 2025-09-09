@@ -1,42 +1,52 @@
 'use server'
 import { revalidatePath } from 'next/cache'
-import { supabaseClient } from '@/utils/supabase/client'
+import { createClient } from '@/utils/supabase/server'
 
 export async function uploadImage(formData: FormData) {
+  const supabase = await createClient();
+
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+  if (sessionError) {
+    console.log("Session error:", sessionError)
+  }
+
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  if (!user) throw new Error("Unauthorized")
+
   const file = formData.get('file') as File
   if (!file) return
-  const supabase = supabaseClient()
 
-  const { data: uploadData, error: uploadError } = await supabase.storage
+  const filename = `hero-images/${Date.now()}_${file.name}`
+
+  const { error: uploadError } = await supabase.storage
     .from('hero_sliders')
-    .upload(`hero-images/${Date.now()}_${file.name}`, file)
+    .upload(filename, file)
+
   if (uploadError) throw uploadError
 
   const { data: { publicUrl } } = supabase.storage
     .from('hero_sliders')
-    .getPublicUrl(uploadData.path)
+    .getPublicUrl(filename)
 
-  // Determine new order value = current max + 1
-  const { data: existing, error } = await supabase
+  const { error: insertError } = await supabase
     .from('hero_sliders')
-    .select('order')
-  if (error) throw error
-  const orders = existing?.map(e => e.order ?? 0) || []
-  const maxOrder = orders.length ? Math.max(...orders) : 0
+    .insert({ image_urls: publicUrl, order: 1 })
 
-  await supabase
-    .from('hero_sliderss')
-    .insert({ image_urls: publicUrl, order: maxOrder + 1 })
+  if (insertError) throw insertError
+
   revalidatePath('/admin')
 }
 
+// Reorder
 export async function reorderImages(formData: FormData) {
   const orderStr = formData.get('order') as string
   if (!orderStr) return
-  const newOrderIds: number[] = JSON.parse(orderStr)
-  const supabase = supabaseClient()
 
-  // Update each item's `order` field to its index+1
+  const supabase = await createClient()
+  const { data: { user }, error: userError } = await supabase.auth.getUser()
+  if (!user || userError) throw new Error('Unauthorized')
+
+  const newOrderIds: number[] = JSON.parse(orderStr)
   for (let i = 0; i < newOrderIds.length; i++) {
     await supabase
       .from('hero_sliders')
@@ -46,28 +56,30 @@ export async function reorderImages(formData: FormData) {
   revalidatePath('/admin')
 }
 
+// Delete
 export async function deleteImage(formData: FormData) {
   const id = formData.get('id') as string
-  const supabase = supabaseClient()
+  const supabase = await createClient()
+  const { data: { user }, error: userError } = await supabase.auth.getUser()
+  if (!user || userError) throw new Error('Unauthorized')
 
   const { data: record } = await supabase
     .from('hero_sliders')
-    .select('image_url')
+    .select('id, storage_path')
     .eq('id', id)
     .single()
-  if (record?.image_url) {
-    const path = record.image_url.split('/').pop() || ''
-    if (path) {
-      await supabase.storage.from('hero_sliders').remove([path])
-    }
+
+  if (record?.storage_path) {
+    await supabase.storage.from('hero_sliders').remove([record.storage_path])
   }
   await supabase.from('hero_sliders').delete().eq('id', id)
 
-  // Recalculate orders to close any gap
+  // Recalculate order
   const { data: remaining } = await supabase
     .from('hero_sliders')
     .select('id')
     .order('order', { ascending: true })
+
   if (remaining) {
     for (let i = 0; i < remaining.length; i++) {
       await supabase

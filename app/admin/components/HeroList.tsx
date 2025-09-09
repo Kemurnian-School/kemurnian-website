@@ -1,12 +1,11 @@
 'use client'
 import { useState } from 'react'
 import Image from 'next/image'
-import { createClientComponentClient } from '@supabase/ssr'
 import { reorderImages, uploadImage, deleteImage } from '@/app/admin/hero/actions'
 
 interface Hero {
   id: number
-  image_url: string
+  image_urls: string
   order: number
 }
 export default function HeroList({ initialImages }: { initialImages: Hero[] }) {
@@ -45,7 +44,7 @@ export default function HeroList({ initialImages }: { initialImages: Hero[] }) {
             onDrop={() => handleDrop(idx)}
             className="flex items-center space-x-4 bg-white p-4 rounded shadow"
           >
-            <Image src={img.image_url} width={150} height={80} alt={`Hero ${img.id}`} />
+            <Image src={img.image_urls} width={150} height={80} alt={`Hero ${img.id}`} />
             <p className="flex-1">Order: {idx+1}</p>
             <form action={deleteImage}>
               <input type="hidden" name="id" value={img.id} />
