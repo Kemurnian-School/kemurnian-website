@@ -1,7 +1,7 @@
 import HeroList from '@/app/admin/components/HeroList'
 import { createClient } from '@/utils/supabase/server'
 
-export default async function AdminPage() {
+export default async function AdminHero() {
   const supabase = await createClient()
   const { data: images, error } = await supabase
     .from('hero_sliders')

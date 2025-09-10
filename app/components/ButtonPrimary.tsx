@@ -10,7 +10,8 @@ export default function ButtonPrimary({
   className = "",
 }: ButtonPrimaryProps) {
   const baseClasses =
-    "w-40 my-12 p-2 py-3 bg-btn-primary text-white font-bold rounded-full cursor-pointer shadow-xl hover:bg-btn-hover ease-out transition-colors duration-200 inline-block text-center";
+    "block mx-auto my-12 px-5 py-2 rounded-full w-40 uppercase tracking-[1.5px] border-3 border-[#8b0000] bg-[#8b0000] text-white shadow-md whitespace-nowrap font-raelway font-bold " +
+    "hover:bg-transparent hover:text-[#8b0000] hover:shadow-md transition-colors duration-200 ease-out text-center";
 
   return (
     <a href={href} className={`${baseClasses} ${className}`}>

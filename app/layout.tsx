@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${merriweather.variable} ${raleway.variable} antialiased`}
+        className={`${raleway.variable} ${merriweather.variable} antialiased`}
       >
         {children}
       </body>
