@@ -26,12 +26,10 @@ export async function uploadKurikulum(formData: FormData) {
             .single()
 
         if (maxOrderError && maxOrderError.code !== 'PGRST116') {
-            // PGRST116 is "no rows returned" - which is fine for empty table
             console.log("Error fetching max order:", maxOrderError)
             throw new Error('Failed to fetch max order value')
         }
 
-        // Calculate the next order value
         const nextOrder = maxOrderData ? (maxOrderData.order || 0) + 1 : 1
 
         // Insert with the calculated order
@@ -90,8 +88,6 @@ export async function deleteKurikulum(formData: FormData) {
             throw new Error('Failed to delete kurikulum')
         }
 
-        // Optional: Reorder remaining items to fill the gap
-        // This updates all items with order > deleted item's order by subtracting 1
         if (deletedItem?.order) {
             const { error: reorderError } = await supabase
                 .from('kurikulum')
@@ -100,7 +96,6 @@ export async function deleteKurikulum(formData: FormData) {
 
             if (reorderError) {
                 console.log("Reorder error (non-critical):", reorderError)
-                // Don't throw error here as the delete was successful
             }
         }
 
@@ -112,7 +107,6 @@ export async function deleteKurikulum(formData: FormData) {
     }
 }
 
-// Alternative simpler version without reordering on delete
 export async function deleteKurikulumSimple(formData: FormData) {
     try {
         const supabase = await createClient();

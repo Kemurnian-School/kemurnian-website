@@ -38,7 +38,7 @@ export default function AdminSidebar() {
         </li>
         <li>
           <Link href="/admin/news" className={linkStyle}>
-            News Approval
+            News
           </Link>
         </li>
       </ul>
