@@ -8,7 +8,7 @@ export default function Navbar() {
   const hamburgerLine = 'w-5 h-[3px] bg-white'
 
   return (
-    <nav className={`bg-gray-primary fixed top-0 z-50 m-0 ${mainHeight} w-full p-0`}>
+    <nav className={`bg-gray-primary sticky top-0 z-50 m-0 ${mainHeight} w-full p-0`}>
       <div className="flex h-full flex-row items-center justify-between">
         {/* Hamburger Menu Button (Left) */}
         <button

@@ -2,12 +2,20 @@ import HeroSliders from "../components/HeroSliders";
 import SchoolsInfo from "../components/SchoolsInfo";
 import SectionHeader from "../components/SectionHeader";
 import ButtonPrimary from "../components/ButtonPrimary";
+import { createClient } from '@/utils/supabase/server';
 
+export default async function Home() {
+  const supabase = await createClient();
+  const { data: heroImages, error } = await supabase
+    .from('hero_sliders')
+    .select('*')
+    .order('order', { ascending: true });
 
-export default function Home() {
+  const images = error ? [] : (heroImages || []);
+
   return (
     <>
-      <HeroSliders />
+      <HeroSliders images={images} />
       <SchoolsInfo />
       <section className="flex flex-col justify-center items-center">
         <SectionHeader title="TENTANG KAMI" />
