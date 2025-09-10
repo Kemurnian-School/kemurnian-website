@@ -8,7 +8,7 @@ const linkStyle =
 
 export default function AdminSidebar() {
   return (
-    <nav className="w-64 bg-btn-primary h-screen text-white flex-shrink-0">
+    <nav className="sticky top-0 w-64 bg-btn-primary h-screen text-white flex-shrink-0">
       <div className="my-8 mx-4 h-12 relative">
         <Image
           src="/nav_logo.webp"
