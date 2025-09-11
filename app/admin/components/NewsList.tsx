@@ -112,7 +112,7 @@ export default function NewsList({ initialNews }: { initialNews: News[] }) {
                 {/* Action buttons overlay */}
                 <div className="absolute top-2 right-2 flex space-x-1">
                   <a
-                    href={`/admin/news/detail/${item.id}`}
+                    href={`/admin/news/edit/${item.id}`}
                     className="bg-white/90 hover:bg-white text-blue-600 hover:text-blue-800 p-1.5 rounded-full shadow-sm transition-colors duration-200"
                   >
                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

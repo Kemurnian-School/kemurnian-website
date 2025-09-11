@@ -13,7 +13,6 @@ export default async function AdminKurikulum() {
   }
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-4">Hero Slider Admin</h1>
       <KurikulumList initialKurikulums={kurikulums} />
     </div>
   )
