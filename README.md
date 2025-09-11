@@ -65,7 +65,7 @@ The project follows the Next.js App Router structure.
 
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Kemurnian-School/next-kemurnian-sch
    cd next-kemurnian-sch
    ```
 
@@ -90,7 +90,3 @@ The project follows the Next.js App Router structure.
    ```
 
    The application will be available at `http://localhost:3000`.
-
-## Deployment
-
-This Next.js application can be deployed to any platform that supports Node.js, such as Vercel, Netlify, or a custom server. Ensure that you set the environment variables in your deployment environment.
