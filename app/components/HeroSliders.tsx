@@ -88,7 +88,7 @@ export default function HeroSliders({ images = [], interval = 5000 }: HeroSlider
   // Show empty state if no images
   if (totalSlides === 0) {
     return (
-      <div className="relative w-full h-[480px] flex items-center justify-center bg-[#641609] text-white">
+      <div className="relative w-full h-[460px] flex items-center justify-center bg-[#641609] text-white">
         <div className="text-center">
           <div className="w-16 h-16 mx-auto mb-4 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,7 +110,7 @@ export default function HeroSliders({ images = [], interval = 5000 }: HeroSlider
   // Single image - no slider needed
   if (totalSlides === 1) {
     return (
-      <div className="relative w-full h-[480px] bg-[#641609]">
+      <div className="relative w-full h-[460px] bg-[#641609]">
         <Image
           src={sortedImages[0]}
           alt="Hero Banner"
@@ -124,7 +124,7 @@ export default function HeroSliders({ images = [], interval = 5000 }: HeroSlider
   }
 
   return (
-    <div className="relative w-full h-[640px] overflow-hidden bg-[#641609]">
+    <div className="relative w-full h-[460px] overflow-hidden bg-[#641609]">
       <div
         ref={sliderRef}
         className="flex w-full h-full"

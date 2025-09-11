@@ -1,6 +1,8 @@
 import HeroSliders from "../components/HeroSliders";
-import KurikulumList from "../components/KurikulumList";
 import SchoolsInfo from "../components/SchoolsInfo";
+import KurikulumList from "../components/KurikulumList";
+import NewsPreview from "../components/NewsPreview";
+
 import ButtonPrimary from "../components/ButtonPrimary";
 import SectionHeader from "../components/SectionHeader";
 import { createClient } from "@/utils/supabase/server";
@@ -21,6 +23,14 @@ export default async function Home() {
     .select("*")
     .order("order", { ascending: true });
   const kurikulumList = kurikulumsError ? [] : kurikulums || [];
+
+  // Fetch news
+  const { data: newsData, error: newsError } = await supabase
+    .from("news")
+    .select("*")
+    .order("date", { ascending: false })
+    .limit(3);
+  const news = newsError ? [] : newsData || [];
 
   return (
     <>
@@ -47,8 +57,15 @@ export default async function Home() {
           <KurikulumList kurikulum={kurikulumList} />
         </section>
 
-        <section>
-
+        <section className="px-4 py-16">
+          <SectionHeader title="NEWS AND EVENTS" />
+          <NewsPreview news={news} />
+          <ButtonPrimary text="MORE NEWS" href="/news" />
+        </section>
+        <section className="py-38 bg-btn-primary">
+          <SectionHeader title="PENERMAAN PESERTA DIDIK BARU"
+          h2ClassName="text-white tracking-widest"
+          hrClassName="border-white" />
         </section>
       </div>
     </>

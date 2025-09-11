@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import ButtonPrimary from './ButtonPrimary'
+import { getSnippet } from '@/utils/sanitize'
 
 interface Kurikulum {
   id: string | number
@@ -15,14 +16,6 @@ interface KurikulumListProps {
 
 export default function KurikulumList({ kurikulum }: KurikulumListProps) {
   const paragraphClasses = 'font-merriweather font-[100] leading-loose tracking-wider text-center list-disc list-inside'
-
-  const getSnippet = (text: string, wordCount: number = 25) => {
-    const plainText = text.replace(/<[^>]+>/g, '') // strip HTML
-    const words = plainText.split(/\s+/)
-    let snippet = words.slice(0, wordCount).join(' ')
-    if (words.length > wordCount) snippet += '...'
-    return snippet
-  }
 
   return (
     <section className="flex justify-center">
