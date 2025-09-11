@@ -1,37 +1,45 @@
-import HeroSliders from "../components/HeroSliders";
-import SchoolsInfo from "../components/SchoolsInfo";
-import KurikulumList from "../components/KurikulumList";
-import NewsPreview from "../components/NewsPreview";
+import HeroSliders from "../components/HeroSliders"
+import SchoolsInfo from "../components/SchoolsInfo"
+import KurikulumList from "../components/KurikulumList"
+import NewsPreview from "../components/NewsPreview"
 
-import ButtonPrimary from "../components/ButtonPrimary";
-import SectionHeader from "../components/SectionHeader";
-import Footer from "../components/Footer";
-import { createClient } from "@/utils/supabase/server";
+import ButtonPrimary from "../components/ButtonPrimary"
+import SectionHeader from "../components/SectionHeader"
+import Footer from "../components/Footer"
+import { createClient } from "@/utils/supabase/server"
+import Image from "next/image"
 
 export default async function Home() {
-  const supabase = await createClient();
+  const supabase = await createClient()
 
   // Fetch hero sliders
   const { data: heroImages, error: heroImagesError } = await supabase
     .from("hero_sliders")
     .select("*")
-    .order("order", { ascending: true });
-  const images = heroImagesError ? [] : heroImages || [];
+    .order("order", { ascending: true })
+  const images = heroImagesError ? [] : heroImages || []
 
   // Fetch kurikulum
   const { data: kurikulums, error: kurikulumsError } = await supabase
     .from("kurikulum")
     .select("*")
-    .order("order", { ascending: true });
-  const kurikulumList = kurikulumsError ? [] : kurikulums || [];
+    .order("order", { ascending: true })
+  const kurikulumList = kurikulumsError ? [] : kurikulums || []
 
-  // Fetch news
+  // Fetch latest 3 news
   const { data: newsData, error: newsError } = await supabase
     .from("news")
     .select("*")
     .order("date", { ascending: false })
-    .limit(3);
-  const news = newsError ? [] : newsData || [];
+    .limit(3)
+  const news = newsError ? [] : newsData || []
+
+  // Fetch enrollment (always 1 row)
+  const { data: enrollmentData, error: enrollmentError } = await supabase
+    .from("enrollment")
+    .select("*")
+    .single()
+  const enrollment = enrollmentError ? null : enrollmentData
 
   return (
     <>
@@ -63,14 +71,26 @@ export default async function Home() {
           <NewsPreview news={news} />
           <ButtonPrimary text="MORE NEWS" href="/news" />
         </section>
-        <section className="py-38 bg-btn-primary">
-          <SectionHeader title="PENERMAAN PESERTA DIDIK BARU"
-          h2ClassName="text-white tracking-widest"
-          hrClassName="border-white" />
 
+        <section className="py-38 bg-btn-primary flex flex-col justify-center items-center">
+          <SectionHeader
+            title="PENERMAAN PESERTA DIDIK BARU"
+            h2ClassName="text-white tracking-widest"
+            hrClassName="border-white"
+          />
+
+          <Image
+            src={enrollment?.image_url || "/placeholder-image.png"}
+            alt="Enrollment"
+            width={460}
+            height={0}
+            className="mx-auto mt-6 mb-10 rounded shadow-lg"
+          />
+          <a href="/enrollment" className="bg-[#818FAB] py-3 px-5 rounded-lg font-bold text-white">Pelajari Selengkapnya</a>
         </section>
       </div>
+
       <Footer />
     </>
-  );
+  )
 }
