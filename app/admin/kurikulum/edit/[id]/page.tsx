@@ -1,14 +1,7 @@
-// app/admin/kurikulum/edit/[id]/page.tsx
 import { createClient } from '@/utils/supabase/server'
 import EditKurikulumForm from './EditKurikulumForm'
 
 import 'react-quill-new/dist/quill.snow.css'
-
-interface Kurikulum {
-  id: string
-  title: string
-  body: string
-}
 
 interface PageProps {
   params: { id: string }

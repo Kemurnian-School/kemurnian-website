@@ -2,24 +2,26 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/utils/supabase/server'
 
-// Upload news with multiple images
-export async function uploadNews(formData: FormData) {
+// Update news with optional new images
+export async function updateNews(formData: FormData) {
   const supabase = await createClient();
 
   const { data: { user }, error: authError } = await supabase.auth.getUser();
   if (authError || !user) throw new Error("Unauthorized");
 
+  const id = formData.get('id') as string;
   const title = formData.get('title') as string;
   const body = formData.get('body') as string;
   const date = formData.get('date') as string;
   const embed = formData.get('embed') as string | null;
   const from = formData.get('from') as string;
+  const existingImages = JSON.parse(formData.get('existingImages') as string || '[]') as string[];
 
-  if (!title || !body || !date || !from) throw new Error("Missing required fields");
+  if (!id || !title || !body || !date || !from) throw new Error("Missing required fields");
 
   const files = formData.getAll('images') as File[];
-  const imageUrls: string[] = [];
-  const storagePaths: string[] = [];
+  const imageUrls: string[] = [...existingImages]; // start with existing images
+  const storagePaths: string[] = []; // track newly uploaded images
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
@@ -35,20 +37,13 @@ export async function uploadNews(formData: FormData) {
     if (uploadError) throw uploadError;
 
     const { data: { publicUrl } } = supabase.storage.from('news').getPublicUrl(filename);
-
     imageUrls.push(publicUrl);
     storagePaths.push(filename);
   }
 
-  await supabase.from('news').insert({
-    title,
-    body,
-    date,
-    embed: embed || null,
-    from,
-    image_urls: imageUrls,
-    storage_paths: storagePaths
-  });
+  await supabase.from('news')
+    .update({ title, body, date, embed: embed || null, from, image_urls: imageUrls })
+    .eq('id', id);
 
   revalidatePath('/admin/news');
 

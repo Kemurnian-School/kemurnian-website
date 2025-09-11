@@ -11,6 +11,7 @@ const menuLinks = [
   { href: "/admin/hero", label: "Hero Section" },
   { href: "/admin/kurikulum", label: "Kurikulum Section" },
   { href: "/admin/news", label: "News" },
+  { href: "/admin/enrollment", label: "Enrollment" },
 ];
 
 export default function AdminSidebar() {

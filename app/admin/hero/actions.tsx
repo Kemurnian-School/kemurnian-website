@@ -30,7 +30,7 @@ export async function uploadImage(formData: FormData) {
 
   const { error: insertError } = await supabase
     .from('hero_sliders')
-    .insert({ image_urls: publicUrl, order: 1 })
+    .insert({ image_urls: publicUrl, order: 1, storage_path: filename})
 
   if (insertError) throw insertError
 
