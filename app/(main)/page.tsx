@@ -5,6 +5,7 @@ import NewsPreview from "../components/NewsPreview";
 
 import ButtonPrimary from "../components/ButtonPrimary";
 import SectionHeader from "../components/SectionHeader";
+import Footer from "../components/Footer";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function Home() {
@@ -66,8 +67,10 @@ export default async function Home() {
           <SectionHeader title="PENERMAAN PESERTA DIDIK BARU"
           h2ClassName="text-white tracking-widest"
           hrClassName="border-white" />
+
         </section>
       </div>
+      <Footer />
     </>
   );
 }

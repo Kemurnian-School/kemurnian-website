@@ -6,6 +6,13 @@ import Image from "next/image";
 const linkStyle =
   "block w-full py-4 pl-6 hover:bg-btn-hover cursor-pointer text-left border-b border-red-800";
 
+const menuLinks = [
+  { href: "/admin/", label: "Dashboard", borderTop: true },
+  { href: "/admin/hero", label: "Hero Section" },
+  { href: "/admin/kurikulum", label: "Kurikulum Section" },
+  { href: "/admin/news", label: "News" },
+];
+
 export default function AdminSidebar() {
   return (
     <nav className="sticky top-0 w-64 bg-btn-primary h-screen text-white flex-shrink-0">
@@ -20,28 +27,17 @@ export default function AdminSidebar() {
       </div>
 
       {/* Menu Links */}
-      <ul className="flex flex-col">
-        <li>
-          <Link href="/admin/" className={`${linkStyle} border-t`}>
-            Dashboard
+      <div className="flex flex-col">
+        {menuLinks.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className={`${linkStyle} ${link.borderTop ? "border-t" : ""}`}
+          >
+            {link.label}
           </Link>
-        </li>
-        <li>
-          <Link href="/admin/hero" className={linkStyle}>
-            Hero Section
-          </Link>
-        </li>
-        <li>
-          <Link href="/admin/kurikulum" className={linkStyle}>
-            Kurikulum Section
-          </Link>
-        </li>
-        <li>
-          <Link href="/admin/news" className={linkStyle}>
-            News
-          </Link>
-        </li>
-      </ul>
+        ))}
+      </div>
     </nav>
   );
 }
