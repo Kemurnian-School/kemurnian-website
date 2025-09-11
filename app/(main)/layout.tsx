@@ -14,7 +14,7 @@ const raleway = Raleway({
 });
 
 // Components
-import Navbar from "../components/Navbar"
+import Navbar from "./components/Navbar"
 
 export default function RootLayout({
   children,

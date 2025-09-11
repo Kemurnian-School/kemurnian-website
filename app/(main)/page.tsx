@@ -1,11 +1,11 @@
-import HeroSliders from "../components/HeroSliders"
-import SchoolsInfo from "../components/SchoolsInfo"
-import KurikulumList from "../components/KurikulumList"
-import NewsPreview from "../components/NewsPreview"
+import HeroSliders from "./components/HeroSliders"
+import SchoolsInfo from "./components/SchoolsInfo"
+import KurikulumList from "./components/KurikulumList"
+import NewsPreview from "./components/NewsPreview"
 
-import ButtonPrimary from "../components/ButtonPrimary"
-import SectionHeader from "../components/SectionHeader"
-import Footer from "../components/Footer"
+import ButtonPrimary from "./components/ButtonPrimary"
+import SectionHeader from "./components/SectionHeader"
+import Footer from "./components/Footer"
 import { createClient } from "@/utils/supabase/server"
 import Image from "next/image"
 
