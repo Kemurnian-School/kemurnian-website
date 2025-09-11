@@ -1,36 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sekolah Kemurnian Website
+
+This is a web application for Sekolah Kemurnian, built with Next.js and Supabase. It includes a public-facing website to provide information to students and parents, and an admin dashboard for managing the website's content.
+
+## Tech Stack
+
+- **Framework:** [Next.js](https://nextjs.org/)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Backend & Database:** [Supabase](https://supabase.io/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **UI Components:** Custom components, with `react-quill-new` for rich text editing.
+
+## Features
+
+### Public Website
+
+- **Homepage:** Displays a hero slider, school information, curriculum highlights, latest news, and enrollment details.
+- **Dynamic Content:** All content is fetched from the Supabase backend, allowing for easy updates.
+- **Responsive Design:** The website is designed to be accessible on various devices.
+
+### Admin Dashboard
+
+- **Secure Access:** The admin area (`/admin`) is protected and requires authentication through Supabase Auth.
+- **Content Management:** The dashboard allows administrators to perform CRUD (Create, Read, Update, Delete) operations on:
+  - Hero Sliders
+  - Curriculum Information
+  - News and Events
+  - Enrollment Details
+
+## Project Structure
+
+The project follows the Next.js App Router structure.
+
+```
+/app
+|-- (main)/       # Route group for the public-facing website
+|   |-- page.tsx      # Homepage
+|   |-- kurikulum/
+|   |-- enrollment/
+|   `-- ...
+|
+|-- admin/        # Route group for the admin dashboard
+|   |-- page.tsx      # Admin homepage
+|   |-- hero/
+|   |-- kurikulum/
+|   |-- news/
+|   `-- ...
+|
+|-- login/        # Login page for the admin dashboard
+|
+`-- layout.tsx    # Root layout
+```
+
+- `utils/supabase/`: Contains Supabase client configurations for client-side, server-side, and admin-level interactions.
+- `middleware.ts`: Handles authentication checks for the `/admin` routes.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js (v20 or later)
+- `pnpm` (or your preferred package manager)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd next-kemurnian-sch
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. **Install dependencies:**
+   ```bash
+   pnpm install
+   ```
 
-## Learn More
+3. **Set up environment variables:**
 
-To learn more about Next.js, take a look at the following resources:
+   Create a `.env.local` file in the root of the project and add your Supabase credentials:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+   SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. **Run the development server:**
+   ```bash
+   pnpm dev
+   ```
 
-## Deploy on Vercel
+   The application will be available at `http://localhost:3000`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This Next.js application can be deployed to any platform that supports Node.js, such as Vercel, Netlify, or a custom server. Ensure that you set the environment variables in your deployment environment.
