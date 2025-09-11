@@ -73,10 +73,10 @@ export default function NewsList({ initialNews }: { initialNews: News[] }) {
           {news.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden aspect-square flex flex-col"
+                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col"
             >
               {/* Image Section */}
-              <div className="relative h-40 bg-gray-200 overflow-hidden">
+              <div className="relative h-full bg-gray-200 overflow-hidden">
                 {item.image_urls && item.image_urls.length > 0 ? (
                   <img
                     src={item.image_urls[0]}
