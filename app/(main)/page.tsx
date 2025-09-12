@@ -26,13 +26,39 @@ export default async function Home() {
     .order("order", { ascending: true })
   const kurikulumList = kurikulumsError ? [] : kurikulums || []
 
-  // Fetch latest 9 news
-  const { data: newsData, error: newsError } = await supabase
+  // Fetch latest news with 2-year logic
+  let news = []
+  
+  const { data: latestNews, error: latestNewsError } = await supabase
     .from("news")
-    .select("*")
+    .select("date")
     .order("date", { ascending: false })
-    .limit(9)
-  const news = newsError ? [] : newsData || []
+    .limit(1)
+  
+  if (!latestNewsError && latestNews && latestNews.length > 0) {
+    // Calculate the date 2 years before the latest news date
+    const latestDate = new Date(latestNews[0].date)
+    const twoYearsBefore = new Date(latestDate)
+    twoYearsBefore.setFullYear(latestDate.getFullYear() - 2)
+    
+    const twoYearsBeforeFormatted = twoYearsBefore.toISOString().split('T')[0]
+    
+    const { data: newsData, error: newsError } = await supabase
+      .from("news")
+      .select("*")
+      .gte("date", twoYearsBeforeFormatted)
+      .order("date", { ascending: false })
+      .limit(9)
+    
+    news = newsError ? [] : newsData || []
+  } else {
+    const { data: newsData, error: newsError } = await supabase
+      .from("news")
+      .select("*")
+      .order("date", { ascending: false })
+      .limit(9)
+    news = newsError ? [] : newsData || []
+  }
 
   // Fetch enrollment (always 1 row)
   const { data: enrollmentData, error: enrollmentError } = await supabase

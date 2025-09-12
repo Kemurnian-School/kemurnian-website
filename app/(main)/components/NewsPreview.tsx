@@ -39,7 +39,7 @@ export default function NewsPreview({ news }: NewsPreviewProps) {
                             })}
                         </p>
                         <h2 className="font-raleway font-extrabold text-lg mb-1">{item.title}</h2>
-                        <p className="font-raleway text-sm">{getSnippet(item.body, 18)}</p>
+                        <p className="font-merriweather leading-loose tracking-wider font-light text-sm">{getSnippet(item.body, 18)}</p>
                     </div>
                 </a>
             ))}

@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { uploadNews } from './actions'
 import dynamic from 'next/dynamic'
-import { compressMultipleImages } from '@/utils/ImageCompression' // Import your compression utility
+import { compressMultipleImages } from '@/utils/ImageCompression'
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
 import 'react-quill-new/dist/quill.snow.css'
@@ -23,7 +23,7 @@ export default function NewNewsForm() {
   const [from, setFrom] = useState(fromOptions[0])
   const [images, setImages] = useState<File[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isCompressing, setIsCompressing] = useState(false) // New state for compression
+  const [isCompressing, setIsCompressing] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const router = useRouter()
@@ -47,7 +47,7 @@ export default function NewNewsForm() {
     // Filter valid image files
     const validFiles = Array.from(files).filter(file => {
       const isValidType = file.type.startsWith('image/')
-      const isValidSize = file.size <= 10 * 1024 * 1024 // Increased limit since we'll compress
+      const isValidSize = file.size <= 10 * 1024 * 1024
       return isValidType && isValidSize
     })
 
@@ -59,21 +59,19 @@ export default function NewNewsForm() {
     if (validFiles.length !== files.length) {
       setErrorMessage('Some files were skipped. Please only upload images under 10MB.')
     } else {
-      setErrorMessage('') // Clear previous errors
+      setErrorMessage('')
     }
 
     setIsCompressing(true)
     setSuccessMessage(`Compressing ${validFiles.length} image(s)...`)
 
     try {
-      // Compress images with custom options
       const compressedFiles = await compressMultipleImages(validFiles, {
         quality: 0.8,
         maxWidth: 1920,
         maxHeight: 1080
       })
 
-      // Calculate compression savings
       const originalSize = validFiles.reduce((sum, file) => sum + file.size, 0)
       const compressedSize = compressedFiles.reduce((sum, file) => sum + file.size, 0)
       const savings = ((originalSize - compressedSize) / originalSize * 100).toFixed(1)
@@ -81,7 +79,6 @@ export default function NewNewsForm() {
       setImages(compressedFiles)
       setSuccessMessage(`Images compressed successfully! Saved ${savings}% in file size.`)
       
-      // Clear success message after 3 seconds
       setTimeout(() => setSuccessMessage(''), 3000)
     } catch (error) {
       console.error('Compression failed:', error)
@@ -91,7 +88,6 @@ export default function NewNewsForm() {
       setIsCompressing(false)
     }
 
-    // Clear the input
     e.target.value = ''
   }
 
@@ -101,8 +97,8 @@ export default function NewNewsForm() {
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    if (!title || !body || !date || !from) {
-      setErrorMessage('Title, body, date and from are required.')
+    if (!title || !date || !from) {
+      setErrorMessage('Title, date and from are required.')
       return
     }
 
@@ -118,7 +114,6 @@ export default function NewNewsForm() {
       formData.append('from', from)
       formData.append('embed', embed || '')
 
-      // Append each compressed image with the same key name
       images.forEach((img, index) => {
         formData.append('images', img, `compressed_${index}_${img.name}`)
       })
@@ -243,7 +238,7 @@ export default function NewNewsForm() {
         </div>
 
         <div>
-          <label className="block mb-1 font-medium">Body</label>
+          <label className="block mb-1 font-medium">Body (optional)</label>
           <ReactQuill
             value={body}
             onChange={setBody}

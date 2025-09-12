@@ -8,7 +8,7 @@ export async function compressImageToWebP(
   file: File, 
   options: CompressionOptions = {}
 ): Promise<File> {
-  const { quality = 0.8, maxWidth = 1920, maxHeight = 1080 } = options;
+  const { quality = 0.7, maxWidth = 1920, maxHeight = 1080 } = options;
 
   return new Promise((resolve, reject) => {
     const canvas = document.createElement('canvas');
