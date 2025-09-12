@@ -26,12 +26,12 @@ export default async function Home() {
     .order("order", { ascending: true })
   const kurikulumList = kurikulumsError ? [] : kurikulums || []
 
-  // Fetch latest 3 news
+  // Fetch latest 9 news
   const { data: newsData, error: newsError } = await supabase
     .from("news")
     .select("*")
     .order("date", { ascending: false })
-    .limit(3)
+    .limit(9)
   const news = newsError ? [] : newsData || []
 
   // Fetch enrollment (always 1 row)
@@ -40,6 +40,8 @@ export default async function Home() {
     .select("*")
     .single()
   const enrollment = enrollmentError ? null : enrollmentData
+
+  const socialMediaStyles: string = "bg-[#818FAB] px-4 py-4 rounded-sm text-white font-raleway font-bold"
 
   return (
     <>
@@ -87,6 +89,21 @@ export default async function Home() {
             className="mx-auto mt-6 mb-10 rounded shadow-lg"
           />
           <a href="/enrollment" className="bg-[#818FAB] py-3 px-5 rounded-lg font-bold text-white">Pelajari Selengkapnya</a>
+        </section>
+
+        <section className="flex flex-col justify-center items-center gap-4 py-16">
+          <h2 className="font-raleway font-black tracking-widest text-md">COME GET CLOSER WITH US</h2>
+          <div className="flex gap-2">
+            <a href="https://linktr.ee/sekolahkemurnian"
+            className={socialMediaStyles}>Whatsapp</a>
+            <a href="https://www.instagram.com/sekolah.kemurnian/"
+            className={socialMediaStyles}>Instagram</a>
+            <a href="https://www.youtube.com/@SekolahKemurnian"
+            className={socialMediaStyles}>Youtube</a>
+          </div>
+          <hr 
+            className="clear-both mx-auto my-2 h-0 w-[90px] border-0 border-t-[3px] border-solid border-[#8b0000]"
+          />
         </section>
       </div>
 

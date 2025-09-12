@@ -18,7 +18,11 @@ export default function NewsPreview({ news }: NewsPreviewProps) {
     return (
         <section>
             {news.map(item => (
-                <div key={item.id} className="flex flex-col items-center mb-8">
+                <a
+                    key={item.id}
+                    className="flex flex-col items-center mb-8"
+                    href={`/news-detail/${item.id}`}
+                >
                     <Image
                         src={item.image_urls[0]}
                         alt={item.title}
@@ -37,7 +41,7 @@ export default function NewsPreview({ news }: NewsPreviewProps) {
                         <h2 className="font-raleway font-extrabold text-xl mb-2">{item.title}</h2>
                         <p className="font-raleway text-center text-md max-w-3xl">{getSnippet(item.body, 18)}</p>
                     </div>
-                </div>
+                </a>
             ))}
         </section>
     )

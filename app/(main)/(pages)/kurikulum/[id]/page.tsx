@@ -1,6 +1,6 @@
 import { createClient } from '@/utils/supabase/server'
 import Head from 'next/head'
-import QuillRenderer from '../../components/QuillRenderer'
+import QuillRenderer from '@/app/(main)/components/QuillRenderer'
 
 interface Kurikulum {
   id: string
