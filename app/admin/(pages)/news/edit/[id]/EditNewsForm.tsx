@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import { updateNews } from './actions'
+import { updateNews, deleteNewsImage } from './actions'
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
 import 'react-quill-new/dist/quill.snow.css'
@@ -22,6 +22,7 @@ interface News {
   from: string
   embed?: string
   image_urls: string[]
+  storage_paths?: string[]
 }
 
 export default function EditNewsForm({ initialData }: { initialData: News }) {
@@ -33,9 +34,11 @@ export default function EditNewsForm({ initialData }: { initialData: News }) {
   const [from, setFrom] = useState(initialData.from)
   const [embed, setEmbed] = useState(initialData.embed || '')
   const [existingImages, setExistingImages] = useState<string[]>(initialData.image_urls)
+  const [existingPaths, setExistingPaths] = useState<string[]>(initialData.storage_paths || [])
   const [newImages, setNewImages] = useState<File[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [message, setMessage] = useState('')
+  const [deletingImage, setDeletingImage] = useState<string | null>(null)
 
   const modules = {
     toolbar: [
@@ -57,8 +60,36 @@ export default function EditNewsForm({ initialData }: { initialData: News }) {
     }
   }
 
-  const removeExistingImage = (url: string) => {
-    setExistingImages(prev => prev.filter(img => img !== url))
+  // Delete image immediately from storage and update local state
+  const removeExistingImage = async (url: string, index: number) => {
+    const storagePath = existingPaths[index]
+    if (!storagePath) {
+      // If no storage path, just remove from local state
+      setExistingImages(prev => prev.filter(img => img !== url))
+      return
+    }
+
+    setDeletingImage(url)
+    setMessage('Deleting image...')
+
+    try {
+      const formData = new FormData()
+      formData.append('newsId', initialData.id)
+      formData.append('imageUrl', url)
+      formData.append('storagePath', storagePath)
+
+      await deleteNewsImage(formData)
+      
+      // Update local state after successful deletion
+      setExistingImages(prev => prev.filter(img => img !== url))
+      setExistingPaths(prev => prev.filter((_, i) => i !== index))
+      setMessage('Image deleted successfully!')
+    } catch (err) {
+      console.error(err)
+      setMessage('Failed to delete image.')
+    } finally {
+      setDeletingImage(null)
+    }
   }
 
   const removeNewImage = (index: number) => {
@@ -83,6 +114,7 @@ export default function EditNewsForm({ initialData }: { initialData: News }) {
       formData.append('from', from)
       formData.append('embed', embed || '')
       formData.append('existingImages', JSON.stringify(existingImages))
+      formData.append('existingPaths', JSON.stringify(existingPaths))
 
       newImages.forEach((img, idx) => {
         formData.append('images', img, `image_${idx}_${img.name}`)
@@ -141,8 +173,16 @@ export default function EditNewsForm({ initialData }: { initialData: News }) {
               {existingImages.map((url, idx) => (
                 <div key={idx} className="relative border rounded p-1">
                   <img src={url} alt={`img-${idx}`} className="w-24 h-24 object-cover rounded"/>
-                  <button type="button" onClick={() => removeExistingImage(url)}
-                    className="absolute top-0 right-0 bg-red-500 text-white px-1 rounded">×</button>
+                  <button 
+                    type="button" 
+                    onClick={() => removeExistingImage(url, idx)}
+                    disabled={deletingImage === url}
+                    className={`absolute top-0 right-0 px-1 rounded text-white ${
+                      deletingImage === url ? 'bg-gray-400' : 'bg-red-500 hover:bg-red-600'
+                    }`}
+                  >
+                    {deletingImage === url ? '...' : '×'}
+                  </button>
                 </div>
               ))}
             </div>
