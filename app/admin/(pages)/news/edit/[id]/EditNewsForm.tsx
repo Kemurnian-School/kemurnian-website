@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { updateNews, deleteNewsImage } from './actions'
+import { compressMultipleImages } from '@/utils/ImageCompression' // Import your compression utility
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
 import 'react-quill-new/dist/quill.snow.css'
@@ -37,6 +38,7 @@ export default function EditNewsForm({ initialData }: { initialData: News }) {
   const [existingPaths, setExistingPaths] = useState<string[]>(initialData.storage_paths || [])
   const [newImages, setNewImages] = useState<File[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isCompressing, setIsCompressing] = useState(false) // New state for compression
   const [message, setMessage] = useState('')
   const [deletingImage, setDeletingImage] = useState<string | null>(null)
 
@@ -52,12 +54,51 @@ export default function EditNewsForm({ initialData }: { initialData: News }) {
 
   const formats = ['header', 'bold', 'italic', 'underline', 'color', 'background', 'list', 'link']
 
-  const handleNewImages = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNewImages = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
-    if (files) {
-      const validFiles = Array.from(files).filter(f => f.type.startsWith('image/') && f.size <= 5 * 1024 * 1024)
-      setNewImages(prev => [...prev, ...validFiles])
+    if (!files || files.length === 0) return
+
+    // Filter valid image files
+    const validFiles = Array.from(files).filter(f => 
+      f.type.startsWith('image/') && f.size <= 10 * 1024 * 1024 // Increased limit since we'll compress
+    )
+
+    if (validFiles.length === 0) {
+      setMessage('Please select valid image files (max 10MB each)')
+      return
     }
+
+    setIsCompressing(true)
+    setMessage(`Compressing ${validFiles.length} image(s)...`)
+
+    try {
+      // Compress images with custom options
+      const compressedFiles = await compressMultipleImages(validFiles, {
+        quality: 0.8,
+        maxWidth: 1920,
+        maxHeight: 1080
+      })
+
+      // Calculate compression savings
+      const originalSize = validFiles.reduce((sum, file) => sum + file.size, 0)
+      const compressedSize = compressedFiles.reduce((sum, file) => sum + file.size, 0)
+      const savings = ((originalSize - compressedSize) / originalSize * 100).toFixed(1)
+
+      setNewImages(prev => [...prev, ...compressedFiles])
+      setMessage(`Images compressed successfully! Saved ${savings}% in file size.`)
+      
+      // Clear message after 3 seconds
+      setTimeout(() => setMessage(''), 3000)
+    } catch (error) {
+      console.error('Compression failed:', error)
+      setMessage('Failed to compress images. Adding original files instead.')
+      setNewImages(prev => [...prev, ...validFiles])
+    } finally {
+      setIsCompressing(false)
+    }
+
+    // Clear the input
+    e.target.value = ''
   }
 
   // Delete image immediately from storage and update local state
@@ -84,6 +125,7 @@ export default function EditNewsForm({ initialData }: { initialData: News }) {
       setExistingImages(prev => prev.filter(img => img !== url))
       setExistingPaths(prev => prev.filter((_, i) => i !== index))
       setMessage('Image deleted successfully!')
+      setTimeout(() => setMessage(''), 2000)
     } catch (err) {
       console.error(err)
       setMessage('Failed to delete image.')
@@ -103,7 +145,7 @@ export default function EditNewsForm({ initialData }: { initialData: News }) {
     }
 
     setIsSubmitting(true)
-    setMessage('')
+    setMessage('Updating news...')
 
     try {
       const formData = new FormData()
@@ -116,8 +158,9 @@ export default function EditNewsForm({ initialData }: { initialData: News }) {
       formData.append('existingImages', JSON.stringify(existingImages))
       formData.append('existingPaths', JSON.stringify(existingPaths))
 
+      // Add compressed images to form data
       newImages.forEach((img, idx) => {
-        formData.append('images', img, `image_${idx}_${img.name}`)
+        formData.append('images', img, `compressed_${idx}_${img.name}`)
       })
 
       await updateNews(formData)
@@ -137,7 +180,15 @@ export default function EditNewsForm({ initialData }: { initialData: News }) {
         ← back
       </Link>
 
-      {message && <div className="mb-4 p-2 rounded bg-gray-200">{message}</div>}
+      {message && (
+        <div className={`mb-4 p-2 rounded ${
+          message.includes('successfully') ? 'bg-green-100 text-green-800' : 
+          message.includes('Failed') || message.includes('failed') ? 'bg-red-100 text-red-800' : 
+          'bg-blue-100 text-blue-800'
+        }`}>
+          {message}
+        </div>
+      )}
 
       <form className="space-y-4">
         <div>
@@ -191,17 +242,38 @@ export default function EditNewsForm({ initialData }: { initialData: News }) {
 
         <div>
           <label className="block mb-1 font-medium">Add New Images</label>
-          <input type="file" multiple accept="image/*" onChange={handleNewImages}
-            className="w-full border rounded p-2 focus:border-blue-500 focus:outline-none"/>
+          <p className="text-sm text-gray-600 mb-2">
+            Images will be automatically compressed to WebP format (max 1920×1080, 80% quality)
+          </p>
+          <input 
+            type="file" 
+            multiple 
+            accept="image/*" 
+            onChange={handleNewImages}
+            disabled={isCompressing}
+            className={`w-full border rounded p-2 focus:border-blue-500 focus:outline-none ${
+              isCompressing ? 'bg-gray-100' : ''
+            }`}
+          />
           {newImages.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-2">
-              {newImages.map((img, idx) => (
-                <div key={idx} className="relative border rounded p-1">
-                  <span className="block truncate max-w-24">{img.name}</span>
-                  <button type="button" onClick={() => removeNewImage(idx)}
-                    className="absolute top-0 right-0 bg-red-500 text-white px-1 rounded">×</button>
-                </div>
-              ))}
+            <div className="mt-2">
+              <p className="text-sm text-gray-600 mb-2">
+                {newImages.length} compressed image(s) ready to upload:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {newImages.map((img, idx) => (
+                  <div key={idx} className="relative border rounded p-1 bg-green-50">
+                    <div className="text-xs">
+                      <div className="truncate max-w-24 font-medium">{img.name}</div>
+                      <div className="text-gray-500">
+                        {(img.size / 1024).toFixed(1)}KB
+                      </div>
+                    </div>
+                    <button type="button" onClick={() => removeNewImage(idx)}
+                      className="absolute top-0 right-0 bg-red-500 text-white px-1 rounded text-xs">×</button>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -212,8 +284,11 @@ export default function EditNewsForm({ initialData }: { initialData: News }) {
         </div>
 
         <button type="button" onClick={handleSubmit}
-          disabled={isSubmitting} className={`px-4 py-2 rounded text-white ${isSubmitting ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'}`}>
-          {isSubmitting ? 'Updating...' : 'Update'}
+          disabled={isSubmitting || isCompressing} 
+          className={`px-4 py-2 rounded text-white ${
+            isSubmitting || isCompressing ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+          }`}>
+          {isSubmitting ? 'Updating...' : isCompressing ? 'Compressing...' : 'Update'}
         </button>
       </form>
     </div>
