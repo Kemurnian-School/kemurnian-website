@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Image from 'next/image'
-import { reorderImages, uploadImage, deleteImage } from '@/app/admin/hero/actions'
+import { reorderImages, uploadImage, deleteImage } from '@/app/admin/(pages)/hero/actions'
 
 interface Hero {
   id: number

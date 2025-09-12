@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "../globals.css";
-
 import Sidebar from "./components/Sidebar"
 
 const poppins = Poppins({
@@ -23,7 +22,7 @@ export default function AdminLayout({
   return (
     <div className={`${poppins.variable} font-sans antialiased`}>
       <div className="min-h-screen flex">
-        <Sidebar />      
+        <Sidebar />
         <main className="flex-1">{children}</main>
       </div>
     </div>
