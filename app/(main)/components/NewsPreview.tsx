@@ -16,7 +16,7 @@ interface NewsPreviewProps {
 
 export default function NewsPreview({ news }: NewsPreviewProps) {
     return (
-        <section className="flex flex-wrap justify-center gap-8 w-full">
+        <section className="flex flex-wrap justify-center gap-8 max-w-4xl mx-auto">
             {news.map(item => (
                 <a
                     key={item.id}
