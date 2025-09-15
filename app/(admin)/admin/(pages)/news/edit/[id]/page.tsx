@@ -1,4 +1,3 @@
-// app/admin/news/edit/[id]/page.tsx
 import { createClient } from '@/utils/supabase/server'
 import EditNewsForm from './EditNewsForm'
 

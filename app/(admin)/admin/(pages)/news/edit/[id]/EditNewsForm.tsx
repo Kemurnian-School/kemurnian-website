@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { updateNews, deleteNewsImage } from './actions'
-import { compressMultipleImages } from '@/utils/ImageCompression' // Import your compression utility
+import { compressMultipleImages } from '@/utils/ImageCompression'
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
 import 'react-quill-new/dist/quill.snow.css'

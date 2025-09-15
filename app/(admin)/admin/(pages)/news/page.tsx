@@ -1,4 +1,4 @@
-import NewsList from "@/app/admin/components/NewsList";
+import NewsList from "@/app/(admin)/components/NewsList";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function AdminNews() {

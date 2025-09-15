@@ -1,4 +1,4 @@
-import KurikulumList from "@/app/admin/components/KurikulumList";
+import KurikulumList from "@/app/(admin)/components/KurikulumList";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function AdminKurikulum() {
