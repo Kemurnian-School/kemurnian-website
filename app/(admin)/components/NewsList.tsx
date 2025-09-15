@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { deleteNews } from '@/app/admin/(pages)/news/actions'
+import { deleteNews } from '@/app/(admin)/admin/(pages)/news/actions'
 
 interface News {
   id: number
