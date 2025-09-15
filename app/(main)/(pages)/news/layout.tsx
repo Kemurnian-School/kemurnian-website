@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation'
 
 const categories = [
   { name: "General", href: "/news" },
-  { name: "Sekolah Kemurnian", href: "/news/categories/sekolah-kemurnian" },
-  { name: "Sekolah Kemurnian II", href: "/news/categories/sekolah-kemurnian-ii" },
-  { name: "Sekolah Kemurnian III", href: "/news/categories/sekolah-kemurnian-iii" },
+  { name: "Sekolah Kemurnian", href: "/news/category/sekolah-kemurnian" },
+  { name: "Sekolah Kemurnian II", href: "/news/category/sekolah-kemurnian-ii" },
+  { name: "Sekolah Kemurnian III", href: "/news/category/sekolah-kemurnian-iii" },
 ]
 
 export default function NewsLayout({ children }: { children: React.ReactNode }) {
