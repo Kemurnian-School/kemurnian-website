@@ -1,12 +1,17 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 interface HeroImage {
   id: number
-  image_urls: string
   order: number
-  created_at?: string
+  image_urls: string // Desktop image
+  tablet_image_urls?: string | null
+  mobile_image_urls?: string | null
+  header_text?: string | null
+  button_text?: string | null
+  href_text?: string | null
 }
 
 interface HeroSlidersProps {
@@ -15,47 +20,37 @@ interface HeroSlidersProps {
 }
 
 export default function HeroSliders({ images = [], interval = 5000 }: HeroSlidersProps) {
-  const [currentIndex, setCurrentIndex] = useState(1) // Start at 1 to account for cloned first slide
+  const [currentIndex, setCurrentIndex] = useState(1)
   const [isTransitioning, setIsTransitioning] = useState(true)
   const sliderRef = useRef<HTMLDivElement>(null)
 
-  // Sort images by order field, then map to URLs
-  const sortedImages = images
-    .sort((a, b) => a.order - b.order)
-    .map(img => img.image_urls)
+  const sortedSlidesData = images.sort((a, b) => a.order - b.order)
+  const totalSlides = sortedSlidesData.length
 
-  const totalSlides = sortedImages.length
-
-  // Create slides array with clones for infinite effect
-  const slides = totalSlides > 1 
-    ? [sortedImages[totalSlides - 1], ...sortedImages, sortedImages[0]]
-    : sortedImages
+  const slides = totalSlides > 1
+    ? [sortedSlidesData[totalSlides - 1], ...sortedSlidesData, sortedSlidesData[0]]
+    : sortedSlidesData
 
   const goToSlide = (index: number) => {
-    setCurrentIndex(index + 1) // +1 to account for cloned first slide
+    setCurrentIndex(index + 1)
     setIsTransitioning(true)
   }
-
+  
   const nextSlide = () => {
     if (totalSlides <= 1) return
     setCurrentIndex(prev => prev + 1)
     setIsTransitioning(true)
   }
 
-  // Handle infinite loop reset
   useEffect(() => {
     if (totalSlides <= 1) return
-
-    // When we reach the cloned last slide, reset to first real slide
     if (currentIndex === totalSlides + 1) {
       const timer = setTimeout(() => {
         setIsTransitioning(false)
         setCurrentIndex(1)
-      }, 500) // Match transition duration
+      }, 500)
       return () => clearTimeout(timer)
     }
-
-    // When we're at the cloned first slide (index 0), reset to last real slide
     if (currentIndex === 0) {
       const timer = setTimeout(() => {
         setIsTransitioning(false)
@@ -65,27 +60,55 @@ export default function HeroSliders({ images = [], interval = 5000 }: HeroSlider
     }
   }, [currentIndex, totalSlides])
 
-  // Auto-advance and pause on visibility change
   useEffect(() => {
     if (totalSlides <= 1) return
-
     const timer = setInterval(nextSlide, interval)
-
     const handleVisibilityChange = () => {
       if (document.hidden) {
         clearInterval(timer)
       }
     }
-    
     document.addEventListener('visibilitychange', handleVisibilityChange)
-
     return () => {
       clearInterval(timer)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [interval, totalSlides])
 
-  // Show empty state if no images
+  const SlideContent = ({ slide, priority = false }: { slide: HeroImage, priority?: boolean }) => (
+    <>
+      <picture>
+        <source
+          media="(max-width: 768px)"
+          srcSet={slide.mobile_image_urls || slide.image_urls}
+        />
+        <source
+          media="(max-width: 1024px)"
+          srcSet={slide.tablet_image_urls || slide.image_urls}
+        />
+        <Image
+          src={slide.image_urls}
+          alt="Hero Banner"
+          width={1920}
+          height={640}
+          className="h-full w-full object-contain"
+          priority={priority}
+        />
+      </picture>
+      
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
+        {slide.header_text && <h1>{slide.header_text}</h1>}
+        
+        {slide.href_text && slide.button_text && (
+          <Link href={slide.href_text}>
+            {/* Unstyled, as requested */}
+            <button>{slide.button_text}</button>
+          </Link>
+        )}
+      </div>
+    </>
+  )
+
   if (totalSlides === 0) {
     return (
       <div className="relative w-full h-[460px] flex items-center justify-center bg-[#641609] text-white">
@@ -107,18 +130,10 @@ export default function HeroSliders({ images = [], interval = 5000 }: HeroSlider
     )
   }
 
-  // Single image - no slider needed
   if (totalSlides === 1) {
     return (
       <div className="relative w-full h-[460px] bg-[#641609]">
-        <Image
-          src={sortedImages[0]}
-          alt="Hero Banner"
-          width={1920}
-          height={480}
-          className="h-full w-full object-cover"
-          priority
-        />
+        <SlideContent slide={sortedSlidesData[0]} priority={true} />
       </div>
     )
   }
@@ -133,28 +148,20 @@ export default function HeroSliders({ images = [], interval = 5000 }: HeroSlider
           transition: isTransitioning ? 'transform 0.5s ease-in-out' : 'none',
         }}
       >
-        {slides.map((src, idx) => (
-          <div key={idx} className="flex-shrink-0 w-full h-full">
-            <Image
-              src={src}
-              alt={`Hero Banner ${idx}`}
-              width={1920}
-              height={640}
-              className="h-full w-full object-contain"
-              priority={idx <= 1}
-            />
+        {slides.map((slide, idx) => (
+          <div key={idx} className="relative flex-shrink-0 w-full h-full">
+            <SlideContent slide={slide} priority={idx <= 1} />
           </div>
         ))}
       </div>
 
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3">
-        {sortedImages.map((_, idx) => {
-          // Calculate active indicator accounting for cloned slides
-          const isActive = 
-            currentIndex === idx + 1 || 
-            (currentIndex === 0 && idx === totalSlides - 1) || 
+        {sortedSlidesData.map((_, idx) => {
+          const isActive =
+            currentIndex === idx + 1 ||
+            (currentIndex === 0 && idx === totalSlides - 1) ||
             (currentIndex === totalSlides + 1 && idx === 0)
-            
+          
           return (
             <button
               key={idx}

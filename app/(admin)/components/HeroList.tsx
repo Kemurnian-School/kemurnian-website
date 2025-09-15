@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Image from 'next/image'
-import { reorderImages, uploadImage, deleteImage } from '@/app/(admin)/admin/(pages)/hero/actions'
+import { reorderHeroBanners, deleteHeroBanner } from '@/app/(admin)/admin/(pages)/hero/create/actions'
 
 interface Hero {
   id: number
@@ -29,11 +29,6 @@ export default function HeroList({ initialImages }: { initialImages: Hero[] }) {
 
   return (
     <div>
-      <form action={uploadImage} className="mb-6 flex space-x-4">
-        <input type="file" name="file" required className="border p-2"/>
-        <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">Upload Image</button>
-      </form>
-
       <div className="space-y-4">
         {images.map((img, idx) => (
           <div 
@@ -46,7 +41,7 @@ export default function HeroList({ initialImages }: { initialImages: Hero[] }) {
           >
             <Image src={img.image_urls} width={150} height={80} alt={`Hero ${img.id}`} />
             <p className="flex-1">Order: {idx+1}</p>
-            <form action={deleteImage}>
+            <form action={deleteHeroBanner}>
               <input type="hidden" name="id" value={img.id} />
               <button type="submit" className="px-3 py-1 bg-red-600 text-white rounded">
                 Delete
@@ -56,7 +51,7 @@ export default function HeroList({ initialImages }: { initialImages: Hero[] }) {
         ))}
       </div>
 
-      <form action={reorderImages} className="mt-6">
+      <form action={reorderHeroBanners} className="mt-6">
         <input type="hidden" name="order" value={JSON.stringify(images.map(img => img.id))} />
         <button type="submit" className="px-4 py-2 bg-green-600 text-white rounded">
           Save Order
