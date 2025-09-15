@@ -5,7 +5,6 @@ import NewsPreview from "./components/NewsPreview"
 
 import ButtonPrimary from "./components/ButtonPrimary"
 import SectionHeader from "./components/SectionHeader"
-import Footer from "./components/Footer"
 import { createClient } from "@/utils/supabase/server"
 import Image from "next/image"
 
@@ -132,8 +131,6 @@ export default async function Home() {
           />
         </section>
       </div>
-
-      <Footer />
     </>
   )
 }

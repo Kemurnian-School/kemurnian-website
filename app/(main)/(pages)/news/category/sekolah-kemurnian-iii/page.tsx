@@ -3,7 +3,9 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import NewsPreview from '@/app/(main)/components/NewsPreview'
 
-export default function NewsPage() {
+const filterValues = ["TK Kemurnian III", "SD Kemurnian III"]
+
+export default function SekolahKemurnianNews() {
     const [news, setNews] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [loadingMore, setLoadingMore] = useState(false)
@@ -22,6 +24,7 @@ export default function NewsPage() {
             const { data: newsData, error: newsError } = await supabase
                 .from('news')
                 .select('*')
+                .in('from', filterValues)
                 .order('date', { ascending: false })
                 .range(currentOffset, currentOffset + ITEMS_PER_PAGE - 1)
 
@@ -90,6 +93,7 @@ export default function NewsPage() {
                     </button>
                 </div>
             )}
+            {!hasMore && news.length > 0 && <div className="text-center mt-8 text-gray-600">No more news to load</div>}
         </div>
     )
 }

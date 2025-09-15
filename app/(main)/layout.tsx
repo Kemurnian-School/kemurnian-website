@@ -1,5 +1,6 @@
 import "../globals.css";
 import { Merriweather, Raleway } from "next/font/google";
+import Footer from "./components/Footer";
 
 const merriweather = Merriweather({
   subsets: ["latin"],
@@ -25,6 +26,7 @@ export default function RootLayout({
     <div className={`${raleway.variable} ${merriweather.variable} antialiased`}>
       <Navbar />    
       {children}
+      <Footer />
     </div>
   );
 }

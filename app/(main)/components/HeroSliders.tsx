@@ -161,8 +161,8 @@ export default function HeroSliders({ images = [], interval = 5000 }: HeroSlider
               onClick={() => goToSlide(idx)}
               className={`w-4 h-4 rounded-full border-4 transition-all duration-300 ${
                 isActive 
-                  ? 'border-red-500 bg-transparent' 
-                  : 'border-white bg-transparent hover:border-red-500'
+                  ? 'border-btn-primary bg-transparent' 
+                  : 'border-white bg-transparent hover:border-btn-primary'
               }`}
               aria-label={`Go to slide ${idx + 1}`}
             />
