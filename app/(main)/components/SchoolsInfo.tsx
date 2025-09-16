@@ -32,7 +32,7 @@ export default function SchoolsSection() {
     <main className="mt-20">
       <SectionHeader title="LOKASI SEKOLAH" />
       <div className="flex justify-center items-center">
-        <section className="mb-34 mx-5 mt-6 flex flex-row gap-8">
+        <section className="mb-34 mx-5 mt-6 flex flex-col md:flex-row gap-12 md:gap-8">
           {schools.map((school, idx) => (
             <div
               key={idx}
@@ -43,24 +43,37 @@ export default function SchoolsSection() {
                 alt={school.name}
                 width={288}
                 height={180}
-                className="w-72 object-contain"
+                className="
+                  w-48 md:w-60 lg:w-72
+                  object-contain
+                "
               />
-              <h2 className="tracking-tight font-black mt-8 mb-4 text-lg font-raleway">
+              <h2 className="
+                tracking-tight font-black mt-2 md:mt-8 mb-4
+                text-base md:text-lg
+                font-raleway
+              ">
                 {school.name}
               </h2>
-              <p className="max-w-72 mb-6 font-merriweather font-[100] text-sm leading-loose tracking-wider">
+              <p className="
+                max-w-64 md:max-w-60 lg:max-w-72
+                mb-6 font-merriweather font-[100]
+                text-xs md:text-sm
+                leading-loose tracking-wider
+              ">
                 {school.address}
               </p>
               <iframe
                 src={school.map}
                 title={`${school.name} location`}
-                width="200"
-                height="200"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                className={`iframe${idx + 1}`}
+                className={`
+                  w-40 h-40 md:w-48 md:h-48 lg:w-52 lg:h-52
+                  iframe${idx + 1}
+                `}
               />
             </div>
           ))}

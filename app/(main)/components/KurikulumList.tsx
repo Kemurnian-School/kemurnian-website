@@ -15,7 +15,7 @@ interface KurikulumListProps {
 }
 
 export default function KurikulumList({ kurikulum }: KurikulumListProps) {
-  const paragraphClasses = 'font-merriweather font-[100] leading-loose tracking-wider text-center list-disc list-inside'
+  const paragraphClasses = 'font-merriweather font-[100] leading-loose tracking-wider text-center list-disc list-inside text-sm md:text-base'
 
   return (
     <section className="flex justify-center">
@@ -24,7 +24,11 @@ export default function KurikulumList({ kurikulum }: KurikulumListProps) {
           {kurikulum.map(item => (
             <div
               key={item.id}
-              className="flex justify-center items-center flex-col text-center max-w-lg flex-shrink-0 p-4"
+              className="
+                flex justify-center items-center flex-col text-center
+                w-full max-w-sm md:max-w-lg
+                flex-shrink-0 p-4
+              "
             >
               <div className="flex justify-center mb-4">
                 <Image
@@ -35,7 +39,10 @@ export default function KurikulumList({ kurikulum }: KurikulumListProps) {
                   className="w-12"
                 />
               </div>
-              <h2 className="font-bold mb-2 text-xl">{item.title}</h2>
+              <h2 className="
+                font-bold mb-0 md:mb-2
+                text-lg md:text-xl
+              ">{item.title}</h2>
               <p className={paragraphClasses}>{getSnippet(item.body)}</p>
 
               <ButtonPrimary href={`/kurikulum/${item.id}`} text="READ ON" />

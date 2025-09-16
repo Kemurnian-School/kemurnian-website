@@ -12,7 +12,7 @@ export function stripHtml(html: string): string {
  * @param html HTML string
  * @param wordCount Number of words to keep (default 25)
  */
-export function getSnippet(html: string, wordCount: number = 25): string {
+export function getSnippet(html: string, wordCount: number = 16): string {
   const plainText = stripHtml(html);
   const words = plainText.split(/\s+/);
   let snippet = words.slice(0, wordCount).join(' ');
