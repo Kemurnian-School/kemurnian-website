@@ -19,18 +19,18 @@ export default function NewsList({ initialNews }: { initialNews: News[] }) {
   const [news, setNews] = useState<News[]>(initialNews)
 
 
-  async function handleDelete(id: number) {
-    if (!confirm('Are you sure you want to delete this news?')) return;
+  // async function handleDelete(id: number) {
+  //   if (!confirm('Are you sure you want to delete this news?')) return;
 
-    try {
-      await deleteNews(id.toString());
+  //   try {
+  //     await deleteNews(id.toString());
 
-      setNews((prev) => prev.filter((n) => n.id !== id));
-    } catch (error) {
-      console.error('Failed to delete news:', error);
-      alert('Failed to delete the news. Please try again.');
-    }
-  }
+  //     setNews((prev) => prev.filter((n) => n.id !== id));
+  //   } catch (error) {
+  //     console.error('Failed to delete news:', error);
+  //     alert('Failed to delete the news. Please try again.');
+  //   }
+  // }
 
 
   // Helper function to strip HTML tags from body
