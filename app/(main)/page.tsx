@@ -75,7 +75,7 @@ export default async function Home() {
 
       <section className="flex flex-col justify-center items-center px-4">
         <SectionHeader title="TENTANG KAMI"/>
-        <p className="mx-4 max-w-4xl mt-6 font-merriweather font-[100] leading-loose tracking-wider text-xs md:text-md text-justify md:text-center">
+        <p className="mx-4 max-w-4xl mt-6 font-merriweather font-[100] leading-loose tracking-wider text-xs md:text-lg text-justify md:text-center">
           Sekolah Kemurnian pertama didirikan dengan nama TK Kemurnian, pada
           tanggal 2 Januari 1978 di Jalan Kemurnian V No. 209, Jakarta Barat.
           Sampai saat ini, Sekolah Kemurnian telah berkembang sehingga
@@ -84,7 +84,7 @@ export default async function Home() {
           berekspansi hingga mendirikan 2 unit cabang sekolah, yaitu Sekolah
           Kemurnian II di Greenville dan Sekolah Kemurnian III di Citra.
         </p>
-        <ButtonPrimary text="READ ON" />
+        <ButtonPrimary text="READ ON" href="/about" />
       </section>
 
       <div className="bg-[#e6e6e6]">

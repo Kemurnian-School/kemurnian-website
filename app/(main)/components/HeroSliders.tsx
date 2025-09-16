@@ -110,8 +110,10 @@ export default function HeroSliders({ images = [], interval = 5000 }: HeroSlider
           {slide.href_text && slide.button_text && (
             <Link href={slide.href_text}>
               <button 
-                className="text-sm px-4 py-4 bg-transparent text-white border-4 border-btn-primary hover:bg-btn-primary transition-all duration-200 font-bold"
-                style={{textShadow: '2px 2px 4px rgba(0,0,0,0.5), 0 0 8px rgba(0,0,0,0.3)'}}
+                className="text-md tracking-widest px-5 py-4 bg-transparent text-white border-3 border-btn-primary hover:bg-btn-primary transition-all duration-200 font-bold"
+                style={{
+                  textShadow: '2px 2px 4px rgba(0,0,0,0.5), 0 0 8px rgba(0,0,0,0.3)',
+                  boxShadow: '2px 2px 8px rgba(0,0,0,0.5)'}}
               >
                 {slide.button_text}
               </button>
@@ -179,7 +181,7 @@ export default function HeroSliders({ images = [], interval = 5000 }: HeroSlider
             <button
               key={idx}
               onClick={() => goToSlide(idx)}
-              className={`w-4 h-4 rounded-full border-4 transition-all duration-300 ${
+              className={`w-4 h-4 rounded-full border-4 transition-all duration-300 shadow-xl ${
                 isActive 
                   ? 'border-btn-primary bg-transparent' 
                   : 'border-white bg-transparent hover:border-btn-primary'
