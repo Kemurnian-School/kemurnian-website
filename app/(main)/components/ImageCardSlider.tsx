@@ -1,0 +1,155 @@
+"use client";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+
+interface ImageCardSliderProps {
+  images: string[];
+  alt: string;
+}
+
+export default function ImageCardSlider({ images, alt }: ImageCardSliderProps) {
+  const [currentIndex, setCurrent] = useState(1);
+  const [isTransitioning, setIsTransitioning] = useState(true);
+
+  const totalImages = images.length;
+
+  // Create slides array with cloned first and last images for infinite loop
+  const slides =
+    totalImages > 1 ? [images[totalImages - 1], ...images, images[0]] : images;
+
+  const nextImage = () => {
+    if (totalImages <= 1) return;
+    setCurrent((prev) => prev + 1);
+    setIsTransitioning(true);
+  };
+
+  const prevImage = () => {
+    if (totalImages <= 1) return;
+    setCurrent((prev) => prev - 1);
+    setIsTransitioning(true);
+  };
+
+  // Handle infinite loop transitions
+  useEffect(() => {
+    if (totalImages <= 1) return;
+
+    if (currentIndex === totalImages + 1) {
+      const timer = setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrent(1);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+
+    if (currentIndex === 0) {
+      const timer = setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrent(totalImages);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [currentIndex, totalImages]);
+
+  if (images.length === 0) return null;
+
+  if (totalImages === 1) {
+    return (
+      <div className="relative w-full max-w-3xl mx-auto mb-8">
+        <div className="flex justify-center mx-14">
+          <Image
+            src={images[0]}
+            alt={alt}
+            width={400}
+            height={300}
+            className="rounded object-cover"
+          />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative w-full max-w-3xl mx-auto mb-8">
+      <div className="overflow-hidden mx-14">
+        <div
+          className="flex"
+          style={{
+            transform: `translateX(-${currentIndex * 100}%)`,
+            transition: isTransitioning ? "transform 0.5s ease-in-out" : "none",
+          }}
+        >
+          {slides.map((image, idx) => (
+            <div key={idx} className="flex-shrink-0 w-full flex justify-center">
+              <Image
+                src={image}
+                alt={alt}
+                width={400}
+                height={300}
+                className="rounded object-cover"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {totalImages > 1 && (
+        <>
+          <button
+            onClick={prevImage}
+            className="absolute left-2 top-1/2 -translate-y-1/2 bg-transparent hover:opacity-70 transition-opacity duration-200 z-10"
+            aria-label="Previous image"
+          >
+            <Image
+              src="/left.svg"
+              alt="button left"
+              width={30}
+              height={30}
+              className="w-6 md:w-8"
+            />
+          </button>
+          <button
+            onClick={nextImage}
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-transparent hover:opacity-70 transition-opacity duration-200 z-10"
+            aria-label="Next image"
+          >
+            <Image
+              src="/right.svg"
+              alt="button right"
+              width={30}
+              height={30}
+              className="w-6 md:w-8"
+            />
+          </button>
+        </>
+      )}
+
+      {/* Thumbnail dots indicator */}
+      {totalImages > 1 && (
+        <div className="flex justify-center mt-4 space-x-2">
+          {images.map((_, index) => {
+            const isActive =
+              currentIndex === index + 1 ||
+              (currentIndex === 0 && index === totalImages - 1) ||
+              (currentIndex === totalImages + 1 && index === 0);
+
+            return (
+              <button
+                key={index}
+                onClick={() => {
+                  setCurrent(index + 1);
+                  setIsTransitioning(true);
+                }}
+                className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                  isActive
+                    ? "bg-btn-primary scale-110"
+                    : "bg-gray-300 hover:bg-gray-400"
+                }`}
+                aria-label={`Go to image ${index + 1}`}
+              />
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}

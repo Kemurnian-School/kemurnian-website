@@ -12,6 +12,7 @@ const menuLinks = [
   { href: "/admin/kurikulum", label: "Kurikulum Section" },
   { href: "/admin/news", label: "News" },
   { href: "/admin/enrollment", label: "Enrollment" },
+  { href: "/admin/fasilitas", label: "Fasilitas" },
 ];
 
 export default function AdminSidebar() {
