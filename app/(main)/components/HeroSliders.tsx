@@ -1,12 +1,12 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, PointerEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
 interface HeroImage {
   id: number;
   order: number;
-  image_urls: string; // Desktop image
+  image_urls: string;
   tablet_image_urls?: string | null;
   mobile_image_urls?: string | null;
   header_text?: string | null;
@@ -25,7 +25,13 @@ export default function HeroSliders({
 }: HeroSlidersProps) {
   const [currentIndex, setCurrentIndex] = useState(1);
   const [isTransitioning, setIsTransitioning] = useState(true);
+
   const sliderRef = useRef<HTMLDivElement>(null);
+  const isDraggingRef = useRef(false);
+  const startPosRef = useRef(0);
+  const dragOffsetRef = useRef(0);
+  const animationFrameRef = useRef<number | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const sortedSlidesData = images.sort((a, b) => a.order - b.order);
   const initialSlide = sortedSlidesData.find((s) => s.order === 1);
@@ -40,9 +46,21 @@ export default function HeroSliders({
         ]
       : sortedSlidesData;
 
+  const stopAutoPlay = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+  };
+
+  const startAutoPlay = () => {
+    if (totalSlides <= 1) return;
+    stopAutoPlay();
+    intervalRef.current = setInterval(nextSlide, interval);
+  };
+
   const goToSlide = (index: number) => {
     setCurrentIndex(index + 1);
     setIsTransitioning(true);
+    stopAutoPlay();
+    startAutoPlay();
   };
 
   const nextSlide = () => {
@@ -51,8 +69,16 @@ export default function HeroSliders({
     setIsTransitioning(true);
   };
 
+  const prevSlide = () => {
+    if (totalSlides <= 1) return;
+    setCurrentIndex((prev) => prev - 1);
+    setIsTransitioning(true);
+  };
+
+  // Infinite loop adjustment
   useEffect(() => {
     if (totalSlides <= 1) return;
+
     if (currentIndex === totalSlides + 1) {
       const timer = setTimeout(() => {
         setIsTransitioning(false);
@@ -60,6 +86,7 @@ export default function HeroSliders({
       }, 500);
       return () => clearTimeout(timer);
     }
+
     if (currentIndex === 0) {
       const timer = setTimeout(() => {
         setIsTransitioning(false);
@@ -69,21 +96,79 @@ export default function HeroSliders({
     }
   }, [currentIndex, totalSlides]);
 
+  // Auto-play & visibility
   useEffect(() => {
-    if (totalSlides <= 1) return;
-    const timer = setInterval(nextSlide, interval);
+    startAutoPlay();
     const handleVisibilityChange = () => {
-      if (document.hidden) {
-        clearInterval(timer);
-      }
+      if (document.hidden) stopAutoPlay();
+      else startAutoPlay();
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
-      clearInterval(timer);
+      stopAutoPlay();
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [interval, totalSlides]);
 
+  // Drag functions (tablet/mobile only)
+  const updateTransform = () => {
+    if (!sliderRef.current) return;
+    const containerWidth = sliderRef.current.offsetWidth || 1;
+    const offsetPercent = (dragOffsetRef.current / containerWidth) * 100;
+    sliderRef.current.style.transform = `translateX(${-currentIndex * 100 + offsetPercent}%)`;
+  };
+
+  const handlePointerDown = (e: PointerEvent<HTMLDivElement>) => {
+    if (totalSlides <= 1) return;
+    if (window.innerWidth > 1024) return; // disable on desktop
+
+    isDraggingRef.current = true;
+    startPosRef.current = e.clientX;
+    dragOffsetRef.current = 0;
+    setIsTransitioning(false);
+    stopAutoPlay();
+    if (sliderRef.current) sliderRef.current.style.cursor = "grabbing";
+  };
+
+  const handlePointerMove = (e: PointerEvent<HTMLDivElement>) => {
+    if (!isDraggingRef.current || totalSlides <= 1) return;
+    if (window.innerWidth > 1024) return;
+
+    dragOffsetRef.current = e.clientX - startPosRef.current;
+    e.preventDefault();
+
+    if (!animationFrameRef.current) {
+      animationFrameRef.current = requestAnimationFrame(() => {
+        updateTransform();
+        animationFrameRef.current = null;
+      });
+    }
+  };
+
+  const handlePointerUp = () => {
+    if (!isDraggingRef.current || totalSlides <= 1) return;
+    if (window.innerWidth > 1024) return;
+
+    isDraggingRef.current = false;
+    setIsTransitioning(true);
+    if (sliderRef.current) sliderRef.current.style.cursor = "grab";
+
+    const swipeThreshold = 50;
+    if (dragOffsetRef.current < -swipeThreshold) nextSlide();
+    else if (dragOffsetRef.current > swipeThreshold) prevSlide();
+
+    dragOffsetRef.current = 0;
+    updateTransform();
+
+    stopAutoPlay();
+    startAutoPlay();
+  };
+
+  const handlePointerLeave = () => {
+    if (isDraggingRef.current) handlePointerUp();
+  };
+
+  // Slide content
   const SlideContent = ({
     slide,
     priority = false,
@@ -108,9 +193,9 @@ export default function HeroSliders({
           height={680}
           className="h-full w-full object-contain"
           priority={priority}
+          draggable="false"
         />
       </picture>
-
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4 font-raleway">
         <div className="max-w-sm md:max-w-3xl lg:max-w-4xl">
           {slide.header_text && (
@@ -124,7 +209,6 @@ export default function HeroSliders({
               {slide.header_text}
             </h1>
           )}
-
           {slide.href_text && slide.button_text && (
             <Link href={slide.href_text}>
               <button
@@ -144,9 +228,9 @@ export default function HeroSliders({
     </>
   );
 
-  if (totalSlides === 0) {
+  if (totalSlides === 0)
     return (
-      <div className="relative w-full h-[540px] flex items-center justify-center bg-[#641609] text-white">
+      <div className="relative w-full h-[400px] md:h-[540px] flex items-center justify-center bg-[#641609] text-white">
         <div className="text-center">
           <div className="w-16 h-16 mx-auto mb-4 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
             <svg
@@ -159,7 +243,7 @@ export default function HeroSliders({
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2z"
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 002 2z"
               />
             </svg>
           </div>
@@ -170,25 +254,31 @@ export default function HeroSliders({
         </div>
       </div>
     );
-  }
 
-  if (totalSlides === 1) {
+  if (totalSlides === 1)
     return (
-      <div className="relative w-full h-[540px] bg-[#641609]">
+      <div className="relative w-full h-[400px] md:h-[540px] bg-[#641609]">
         <SlideContent slide={sortedSlidesData[0]} priority={true} />
       </div>
     );
-  }
 
   return (
-    <div className="relative w-full h-[540px] overflow-hidden bg-[#641609]">
+    <div
+      className="relative w-full h-[600px] md:h-[540px] overflow-hidden bg-[#641609]"
+      style={{ touchAction: "pan-y" }}
+    >
       <div
         ref={sliderRef}
         className="flex w-full h-full"
         style={{
-          transform: `translateX(-${currentIndex * 100}%)`,
+          transform: `translateX(${-currentIndex * 100}%)`,
           transition: isTransitioning ? "transform 0.5s ease-in-out" : "none",
+          cursor: "grab",
         }}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerLeave}
       >
         {slides.map((slide, idx) => (
           <div key={idx} className="relative flex-shrink-0 w-full h-full">
@@ -200,13 +290,13 @@ export default function HeroSliders({
         ))}
       </div>
 
+      {/* Dot indicators */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3">
         {sortedSlidesData.map((_, idx) => {
           const isActive =
             currentIndex === idx + 1 ||
             (currentIndex === 0 && idx === totalSlides - 1) ||
             (currentIndex === totalSlides + 1 && idx === 0);
-
           return (
             <button
               key={idx}
