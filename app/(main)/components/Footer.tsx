@@ -17,7 +17,7 @@ export default function Footer() {
           alt="Cambridge Logo"
           width={200}
           height={0}
-          className="object-contain"
+          className="object-contain w-auto h-auto"
         />
         <div className="flex flex-col">
           <h3 className="flex font-raleway font-bold">FOLLOW US</h3>

@@ -1,72 +1,73 @@
-import HeroSliders from "./components/HeroSliders"
-import SchoolsInfo from "./components/SchoolsInfo"
-import KurikulumList from "./components/KurikulumList"
-import NewsPreview from "./components/NewsPreview"
+import HeroSliders from "./components/HeroSliders";
+import SchoolsInfo from "./components/SchoolsInfo";
+import KurikulumList from "./components/KurikulumList";
+import NewsPreview from "./components/NewsPreview";
 
-import ButtonPrimary from "./components/ButtonPrimary"
-import SectionHeader from "./components/SectionHeader"
-import { createClient } from "@/utils/supabase/server"
-import Image from "next/image"
+import ButtonPrimary from "./components/ButtonPrimary";
+import SectionHeader from "./components/SectionHeader";
+import { createClient } from "@/utils/supabase/server";
+import Image from "next/image";
 
 export default async function Home() {
-  const supabase = await createClient()
+  const supabase = await createClient();
 
   // Fetch hero sliders
   const { data: heroImages, error: heroImagesError } = await supabase
     .from("hero_sliders")
     .select("*")
-    .order("order", { ascending: true })
-  const images = heroImagesError ? [] : heroImages || []
+    .order("order", { ascending: true });
+  const images = heroImagesError ? [] : heroImages || [];
 
   // Fetch kurikulum
   const { data: kurikulums, error: kurikulumsError } = await supabase
     .from("kurikulum")
     .select("*")
-    .order("order", { ascending: true })
-  const kurikulumList = kurikulumsError ? [] : kurikulums || []
+    .order("order", { ascending: true });
+  const kurikulumList = kurikulumsError ? [] : kurikulums || [];
 
   // Fetch latest news with 2-year logic
-  let news = []
-  
+  let news = [];
+
   const { data: latestNews, error: latestNewsError } = await supabase
     .from("news")
     .select("date")
     .order("date", { ascending: false })
-    .limit(1)
-  
+    .limit(1);
+
   if (!latestNewsError && latestNews && latestNews.length > 0) {
     // Calculate the date 2 years before the latest news date
-    const latestDate = new Date(latestNews[0].date)
-    const twoYearsBefore = new Date(latestDate)
-    twoYearsBefore.setFullYear(latestDate.getFullYear() - 2)
-    
-    const twoYearsBeforeFormatted = twoYearsBefore.toISOString().split('T')[0]
-    
+    const latestDate = new Date(latestNews[0].date);
+    const twoYearsBefore = new Date(latestDate);
+    twoYearsBefore.setFullYear(latestDate.getFullYear() - 2);
+
+    const twoYearsBeforeFormatted = twoYearsBefore.toISOString().split("T")[0];
+
     const { data: newsData, error: newsError } = await supabase
       .from("news")
       .select("*")
       .gte("date", twoYearsBeforeFormatted)
       .order("date", { ascending: false })
-      .limit(9)
-    
-    news = newsError ? [] : newsData || []
+      .limit(9);
+
+    news = newsError ? [] : newsData || [];
   } else {
     const { data: newsData, error: newsError } = await supabase
       .from("news")
       .select("*")
       .order("date", { ascending: false })
-      .limit(9)
-    news = newsError ? [] : newsData || []
+      .limit(9);
+    news = newsError ? [] : newsData || [];
   }
 
   // Fetch enrollment (always 1 row)
   const { data: enrollmentData, error: enrollmentError } = await supabase
     .from("enrollment")
     .select("*")
-    .single()
-  const enrollment = enrollmentError ? null : enrollmentData
+    .single();
+  const enrollment = enrollmentError ? null : enrollmentData;
 
-  const socialMediaStyles: string = "bg-[#818FAB] px-4 py-4 rounded-sm text-white font-raleway font-bold"
+  const socialMediaStyles: string =
+    "bg-[#818FAB] px-4 py-4 rounded-sm text-white font-raleway font-bold";
 
   return (
     <>
@@ -74,7 +75,7 @@ export default async function Home() {
       <SchoolsInfo />
 
       <section className="flex flex-col justify-center items-center px-4">
-        <SectionHeader title="TENTANG KAMI"/>
+        <SectionHeader title="TENTANG KAMI" />
         <p className="mx-4 max-w-4xl mt-6 font-merriweather font-[100] leading-loose tracking-wider text-xs md:text-lg text-justify md:text-center">
           Sekolah Kemurnian pertama didirikan dengan nama TK Kemurnian, pada
           tanggal 2 Januari 1978 di Jalan Kemurnian V No. 209, Jakarta Barat.
@@ -111,26 +112,43 @@ export default async function Home() {
             alt="Enrollment"
             width={460}
             height={0}
-            className="mx-auto mt-6 mb-10 rounded shadow-lg"
+            className="mx-auto mt-6 mb-10 rounded shadow-lg w-auto h-auto"
           />
-          <a href="/enrollment" className="bg-[#818FAB] py-3 px-5 rounded-lg font-bold text-white">Pelajari Selengkapnya</a>
+          <a
+            href="/enrollment"
+            className="bg-[#818FAB] py-3 px-5 rounded-lg font-bold text-white"
+          >
+            Pelajari Selengkapnya
+          </a>
         </section>
 
         <section className="flex flex-col justify-center items-center gap-4 py-16">
-          <h2 className="font-raleway font-black tracking-widest text-md">COME GET CLOSER WITH US</h2>
+          <h2 className="font-raleway font-black tracking-widest text-md">
+            COME GET CLOSER WITH US
+          </h2>
           <div className="flex gap-2">
-            <a href="https://linktr.ee/sekolahkemurnian"
-            className={socialMediaStyles}>Whatsapp</a>
-            <a href="https://www.instagram.com/sekolah.kemurnian/"
-            className={socialMediaStyles}>Instagram</a>
-            <a href="https://www.youtube.com/@SekolahKemurnian"
-            className={socialMediaStyles}>Youtube</a>
+            <a
+              href="https://linktr.ee/sekolahkemurnian"
+              className={socialMediaStyles}
+            >
+              Whatsapp
+            </a>
+            <a
+              href="https://www.instagram.com/sekolah.kemurnian/"
+              className={socialMediaStyles}
+            >
+              Instagram
+            </a>
+            <a
+              href="https://www.youtube.com/@SekolahKemurnian"
+              className={socialMediaStyles}
+            >
+              Youtube
+            </a>
           </div>
-          <hr 
-            className="clear-both mx-auto my-2 h-0 w-[90px] border-0 border-t-[3px] border-solid border-[#8b0000]"
-          />
+          <hr className="clear-both mx-auto my-2 h-0 w-[90px] border-0 border-t-[3px] border-solid border-[#8b0000]" />
         </section>
       </div>
     </>
-  )
+  );
 }

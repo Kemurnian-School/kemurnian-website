@@ -1,14 +1,16 @@
-'use client'
+"use client";
 
-import Image from 'next/image'
-import Link from 'next/link'
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Navbar() {
-  const mainHeight = 'h-16'
-  const hamburgerLine = 'w-5 h-[3px] bg-white'
+  const mainHeight = "h-16";
+  const hamburgerLine = "w-5 h-[3px] bg-white";
 
   return (
-    <nav className={`bg-gray-primary sticky top-0 z-50 m-0 ${mainHeight} w-full p-0`}>
+    <nav
+      className={`bg-gray-primary sticky top-0 z-50 m-0 ${mainHeight} w-full p-0`}
+    >
       <div className="flex h-full flex-row items-center justify-between">
         {/* Hamburger Menu Button (Left) */}
         <button
@@ -26,9 +28,9 @@ export default function Navbar() {
             <Image
               src="/nav_logo.webp"
               alt="Logo"
-              width={260}
-              height={260}
-              className="object-contain"
+              width={245}
+              height={245}
+              className="object-contain w-auto h-auto"
               priority
             />
           </Link>
@@ -38,5 +40,5 @@ export default function Navbar() {
         <div className="w-10"></div>
       </div>
     </nav>
-  )
+  );
 }
