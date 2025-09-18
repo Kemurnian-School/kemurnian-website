@@ -1,5 +1,5 @@
 "use client";
-import { useRef, PointerEvent } from "react";
+import { useRef, useCallback, PointerEvent } from "react";
 
 interface UseDragProps {
   sliderRef: React.RefObject<HTMLDivElement | null>;
@@ -22,73 +22,131 @@ export function useDrag({
   startAutoPlay,
   setIsTransitioning,
 }: UseDragProps) {
-  const isDraggingRef = useRef(false);
-  const startPosRef = useRef(0);
-  const dragOffsetRef = useRef(0);
-  const animationFrameRef = useRef<number | null>(null);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const startTime = useRef(0);
+  const currentX = useRef(0);
+  const dragDistance = useRef(0);
+  const containerWidth = useRef(0);
+  const autoPlayResetTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  const updateTransform = () => {
-    if (!sliderRef.current) return;
-    const containerWidth = sliderRef.current.offsetWidth || 1;
-    const offsetPercent = (dragOffsetRef.current / containerWidth) * 100;
-    sliderRef.current.style.transform = `translateX(${-currentIndex * 100 + offsetPercent}%)`;
-  };
-
-  const handlePointerDown = (e: PointerEvent<HTMLDivElement>) => {
-    if (totalSlides <= 1 || window.innerWidth > 1024) return;
-    isDraggingRef.current = true;
-    startPosRef.current = e.clientX;
-    dragOffsetRef.current = 0;
-    setIsTransitioning(false);
+  const resetAutoPlayTimer = useCallback(() => {
+    if (autoPlayResetTimeout.current) {
+      clearTimeout(autoPlayResetTimeout.current);
+    }
     stopAutoPlay();
-    if (sliderRef.current) sliderRef.current.style.cursor = "grabbing";
-  };
+    autoPlayResetTimeout.current = setTimeout(() => {
+      startAutoPlay();
+    }, 3000);
+  }, [stopAutoPlay, startAutoPlay]);
 
-  const handlePointerMove = (e: PointerEvent<HTMLDivElement>) => {
-    if (!isDraggingRef.current || totalSlides <= 1 || window.innerWidth > 1024)
-      return;
-    e.preventDefault();
-    dragOffsetRef.current = e.clientX - startPosRef.current;
-    if (!animationFrameRef.current) {
-      animationFrameRef.current = requestAnimationFrame(() => {
-        updateTransform();
-        animationFrameRef.current = null;
-      });
-    }
-  };
+  const updateSliderPosition = useCallback(() => {
+    if (!sliderRef.current || !isDragging.current) return;
 
-  const handlePointerUp = () => {
-    if (!isDraggingRef.current || totalSlides <= 1 || window.innerWidth > 1024)
-      return;
-    isDraggingRef.current = false;
-    setIsTransitioning(true);
-    if (sliderRef.current) sliderRef.current.style.cursor = "grab";
+    const dragPercent = (dragDistance.current / containerWidth.current) * 100;
+    const baseTranslate = -currentIndex * 100;
+    const newTranslate = baseTranslate + dragPercent;
 
-    const swipeThreshold = 50;
-    if (dragOffsetRef.current < -swipeThreshold) {
-      nextSlide();
-    } else if (dragOffsetRef.current > swipeThreshold) {
-      prevSlide();
-    } else {
-      // Snap back if swipe is not far enough
-      const currentTransform = `translateX(${-currentIndex * 100}%)`;
-      if (sliderRef.current)
-        sliderRef.current.style.transform = currentTransform;
-    }
+    sliderRef.current.style.transform = `translateX(${newTranslate}%)`;
+  }, [currentIndex]);
 
-    dragOffsetRef.current = 0;
-    startAutoPlay();
-  };
+  const handlePointerDown = useCallback(
+    (e: PointerEvent<HTMLDivElement>) => {
+      if (totalSlides <= 1 || window.innerWidth > 1024) return;
+      e.preventDefault();
 
-  const handlePointerLeave = () => {
-    if (isDraggingRef.current) handlePointerUp();
-  };
+      isDragging.current = true;
+      startX.current = e.clientX;
+      startTime.current = Date.now();
+      currentX.current = e.clientX;
+      dragDistance.current = 0;
 
-  // Returns props with the correct 'onEvent' names
+      if (sliderRef.current) {
+        containerWidth.current = sliderRef.current.offsetWidth;
+        sliderRef.current.style.cursor = "grabbing";
+        sliderRef.current.style.transition = "none";
+      }
+
+      setIsTransitioning(false);
+      resetAutoPlayTimer();
+      e.currentTarget.setPointerCapture(e.pointerId);
+    },
+    [totalSlides, setIsTransitioning, resetAutoPlayTimer],
+  );
+
+  const handlePointerMove = useCallback(
+    (e: PointerEvent<HTMLDivElement>) => {
+      if (!isDragging.current || totalSlides <= 1 || window.innerWidth > 1024)
+        return;
+      e.preventDefault();
+
+      currentX.current = e.clientX;
+      dragDistance.current = currentX.current - startX.current;
+
+      updateSliderPosition();
+    },
+    [totalSlides, updateSliderPosition],
+  );
+
+  const handlePointerUp = useCallback(
+    (e: PointerEvent<HTMLDivElement>) => {
+      if (!isDragging.current || totalSlides <= 1 || window.innerWidth > 1024)
+        return;
+
+      isDragging.current = false;
+
+      if (sliderRef.current) {
+        sliderRef.current.style.cursor = "grab";
+        sliderRef.current.style.transition =
+          "transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+      }
+
+      setIsTransitioning(true);
+
+      const swipeThreshold = containerWidth.current * 0.25;
+      const swipeVelocityThreshold = 0.5;
+
+      const timeDiff = Date.now() - startTime.current;
+      const velocity = Math.abs(dragDistance.current) / Math.max(timeDiff, 1);
+
+      const shouldSwipe =
+        Math.abs(dragDistance.current) > swipeThreshold ||
+        velocity > swipeVelocityThreshold;
+
+      if (shouldSwipe) {
+        if (dragDistance.current < 0) {
+          nextSlide();
+        } else if (dragDistance.current > 0) {
+          prevSlide();
+        }
+      } else {
+        if (sliderRef.current) {
+          sliderRef.current.style.transform = `translateX(${-currentIndex * 100}%)`;
+        }
+      }
+
+      dragDistance.current = 0;
+      startX.current = 0;
+      currentX.current = 0;
+      startTime.current = 0;
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    },
+    [totalSlides, currentIndex, nextSlide, prevSlide, setIsTransitioning],
+  );
+
+  const handlePointerCancel = useCallback(
+    (e: PointerEvent<HTMLDivElement>) => {
+      if (isDragging.current) {
+        handlePointerUp(e);
+      }
+    },
+    [handlePointerUp],
+  );
+
   return {
     onPointerDown: handlePointerDown,
     onPointerMove: handlePointerMove,
     onPointerUp: handlePointerUp,
-    onPointerLeave: handlePointerLeave,
+    onPointerCancel: handlePointerCancel,
   };
 }
