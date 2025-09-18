@@ -1,10 +1,11 @@
 import schoolsData from "../schools.json";
 
 interface Props {
-  params: { sekolah: string; detail: string };
+  params: Promise<{ sekolah: string; detail: string }>;
 }
 
-export default function SchoolDetailPage({ params }: Props) {
+export default async function SchoolDetailPage(props: Props) {
+  const params = await props.params;
   const schoolData = schoolsData[params.sekolah as keyof typeof schoolsData];
   if (!schoolData) return <div>School not found</div>;
 

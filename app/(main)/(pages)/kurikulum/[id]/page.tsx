@@ -9,12 +9,13 @@ interface Kurikulum {
 }
 
 interface PageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
-export default async function KurikulumDetailPage({ params }: PageProps) {
+export default async function KurikulumDetailPage(props: PageProps) {
+  const params = await props.params;
   const supabase = await createClient()
-  
+
   const { data, error } = await supabase
     .from('kurikulum')
     .select('*')

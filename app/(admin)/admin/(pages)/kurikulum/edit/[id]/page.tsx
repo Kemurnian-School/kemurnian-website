@@ -4,10 +4,11 @@ import EditKurikulumForm from './EditKurikulumForm'
 import 'react-quill-new/dist/quill.snow.css'
 
 interface PageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
-export default async function EditKurikulumPage({ params }: PageProps) {
+export default async function EditKurikulumPage(props: PageProps) {
+  const params = await props.params;
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('kurikulum')

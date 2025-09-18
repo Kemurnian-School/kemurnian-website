@@ -2,10 +2,11 @@ import { createClient } from "@/utils/supabase/server";
 import EnrollmentEditForm from "./EnrollmentEditForm";
 
 interface PageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-export default async function EditEnrollmentPage({ params }: PageProps) {
+export default async function EditEnrollmentPage(props: PageProps) {
+  const params = await props.params;
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("enrollment")

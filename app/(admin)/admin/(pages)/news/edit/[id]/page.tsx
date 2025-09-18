@@ -2,10 +2,11 @@ import { createClient } from '@/utils/supabase/server'
 import EditNewsForm from './EditNewsForm'
 
 interface PageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
-export default async function EditNewsPage({ params }: PageProps) {
+export default async function EditNewsPage(props: PageProps) {
+  const params = await props.params;
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('news')

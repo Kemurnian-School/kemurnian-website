@@ -5,7 +5,7 @@ import ImageCardSlider from "@/app/(main)/components/ImageCardSlider";
 import NewsPreview from "@/app/(main)/components/NewsPreview";
 
 interface PageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 async function getRandomRecentNews(currentNewsId: string) {
@@ -58,7 +58,8 @@ async function getRandomRecentNews(currentNewsId: string) {
   return shuffled.slice(0, 3);
 }
 
-export default async function NewsDetailPage({ params }: PageProps) {
+export default async function NewsDetailPage(props: PageProps) {
+  const params = await props.params;
   const supabase = createClient();
   const { data, error } = await supabase
     .from("news")
