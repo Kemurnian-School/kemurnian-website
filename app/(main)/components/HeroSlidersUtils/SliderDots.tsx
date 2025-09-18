@@ -23,7 +23,7 @@ export default function SliderDots({
           <button
             key={idx}
             onClick={() => goToSlide(idx)}
-            className={`w-4 h-4 rounded-full border-4 transition-all duration-300 shadow-xl ${
+            className={`w-4 h-4 rounded-full border-4 transition-all duration-300 shadow-xl cursor-pointer ${
               isActive
                 ? "border-btn-primary bg-transparent"
                 : "border-white bg-transparent hover:border-btn-primary"

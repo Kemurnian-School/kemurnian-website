@@ -81,7 +81,6 @@ export default function HeroSliders({
         style={{
           transform: `translateX(${-currentIndex * 100}%)`,
           transition: isTransitioning ? "transform 0.5s ease-in-out" : "none",
-          cursor: "grab",
         }}
         {...dragHandlers}
       >
