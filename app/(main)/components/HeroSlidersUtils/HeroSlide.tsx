@@ -27,6 +27,7 @@ export default function HeroSlide({ slide, priority = false }: HeroSlideProps) {
           className="h-full w-full object-contain"
           priority={priority}
           draggable="false"
+          unoptimized
         />
       </picture>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4 font-raleway">
