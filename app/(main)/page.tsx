@@ -71,10 +71,21 @@ export default async function Home() {
 
   return (
     <>
-      <HeroSliders images={images} />
-      <SchoolsInfo />
+      {/* Hero Section */}
+      <div id="hero">
+        <HeroSliders images={images} />
+      </div>
 
-      <section className="flex flex-col justify-center items-center px-4">
+      {/* Schools Info Section */}
+      <div id="schools-info">
+        <SchoolsInfo />
+      </div>
+
+      {/* About Section */}
+      <section
+        id="about"
+        className="flex flex-col justify-center items-center px-4"
+      >
         <SectionHeader title="TENTANG KAMI" />
         <p className="mx-4 max-w-4xl mt-6 font-merriweather font-[100] leading-loose tracking-wider text-sm md:text-lg text-justify md:text-center">
           Sekolah Kemurnian pertama didirikan dengan nama TK Kemurnian, pada
@@ -89,18 +100,24 @@ export default async function Home() {
       </section>
 
       <div className="bg-[#e6e6e6]">
-        <section className="px-4 py-20 mt-12">
+        {/* Kurikulum Section */}
+        <section id="kurikulum" className="px-4 py-20 mt-12">
           <SectionHeader title="KURIKULUM" />
           <KurikulumList kurikulum={kurikulumList} />
         </section>
 
-        <section className="px-4 py-16">
+        {/* News Section */}
+        <section id="news" className="px-4 py-16">
           <SectionHeader title="NEWS AND EVENTS" />
           <NewsPreview news={news} />
           <ButtonPrimary text="MORE NEWS" href="/news" />
         </section>
 
-        <section className="py-38 bg-btn-primary flex flex-col justify-center items-center">
+        {/* Enrollment Section */}
+        <section
+          id="enrollment"
+          className="py-38 bg-btn-primary flex flex-col justify-center items-center"
+        >
           <SectionHeader
             title="PENERMAAN PESERTA DIDIK BARU"
             h2ClassName="text-white tracking-widest"
@@ -122,7 +139,10 @@ export default async function Home() {
           </a>
         </section>
 
-        <section className="flex flex-col justify-center items-center gap-4 py-16">
+        <section
+          id="contact"
+          className="flex flex-col justify-center items-center gap-4 py-16"
+        >
           <h2 className="font-raleway font-black tracking-widest text-md">
             COME GET CLOSER WITH US
           </h2>
