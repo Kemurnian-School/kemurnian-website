@@ -1,11 +1,55 @@
 import { createClient } from "@/utils/supabase/client";
-import Head from "next/head";
+import { Metadata } from "next";
 import QuillRenderer from "@/app/(main)/components/QuillRenderer";
 import ImageCardSlider from "@/app/(main)/components/ImageCardSlider";
 import NewsPreview from "@/app/(main)/components/NewsPreview";
 
 interface PageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from("news")
+    .select("title, date, body")
+    .eq("id", params.id)
+    .single();
+
+  if (error || !data) {
+    return {
+      title: "News Not Found",
+      description: "The requested news article could not be found.",
+    };
+  }
+
+  const bodyText = data.body?.replace(/<[^>]*>/g, "") || "";
+  const description =
+    bodyText.length > 160 ? bodyText.substring(0, 157) + "..." : bodyText;
+
+  const formattedDate = new Date(data.date).toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  return {
+    title: data.title,
+    description: description || `News article from ${formattedDate}`,
+    openGraph: {
+      title: data.title,
+      description: description || `News article from ${formattedDate}`,
+      type: "article",
+      publishedTime: data.date,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: data.title,
+      description: description || `News article from ${formattedDate}`,
+    },
+  };
 }
 
 async function getRandomRecentNews(currentNewsId: string) {
@@ -75,9 +119,6 @@ export default async function NewsDetailPage(props: PageProps) {
 
   return (
     <>
-      <Head>
-        <title>{data.title}</title>
-      </Head>
       <div className="flex justify-center items-center flex-col px-4 py-8">
         <h1 className="font-raleway font-extrabold tracking-widest uppercase text-2xl mb-4 text-center mt-4 md:mt-12">
           {data.title}

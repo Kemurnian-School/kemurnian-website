@@ -1,16 +1,32 @@
-"use client";
-import { useParams } from "next/navigation";
+import { Metadata } from "next";
 import schoolsData from "./schools.json";
 import SectionHeader from "../../components/SectionHeader";
 
-export default function SchoolsGeneralLayout({
-  children,
-}: {
+interface LayoutProps {
   children: React.ReactNode;
-}) {
-  const params = useParams();
-  const schoolId = params.sekolah as string;
+  params: Promise<{ sekolah: string }>;
+}
 
+export async function generateMetadata(props: LayoutProps): Promise<Metadata> {
+  const params = await props.params;
+  const schoolId = params.sekolah;
+  const data = schoolsData[schoolId as keyof typeof schoolsData];
+
+  if (!data) {
+    return {
+      title: "School Not Found",
+    };
+  }
+
+  return {
+    title: data.title,
+    description: `Learn about ${data.title} - Unit Sekolah`,
+  };
+}
+
+export default async function SchoolsGeneralLayout(props: LayoutProps) {
+  const params = await props.params;
+  const schoolId = params.sekolah;
   const data = schoolsData[schoolId as keyof typeof schoolsData];
 
   return (
@@ -19,7 +35,7 @@ export default function SchoolsGeneralLayout({
         {data?.title}
       </div>
       <SectionHeader title="UNIT SEKOLAH" />
-      {children}
+      {props.children}
     </>
   );
 }

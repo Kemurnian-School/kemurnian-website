@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import schoolsData from "../schools.json";
 import Image from "next/image";
 
@@ -5,9 +6,36 @@ interface Props {
   params: Promise<{ sekolah: string; detail: string }>;
 }
 
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
+  const schoolData = schoolsData[params.sekolah as keyof typeof schoolsData];
+
+  if (!schoolData) {
+    return {
+      title: "School Not Found",
+    };
+  }
+
+  const unit = schoolData.units.find(
+    (u) => u.nama_sekolah.replace(/\s+/g, "-").toLowerCase() === params.detail,
+  );
+
+  if (!unit) {
+    return {
+      title: "Unit Not Found",
+    };
+  }
+
+  return {
+    title: `${unit.nama_sekolah}`,
+    description: `Detail informasi ${unit.nama_sekolah}, ${schoolData.title}. Akreditasi: ${unit.akreditasi.jenjang}, Status: ${unit.status_sekolah}`,
+  };
+}
+
 export default async function SchoolDetailPage(props: Props) {
   const params = await props.params;
   const schoolData = schoolsData[params.sekolah as keyof typeof schoolsData];
+
   if (!schoolData) return <div>School not found</div>;
 
   const unit = schoolData.units.find(
@@ -43,18 +71,16 @@ export default async function SchoolDetailPage(props: Props) {
   return (
     <div className="flex flex-col items-center p-6 font-merriweather">
       <Image
-        src={`${schoolData.image_path}`} // Assuming images are in the /public folder
+        src={`${schoolData.image_path}`}
         alt={`Foto ${schoolData.title}`}
         width={200}
         height={200}
         className="mb-8 h-auto w-52 object-cover shadow-md md:w-68"
         priority
       />
-
       <div className="grid grid-cols-[max-content_max-content_1fr] items-start ml-2 gap-x-2 md:gap-x-4 gap-y-1 md:gap-y-4 text-sm md:text-xl">
         {/* Nama Sekolah */}
         <DetailRow label="Nama Sekolah" value={unit.nama_sekolah} />
-
         {/* Akreditasi (Parent row now has the 'jenjang' value) */}
         <DetailRow label="Akreditasi" value={unit.akreditasi.jenjang} />
         <DetailRow
@@ -67,10 +93,8 @@ export default async function SchoolDetailPage(props: Props) {
           value={unit.akreditasi.tahun}
           isChild
         />
-
         {/* Izin Operasional */}
         <DetailRow label="Izin Operasional" value={unit.izin_operasional} />
-
         {/* Alamat Sekolah (Parent row now has the 'jalan' value) */}
         <DetailRow label="Alamat Sekolah" value={unit.alamat.jalan} />
         <DetailRow label="Nomor Telepon" value={unit.kontak.telepon} isChild />
@@ -84,7 +108,6 @@ export default async function SchoolDetailPage(props: Props) {
         <DetailRow label="Kotamadya" value={unit.alamat.kotamadya} isChild />
         <DetailRow label="Provinsi" value={unit.alamat.provinsi} isChild />
         <DetailRow label="Kode Pos" value={unit.alamat.kode_pos} isChild />
-
         {/* Other Details */}
         <DetailRow label="Status Sekolah" value={unit.status_sekolah} />
         <DetailRow label="Nama Yayasan" value={unit.nama_yayasan} />

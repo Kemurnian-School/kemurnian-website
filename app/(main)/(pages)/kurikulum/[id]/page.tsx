@@ -1,5 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
-import Head from "next/head";
+import { Metadata } from "next";
 import QuillRenderer from "@/app/(main)/components/QuillRenderer";
 
 interface Kurikulum {
@@ -10,6 +10,28 @@ interface Kurikulum {
 
 interface PageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("kurikulum")
+    .select("title")
+    .eq("id", params.id)
+    .single();
+
+  if (error || !data) {
+    return {
+      title: "Kurikulum Not Found",
+    };
+  }
+
+  return {
+    title: data.title,
+    description: `Learn about ${data.title}`,
+  };
 }
 
 export default async function KurikulumDetailPage(props: PageProps) {
@@ -30,10 +52,6 @@ export default async function KurikulumDetailPage(props: PageProps) {
 
   return (
     <>
-      <Head>
-        <title>{data.title}</title>
-      </Head>
-
       {/* Title Section */}
       <h1 className="flex items-center justify-center mb-8 w-full h-40 md:h-86 bg-red-primary text-white text-4xl md:text-6xl font-raleway font-bold text-center uppercase">
         {data.title}

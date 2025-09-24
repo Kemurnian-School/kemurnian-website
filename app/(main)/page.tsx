@@ -1,12 +1,20 @@
+import { Metadata } from "next";
 import HeroSliders from "./components/HeroSliders";
 import SchoolsInfo from "./components/SchoolsInfo";
 import KurikulumList from "./components/KurikulumList";
 import NewsPreview from "./components/NewsPreview";
-
 import ButtonPrimary from "./components/ButtonPrimary";
 import SectionHeader from "./components/SectionHeader";
 import { createClient } from "@/utils/supabase/server";
 import Image from "next/image";
+
+export const metadata: Metadata = {
+  title: "Sekolah Kemurnian",
+  description:
+    "Sekolah Kemurnian pertama didirikan dengan nama TK Kemurnian, pada tanggal 2 Januari 1978 di Jalan Kemurnian V No. 209, Jakarta Barat. Sampai saat ini, Sekolah Kemurnian telah berkembang sehingga mendirikan jenjang pendidikan dari Sekolah Dasar (SD), Sekolah Menengah Pertama (SMP), sampai pada Sekolah Menengah Atas (SMA) dan berekspansi hingga mendirikan 2 unit cabang sekolah, yaitu Sekolah Kemurnian II di Greenville dan Sekolah Kemurnian III di Citra.",
+  keywords:
+    "Sekolah Kemurnian, TK Kemurnian, SD Kemurnian, SMP Kemurnian, SMA Kemurnian, Jakarta Barat, Greenville, Citra, pendidikan",
+};
 
 export default async function Home() {
   const supabase = await createClient();
