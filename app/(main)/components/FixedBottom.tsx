@@ -16,7 +16,6 @@ export default function FixedBottom() {
     };
 
     window.addEventListener("scroll", handleScroll);
-
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -30,19 +29,23 @@ export default function FixedBottom() {
   return (
     <>
       {/* fixed elements */}
-      <div className="fixed bottom-0 left-0 right-0 flex justify-between items-center">
+      <div className="fixed bottom-0 left-0 right-0 flex justify-between items-center pointer-events-none">
+        {/* audio player */}
         <audio
           id="mars"
           controls
-          className="h-6 w-58"
+          className="h-6 w-58 pointer-events-auto"
           controlsList="nodownload noplaybackrate"
         >
           <source src="/mars-kemurnian-jaya.mp3" />
         </audio>
-        <div className="flex flex-col items-center gap-2">
+
+        {/* right side buttons */}
+        <div className="flex flex-col items-center gap-2 pointer-events-auto">
           <Link href="https://linktr.ee/sekolahkemurnian">
             <Image src="/whatsapp.svg" width={50} height={50} alt="whatsapp" />
           </Link>
+
           <button
             onClick={scrollToTop}
             className={`bg-btn-primary text-white flex items-center gap-1 py-4 px-7 font-extrabold text-xs tracking-widest font-raleway cursor-pointer transition-opacity duration-300 ${
