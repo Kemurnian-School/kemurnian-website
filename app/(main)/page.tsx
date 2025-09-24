@@ -124,13 +124,15 @@ export default async function Home() {
             hrClassName="border-white"
           />
 
-          <Image
-            src={enrollment?.image_url || "/placeholder-image.png"}
-            alt="Enrollment"
-            width={460}
-            height={0}
-            className="mx-auto mt-6 mb-10 rounded shadow-lg w-auto h-auto"
-          />
+          <div className="mx-10">
+            <Image
+              src={enrollment?.image_url || "/placeholder-image.png"}
+              alt="Enrollment"
+              width={460}
+              height={0}
+              className="mx-auto mt-6 mb-10 rounded shadow-lg w-auto h-auto"
+            />
+          </div>
           <a
             href="/enrollment"
             className="bg-[#818FAB] py-3 px-5 rounded-lg font-bold text-white"
