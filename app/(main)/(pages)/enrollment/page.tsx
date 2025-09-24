@@ -21,8 +21,15 @@ export default async function EnrollmentPage() {
         alt="image"
         width={450}
         height={450}
-        className="mb-10"
+        className="mb-6"
       />
+      <h2 className="font-raleway font-bold text-md md:text-lg mb-10">
+        {new Date(data.date).toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })}
+      </h2>
       <QuillRenderer
         content={data.body}
         className="max-w-2xl font-merriweather font-light text-xs md:text-lg leading-loose"
