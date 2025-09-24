@@ -14,7 +14,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 
   const { data, error } = await supabase
     .from("news")
-    .select("title, date, body")
+    .select("*")
     .eq("id", params.id)
     .single();
 

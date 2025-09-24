@@ -1,14 +1,29 @@
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/server";
 import Image from "next/image";
 import QuillRenderer from "@/app/(main)/components/QuillRenderer";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Penerimaan Peserta Didik Baru",
+  description:
+    "Informasi pendaftaran dan penerimaan peserta didik baru di Sekolah Kemurnian.",
+};
 
 export default async function EnrollmentPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("enrollment")
     .select("*")
     .single();
+
+  if (error || !data) {
+    return (
+      <main className="text-center mt-10">
+        Informasi pendaftaran tidak tersedia saat ini.
+      </main>
+    );
+  }
 
   return (
     <main className="flex flex-col items-center justify-center mt-10 mx-5 md:mx-0">
