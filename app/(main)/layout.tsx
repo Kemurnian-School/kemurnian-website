@@ -15,7 +15,7 @@ const raleway = Raleway({
 });
 
 // Components
-import Navbar from "./components/Navbar"
+import Navbar from "./components/Navbar";
 
 export default function RootLayout({
   children,
@@ -23,8 +23,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className={`${raleway.variable} ${merriweather.variable} antialiased`}>
-      <Navbar />    
+    <div
+      className={`${raleway.variable} ${merriweather.variable} antialiased bg-[#e6e6e6]`}
+    >
+      <Navbar />
       {children}
       <Footer />
     </div>

@@ -10,14 +10,14 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-black-primary flex w-full flex-col items-center justify-center p-2 py-4 text-center text-white">
-      <div className="mb-4 mt-8 flex gap-10">
+    <footer className="overflow-x-hidden bg-black-primary flex w-full flex-col items-center justify-center p-2 py-4 text-center text-white">
+      <div className="mb-4 mt-8 flex flex-wrap justify-center gap-10">
         <Image
           src="/cambridge.webp"
           alt="Cambridge Logo"
           width={200}
-          height={0}
-          className="object-contain w-auto h-15 md:h-20"
+          height={80}
+          className="object-contain h-15 md:h-20 w-auto"
         />
         <div className="flex flex-col">
           <h3 className="flex font-raleway font-bold">FOLLOW US</h3>
