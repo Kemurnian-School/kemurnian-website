@@ -11,6 +11,7 @@ export default function Footer() {
 
   return (
     <footer className="overflow-x-hidden bg-black-primary flex w-full flex-col items-center justify-center p-2 py-4 text-center text-white">
+      {/* actual footer component */}
       <div className="mb-4 mt-8 flex flex-wrap justify-center gap-10">
         <Image
           src="/cambridge.webp"

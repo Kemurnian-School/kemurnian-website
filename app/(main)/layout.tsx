@@ -1,6 +1,7 @@
 import "../globals.css";
 import { Merriweather, Raleway } from "next/font/google";
 import Footer from "./components/Footer";
+import FixedBottom from "./components/FixedBottom";
 
 const merriweather = Merriweather({
   subsets: ["latin"],
@@ -29,6 +30,7 @@ export default function RootLayout({
       <Navbar />
       {children}
       <Footer />
+      <FixedBottom />
     </div>
   );
 }
