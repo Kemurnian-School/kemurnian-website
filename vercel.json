@@ -2,5 +2,14 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
     "deploymentEnabled": false
+  },
+  "functions": {
+    "api/**/*.js": {
+      "regions": ["sin1"]
+    },
+    "api/**/*.ts": {
+      "regions": ["sin1"]
+    }
   }
 }
+
