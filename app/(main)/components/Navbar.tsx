@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [pages, setPages] = useState<{ title: string; url: string }[]>([]);
   const [suggestions, setSuggestions] = useState<
     { title: string; url: string }[]
@@ -36,24 +37,30 @@ export default function Navbar() {
     { id: "contact", label: "Contact", href: "/#contact" },
   ];
 
-  // Fetch search pages JSON once
   useEffect(() => {
     fetch("/search-data.json")
       .then((res) => res.json())
       .then((data) => setPages(data));
   }, []);
 
-  // Update suggestions as query changes
+  // Debounce query
   useEffect(() => {
-    if (!query) {
+    const handler = setTimeout(() => setDebouncedQuery(query), 300);
+    return () => clearTimeout(handler);
+  }, [query]);
+
+  useEffect(() => {
+    if (!debouncedQuery) {
       setSuggestions([]);
       return;
     }
     const matches = pages
-      .filter((p) => p.title.toLowerCase().includes(query.toLowerCase()))
+      .filter((p) =>
+        p.title.toLowerCase().includes(debouncedQuery.toLowerCase()),
+      )
       .slice(0, 10);
     setSuggestions(matches);
-  }, [query, pages]);
+  }, [debouncedQuery, pages]);
 
   const NavItem = ({ item }: { item: (typeof navItems)[0] }) => {
     const className =
@@ -76,10 +83,8 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Navbar */}
       <nav className="bg-gray-primary sticky top-0 z-50 h-16 w-full">
         <div className="flex h-full items-center justify-between">
-          {/* Hamburger Menu */}
           <button
             onClick={toggleMenu}
             className="bg-btn-primary flex h-16 w-16 flex-col items-center justify-center space-y-1 hover:opacity-80 transition-colors duration-200 relative z-[60] focus:outline-none"
@@ -90,7 +95,6 @@ export default function Navbar() {
             ))}
           </button>
 
-          {/* Logo */}
           <div className="absolute left-1/2 -translate-x-1/2 z-[60]">
             <Link href="/">
               <Image
@@ -108,26 +112,23 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Menu */}
       <section
         className={`fixed top-16 left-0 w-full px-12 pb-7 pt-4 bg-gray-primary z-40 transition-transform duration-300 ease-out flex flex-col-reverse md:flex-col ${
           isMenuOpen ? "translate-y-0" : "-translate-y-full"
         }`}
       >
-        {/* Navigation Items */}
         <ul className="flex flex-col md:flex-row pt-10 px-2 md:p-8 gap-4 md:gap-10">
           {navItems.map((item) => (
             <NavItem key={item.id} item={item} />
           ))}
         </ul>
 
-        {/* Search Bar with Autocomplete */}
         <div className="relative flex flex-col gap-1">
           <div className="flex">
             <input
               type="text"
               placeholder="Search"
-              className="w-full h-12 bg-[#555454] px-3 py-2 placeholder-white text-lg rounded-l-md focus:outline-none"
+              className="text-white w-full h-12 bg-[#555454] px-3 py-2 placeholder-gray-300 text-lg rounded-l-md focus:outline-none"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -136,23 +137,38 @@ export default function Navbar() {
             </button>
           </div>
 
-          {/* Suggestions Dropdown */}
           {suggestions.length > 0 && (
-            <div className="absolute top-full left-0 w-full bg-gray-700 max-h-60 overflow-y-auto z-50 rounded-b-md border border-gray-600">
-              {suggestions.map((s) => (
-                <div
-                  key={s.url}
-                  className="px-3 py-2 cursor-pointer hover:bg-gray-600"
-                  onClick={() => {
-                    setQuery("");
-                    setSuggestions([]);
-                    window.location.href = s.url;
-                    setIsMenuOpen(false);
-                  }}
-                >
-                  {s.title}
-                </div>
-              ))}
+            <div className="absolute top-full left-0 w-full bg-white font-merriweather max-h-60 overflow-y-auto z-50 rounded-b-md border border-gray-300 shadow-lg">
+              {suggestions.map((s) => {
+                const startIndex = s.title
+                  .toLowerCase()
+                  .indexOf(debouncedQuery.toLowerCase());
+                const endIndex = startIndex + debouncedQuery.length;
+
+                return (
+                  <Link
+                    key={s.url}
+                    href={s.url}
+                    className="block px-4 py-2 text-gray-800 cursor-pointer hover:bg-btn-primary hover:text-white transition-colors duration-150"
+                    onClick={() => {
+                      setQuery("");
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    {startIndex > -1 ? (
+                      <span>
+                        {s.title.substring(0, startIndex)}
+                        <strong className="font-bold">
+                          {s.title.substring(startIndex, endIndex)}
+                        </strong>
+                        {s.title.substring(endIndex)}
+                      </span>
+                    ) : (
+                      s.title
+                    )}
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>

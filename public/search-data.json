@@ -1,0 +1,122 @@
+[
+  {
+    "title": "Sekolah Kemurnian",
+    "url": "http://localhost:3000/"
+  },
+  {
+    "title": "Sekolah Kemurnian I",
+    "url": "http://localhost:3000/sekolah-kemurnian-1"
+  },
+  {
+    "title": "Sekolah Kemurnian II",
+    "url": "http://localhost:3000/sekolah-kemurnian-2"
+  },
+  {
+    "title": "Sekolah Kemurnian III",
+    "url": "http://localhost:3000/sekolah-kemurnian-3"
+  },
+  {
+    "title": "About Us",
+    "url": "http://localhost:3000/about"
+  },
+  {
+    "title": "Kurikulum TK",
+    "url": "http://localhost:3000/kurikulum/2"
+  },
+  {
+    "title": "Kurikulum TK Bilingual",
+    "url": "http://localhost:3000/kurikulum/3"
+  },
+  {
+    "title": "Kurikulum SD",
+    "url": "http://localhost:3000/kurikulum/4"
+  },
+  {
+    "title": "Kurikulum SMP",
+    "url": "http://localhost:3000/kurikulum/5"
+  },
+  {
+    "title": "Kurikulum SMA",
+    "url": "http://localhost:3000/kurikulum/6"
+  },
+  {
+    "title": "Kemurnian School English Program",
+    "url": "http://localhost:3000/kurikulum/7"
+  },
+  {
+    "title": "Upcycling Workshop SMP Kemurnian II",
+    "url": "http://localhost:3000/news-detail/27"
+  },
+  {
+    "title": "Upacara Bendera HUT RI Ke",
+    "url": "http://localhost:3000/news-detail/24"
+  },
+  {
+    "title": "TK Kemurnian I",
+    "url": "http://localhost:3000/sekolah-kemurnian-1/tk-kemurnian-i"
+  },
+  {
+    "title": "SD Kemurnian I",
+    "url": "http://localhost:3000/sekolah-kemurnian-1/sd-kemurnian-i"
+  },
+  {
+    "title": "SMP Kemurnian I",
+    "url": "http://localhost:3000/sekolah-kemurnian-1/smp-kemurnian-i"
+  },
+  {
+    "title": "TK Kemurnian II",
+    "url": "http://localhost:3000/sekolah-kemurnian-2/tk-kemurnian-ii"
+  },
+  {
+    "title": "SD Kemurnian II",
+    "url": "http://localhost:3000/sekolah-kemurnian-2/sd-kemurnian-ii"
+  },
+  {
+    "title": "SMP Kemurnian II",
+    "url": "http://localhost:3000/sekolah-kemurnian-2/smp-kemurnian-ii"
+  },
+  {
+    "title": "SMA Kemurnian II",
+    "url": "http://localhost:3000/sekolah-kemurnian-2/sma-kemurnian-ii"
+  },
+  {
+    "title": "TK Kemurnian III",
+    "url": "http://localhost:3000/sekolah-kemurnian-3/tk-kemurnian-iii"
+  },
+  {
+    "title": "SDS Kemurnian III",
+    "url": "http://localhost:3000/sekolah-kemurnian-3/sds-kemurnian-iii"
+  },
+  {
+    "title": "Kegiatan MPLS (Masa Pengenalan Lingkungan Sekolah) Tahun Ajaran 2022/2023",
+    "url": "http://localhost:3000/news-detail/23"
+  },
+  {
+    "title": "Program Vaksinasi Siswa dan Siswi SD Kemurnian II",
+    "url": "http://localhost:3000/news-detail/20"
+  },
+  {
+    "title": "Pertemuan Tatap Muka SMA Kemurnian II",
+    "url": "http://localhost:3000/news-detail/18"
+  },
+  {
+    "title": "Selamat Tahun Baru Imlek 2022! Semoga semua keinginan kita terwujud",
+    "url": "http://localhost:3000/news-detail/22"
+  },
+  {
+    "title": "Perayaan Lomba HUT RI Ke",
+    "url": "http://localhost:3000/news-detail/25"
+  },
+  {
+    "title": "5 Tips Semangat Sekolah",
+    "url": "http://localhost:3000/news-detail/26"
+  },
+  {
+    "title": "Perayaan Natal Bagi Umat Katolik SMA KEMURNIAN II",
+    "url": "http://localhost:3000/news-detail/21"
+  },
+  {
+    "title": "Protokol Kebersihan Saat Kedatangan Di Sekolah dan Beraktifitas",
+    "url": "http://localhost:3000/news-detail/19"
+  }
+]
