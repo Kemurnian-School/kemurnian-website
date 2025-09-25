@@ -45,7 +45,7 @@ export default function HeroSlide({ slide, priority = false }: HeroSlideProps) {
           {slide.href_text && slide.button_text && (
             <Link href={slide.href_text}>
               <button
-                className="text-md tracking-widest px-5 py-4 bg-transparent text-white border-3 border-btn-primary hover:bg-btn-primary transition-all duration-200 font-bold"
+                className="text-md tracking-widest px-5 py-4 bg-transparent text-white border-3 border-btn-primary hover:bg-btn-primary transition-all duration-200 font-bold cursor-pointer"
                 style={{
                   textShadow:
                     "2px 2px 4px rgba(0,0,0,0.5), 0 0 8px rgba(0,0,0,0.3)",
