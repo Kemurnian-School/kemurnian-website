@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
 }
 
 async function crawlSite(): Promise<SearchData[]> {
-  const baseUrl = process.env.SITE_DOMAN;
+  const baseUrl = process.env.SITE_DOMAIN;
   if (!baseUrl) {
     throw new Error("NEXT_PUBLIC_SITE_URL environment variable is required");
   }
