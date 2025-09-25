@@ -160,7 +160,7 @@ export default function Navbar() {
         <div className="flex h-full items-center justify-between">
           <button
             onClick={toggleMenu}
-            className="bg-btn-primary flex h-16 w-16 flex-col items-center justify-center space-y-1 hover:opacity-80 transition-colors duration-200 relative z-[60] focus:outline-none"
+            className="bg-btn-primary flex h-16 w-16 flex-col items-center justify-center space-y-1 hover:opacity-80 transition-colors duration-200 relative z-[60] focus:outline-none cursor-pointer"
             aria-label="Toggle menu"
           >
             {[...Array(3)].map((_, i) => (
