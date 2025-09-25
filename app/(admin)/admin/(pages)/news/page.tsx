@@ -7,7 +7,7 @@ export default async function AdminNews() {
     .from("news")
     .select("*")
     .order("created_at", { ascending: false });
-  
+
   if (error) {
     throw new Error("Failed to load news");
   }
@@ -18,3 +18,4 @@ export default async function AdminNews() {
     </section>
   );
 }
+
