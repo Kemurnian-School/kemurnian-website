@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { put } from "@vercel/blob";
-import path from "path";
 
 interface SearchData {
   title: string;
@@ -30,10 +29,12 @@ export async function GET(request: NextRequest) {
 
     const json = JSON.stringify(searchData, null, 2);
 
-    // Upload to Vercel Blob instead of writing to disk
+    // Upload to Vercel Blob with RW token
     const { url: blobUrl } = await put("search-data.json", json, {
-      access: "public", // anyone can fetch
+      access: "public", // file is readable without auth
       contentType: "application/json",
+      addRandomSuffix: false, // overwrite instead of versioning
+      token: process.env.BLOB_READ_WRITE_TOKEN, // IMPORTANT
     });
 
     console.log(`Uploaded to Blob: ${blobUrl}`);
@@ -56,7 +57,7 @@ export async function GET(request: NextRequest) {
 async function crawlSite(): Promise<SearchData[]> {
   const baseUrl = process.env.SITE_DOMAIN;
   if (!baseUrl) {
-    throw new Error("NEXT_PUBLIC_SITE_URL environment variable is required");
+    throw new Error("SITE_DOMAIN environment variable is required");
   }
 
   const searchData: SearchData[] = [];
@@ -157,7 +158,7 @@ async function crawlSite(): Promise<SearchData[]> {
     } catch (error) {
       if (error instanceof Error) {
         if (error.name === "AbortError") {
-          console.log(`⏱️  Timeout: ${normalizedUrl}`);
+          console.log(`Timeout: ${normalizedUrl}`);
         } else {
           console.error(`Error crawling ${normalizedUrl}:`, error.message);
         }
