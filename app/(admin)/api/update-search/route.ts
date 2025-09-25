@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs/promises";
+import { put } from "@vercel/blob";
 import path from "path";
 
 interface SearchData {
@@ -10,9 +10,8 @@ interface SearchData {
 export async function GET(request: NextRequest) {
   const secret = process.env.CRON_SECRET;
   if (!secret) {
-    console.error("CRON_SECRET not configured. Aborting.");
     return NextResponse.json(
-      { error: "Server misconfiguration" },
+      { error: "CRON_SECRET not configured" },
       { status: 500 },
     );
   }
@@ -29,15 +28,21 @@ export async function GET(request: NextRequest) {
     console.log("Starting site crawl...");
     const searchData = await crawlSite();
 
-    const filePath = path.join(process.cwd(), "public", "search-data.json");
-    await fs.writeFile(filePath, JSON.stringify(searchData, null, 2));
+    const json = JSON.stringify(searchData, null, 2);
 
-    console.log(`Successfully crawled ${searchData.length} pages`);
+    // Upload to Vercel Blob instead of writing to disk
+    const { url: blobUrl } = await put("search-data.json", json, {
+      access: "public", // anyone can fetch
+      contentType: "application/json",
+    });
+
+    console.log(`Uploaded to Blob: ${blobUrl}`);
 
     return NextResponse.json({
       success: true,
       count: searchData.length,
       lastUpdated: new Date().toISOString(),
+      blobUrl,
     });
   } catch (error) {
     console.error("Crawl failed:", error);

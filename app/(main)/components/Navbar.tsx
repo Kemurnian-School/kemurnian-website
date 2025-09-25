@@ -38,9 +38,16 @@ export default function Navbar() {
   ];
 
   useEffect(() => {
-    fetch("/search-data.json")
-      .then((res) => res.json())
-      .then((data) => setPages(data));
+    const url = process.env.NEXT_PUBLIC_SEARCH_BLOB_URL;
+    if (!url) return;
+
+    fetch(url)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch search data");
+        return res.json();
+      })
+      .then((data) => setPages(data))
+      .catch((err) => console.error("Search data fetch error:", err));
   }, []);
 
   // Debounce query
