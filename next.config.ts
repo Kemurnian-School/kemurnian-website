@@ -2,13 +2,19 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: [new URL('https://lvkydivstceibnjyndgo.supabase.co/**')]
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lvkydivstceibnjyndgo.supabase.co",
+        pathname: "/storage/v1/object/**",
+      },
+    ],
   },
   experimental: {
     serverActions: {
-      bodySizeLimit: '5mb'
-    }
-  }
+      bodySizeLimit: "5mb",
+    },
+  },
 };
 
 export default nextConfig;
