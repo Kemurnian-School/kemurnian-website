@@ -1,3 +1,5 @@
+export const revalidate = 86400;
+
 import { createClient } from "@/utils/supabase/server";
 import { Metadata } from "next";
 import QuillRenderer from "@/app/(main)/components/QuillRenderer";
@@ -69,4 +71,3 @@ export default async function KurikulumDetailPage(props: PageProps) {
     </>
   );
 }
-

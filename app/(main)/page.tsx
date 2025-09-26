@@ -1,3 +1,5 @@
+export const revalidate = 86400;
+
 import { Metadata } from "next";
 import HeroSliders from "./components/HeroSliders";
 import SchoolsInfo from "./components/SchoolsInfo";

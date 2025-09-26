@@ -1,103 +1,38 @@
-"use client";
+import { createClient } from "@/utils/supabase/server";
+import NewsClient from "./NewsClient";
 
-import { useState, useEffect } from "react";
-import { createClient } from "@/utils/supabase/client";
-import NewsPreview from "@/app/(main)/components/NewsPreview";
+const ITEMS_PER_PAGE = 12;
 
-export default function NewsPage() {
-  const [news, setNews] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-  const [offset, setOffset] = useState(0);
-  const [error, setError] = useState<string | null>(null);
+export default async function NewsPage() {
+  const supabase = await createClient();
 
-  const ITEMS_PER_PAGE = 12;
-  const supabase = createClient();
+  try {
+    const { data: initialNews, error: newsError } = await supabase
+      .from("news")
+      .select("*")
+      .order("date", { ascending: false })
+      .range(0, ITEMS_PER_PAGE - 1);
 
-  const fetchNews = async (currentOffset = 0, isLoadMore = false) => {
-    try {
-      if (isLoadMore) setLoadingMore(true);
-      else setLoading(true);
-
-      const { data: newsData, error: newsError } = await supabase
-        .from("news")
-        .select("*")
-        .order("date", { ascending: false })
-        .range(currentOffset, currentOffset + ITEMS_PER_PAGE - 1);
-
-      if (newsError) throw newsError;
-
-      if (newsData) {
-        if (isLoadMore) setNews((prev) => [...prev, ...newsData]);
-        else setNews(newsData);
-        setHasMore(newsData.length === ITEMS_PER_PAGE);
-      }
-      setError(null);
-    } catch (err) {
-      console.error("Error fetching news:", err);
-      setError("Failed to load news. Please try again.");
-      if (!isLoadMore) setNews([]);
-    } finally {
-      if (isLoadMore) setLoadingMore(false);
-      else setLoading(false);
+    if (newsError) {
+      throw newsError;
     }
-  };
 
-  useEffect(() => {
-    setOffset(0);
-    fetchNews(0, false);
-  }, []);
+    const hasMore = (initialNews?.length ?? 0) === ITEMS_PER_PAGE;
 
-  const loadMore = () => {
-    if (!loadingMore && hasMore) {
-      const newOffset = offset + ITEMS_PER_PAGE;
-      setOffset(newOffset);
-      fetchNews(newOffset, true);
-    }
-  };
-
-  const retryLoad = () => {
-    setError(null);
-    setOffset(0);
-    setHasMore(true);
-    fetchNews(0, false);
-  };
-
-  return (
-    <>
+    return (
       <div>
-        {loading && <div className="p-4 text-center">Loading news...</div>}
-
-        {error && news.length === 0 && (
-          <div className="p-4 text-center">
-            <p className="text-red-600 mb-4">{error}</p>
-            <button
-              onClick={retryLoad}
-              className="px-6 py-2 bg-[#8b0000] text-white rounded"
-            >
-              Try Again
-            </button>
-          </div>
-        )}
-
-        {!loading && !error && (
-          <>
-            <NewsPreview news={news} />
-            {hasMore && (
-              <div className="text-center mt-8">
-                <button
-                  onClick={loadMore}
-                  disabled={loadingMore}
-                  className="px-8 py-3 rounded-full border-2 border-[#8b0000] bg-[#8b0000] text-white hover:bg-transparent hover:text-[#8b0000] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loadingMore ? "LOADING..." : "LOAD MORE NEWS"}
-                </button>
-              </div>
-            )}
-          </>
-        )}
+        <NewsClient initialNews={initialNews || []} initialHasMore={hasMore} />
       </div>
-    </>
-  );
+    );
+  } catch (error) {
+    console.error("Error fetching initial news:", error);
+
+    return (
+      <div className="p-4 text-center">
+        <p className="text-red-600 mb-4">
+          Failed to load news. Please refresh the page.
+        </p>
+      </div>
+    );
+  }
 }
