@@ -43,7 +43,7 @@ export default function HeroSlide({ slide, priority = false }: HeroSlideProps) {
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4 font-raleway">
         <div className="max-w-sm md:max-w-3xl lg:max-w-4xl">
           {slide.header_text && (
-            <h1
+            <h2
               className="tracking-wider mb-8 break-words text-lg md:text-2xl lg:text-3xl font-bold"
               style={{
                 textShadow:
@@ -51,7 +51,7 @@ export default function HeroSlide({ slide, priority = false }: HeroSlideProps) {
               }}
             >
               {slide.header_text}
-            </h1>
+            </h2>
           )}
 
           {slide.href_text && slide.button_text && (
