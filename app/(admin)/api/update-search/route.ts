@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     const { url: blobUrl } = await put("search-data.json", json, {
       access: "public", // file is readable without auth
       contentType: "application/json",
-      addRandomSuffix: false, // overwrite instead of versioning
+      allowOverwrite: true,
       token: process.env.BLOB_READ_WRITE_TOKEN, // IMPORTANT
     });
 
