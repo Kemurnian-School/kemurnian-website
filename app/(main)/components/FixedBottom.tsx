@@ -23,7 +23,7 @@ export default function FixedBottom() {
   if (!mounted) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 flex justify-between items-center pointer-events-none">
+    <div className="fixed bottom-0 left-0 right-0 flex justify-between items-end pointer-events-none">
       <audio
         id="mars"
         controls
