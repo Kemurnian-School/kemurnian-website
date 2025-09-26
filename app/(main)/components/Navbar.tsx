@@ -2,125 +2,28 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
+import { navItems } from "./NavbarUtils/constants";
+import { useSearch } from "./NavbarUtils/useSearch";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [query, setQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [pages, setPages] = useState<{ title: string; url: string }[]>([]);
-  const [suggestions, setSuggestions] = useState<
-    { title: string; url: string }[]
-  >([]);
-  const [highlightIndex, setHighlightIndex] = useState(-1);
-
-  const inputRef = useRef<HTMLDivElement>(null);
+  const {
+    query,
+    setQuery,
+    suggestions,
+    highlightIndex,
+    debouncedQuery,
+    searchContainerRef,
+    handleKeyDown,
+    clearSearch,
+  } = useSearch(isMenuOpen);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  const navItems = [
-    { label: "Home", href: "/" },
-    { label: "School", href: "/#schools-info" },
-    { label: "PPDB", href: "/#enrollment" },
-    { label: "Kurikulum", href: "/#kurikulum" },
-    { label: "About", href: "/#about" },
-    { label: "News", href: "/#news" },
-    { label: "Contact", href: "/#contact" },
-  ];
-
-  // Fetch search data
-  useEffect(() => {
-    const url = process.env.NEXT_PUBLIC_SEARCH_BLOB_URL;
-    if (!url) return;
-
-    fetch(url)
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch search data");
-        return res.json();
-      })
-      .then((data) => setPages(data))
-      .catch((err) => console.error("Search data fetch error:", err));
-  }, []);
-
-  // Debounce query
-  useEffect(() => {
-    const handler = setTimeout(() => setDebouncedQuery(query), 300);
-    return () => clearTimeout(handler);
-  }, [query]);
-
-  // Filter suggestions
-  useEffect(() => {
-    if (!debouncedQuery) {
-      setSuggestions([]);
-      setHighlightIndex(-1);
-      return;
-    }
-    const matches = pages
-      .filter((p) =>
-        p.title.toLowerCase().includes(debouncedQuery.toLowerCase()),
-      )
-      .slice(0, 10);
-    setSuggestions(matches);
-    setHighlightIndex(-1);
-  }, [debouncedQuery, pages]);
-
-  // Close suggestions on ESC
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setSuggestions([]);
-        setHighlightIndex(-1);
-      }
-    };
-    document.addEventListener("keydown", handleEsc);
-    return () => document.removeEventListener("keydown", handleEsc);
-  }, []);
-
-  // Close suggestions when navbar closes
-  useEffect(() => {
-    if (!isMenuOpen) {
-      setSuggestions([]);
-      setQuery("");
-      setHighlightIndex(-1);
-    }
-  }, [isMenuOpen]);
-
-  // Close suggestions on outside click
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (inputRef.current && !inputRef.current.contains(e.target as Node)) {
-        setSuggestions([]);
-        setHighlightIndex(-1);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // Handle keyboard navigation
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (suggestions.length === 0) return;
-
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setHighlightIndex((prev) =>
-        prev < suggestions.length - 1 ? prev + 1 : 0,
-      );
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setHighlightIndex((prev) =>
-        prev > 0 ? prev - 1 : suggestions.length - 1,
-      );
-    } else if (e.key === "Enter") {
-      e.preventDefault();
-      if (highlightIndex >= 0 && highlightIndex < suggestions.length) {
-        const selected = suggestions[highlightIndex];
-        setQuery("");
-        setSuggestions([]);
-        setIsMenuOpen(false);
-        window.location.href = selected.url;
-      }
-    }
+  const handleSuggestionClick = () => {
+    clearSearch();
+    setIsMenuOpen(false);
   };
 
   return (
@@ -172,8 +75,7 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Search Box with Suggestions */}
-        <div ref={inputRef} className="relative flex flex-col gap-1">
+        <div ref={searchContainerRef} className="relative flex flex-col gap-1">
           <div className="flex">
             <input
               type="text"
@@ -195,7 +97,6 @@ export default function Navbar() {
                   .toLowerCase()
                   .indexOf(debouncedQuery.toLowerCase());
                 const endIndex = startIndex + debouncedQuery.length;
-
                 const isHighlighted = i === highlightIndex;
 
                 return (
@@ -207,11 +108,7 @@ export default function Navbar() {
                         ? "bg-btn-primary text-white"
                         : "text-gray-800 hover:bg-btn-primary hover:text-white"
                     }`}
-                    onClick={() => {
-                      setQuery("");
-                      setIsMenuOpen(false);
-                      setSuggestions([]);
-                    }}
+                    onClick={handleSuggestionClick}
                   >
                     {startIndex > -1 ? (
                       <span>

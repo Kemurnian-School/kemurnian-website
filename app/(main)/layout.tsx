@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <div
-      className={`${raleway.variable} ${merriweather.variable} antialiased bg-[#e6e6e6]`}
+      className={`${raleway.variable} ${merriweather.variable} antialiased bg-[#e6e6e6] scroll-smooth`}
     >
       <Navbar />
       {children}
