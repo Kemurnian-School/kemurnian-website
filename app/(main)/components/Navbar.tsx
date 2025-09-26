@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
-import { usePathname, useRouter } from "next/navigation";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,29 +14,18 @@ export default function Navbar() {
   >([]);
   const [highlightIndex, setHighlightIndex] = useState(-1);
 
-  const pathname = usePathname();
-  const isHomePage = pathname === "/";
   const inputRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  const scrollToSection = (sectionId: string) => {
-    document.getElementById(sectionId)?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-    setIsMenuOpen(false);
-  };
-
   const navItems = [
-    { id: "hero", label: "Home", href: "/" },
-    { id: "schools-info", label: "School", href: "/#schools-info" },
-    { id: "enrollment", label: "PPDB", href: "/#enrollment" },
-    { id: "kurikulum", label: "Kurikulum", href: "/#kurikulum" },
-    { id: "about", label: "About", href: "/#about" },
-    { id: "news", label: "News", href: "/#news" },
-    { id: "contact", label: "Contact", href: "/#contact" },
+    { label: "Home", href: "/" },
+    { label: "School", href: "/#schools-info" },
+    { label: "PPDB", href: "/#enrollment" },
+    { label: "Kurikulum", href: "/#kurikulum" },
+    { label: "About", href: "/#about" },
+    { label: "News", href: "/#news" },
+    { label: "Contact", href: "/#contact" },
   ];
 
   // Fetch search data
@@ -130,28 +118,9 @@ export default function Navbar() {
         setQuery("");
         setSuggestions([]);
         setIsMenuOpen(false);
-        router.push(selected.url);
+        window.location.href = selected.url;
       }
     }
-  };
-
-  const NavItem = ({ item }: { item: (typeof navItems)[0] }) => {
-    const className =
-      "text-white font-raleway font-bold text-xs border-b border-dotted pb-5 cursor-pointer hover:opacity-80 transition-opacity";
-
-    if (isHomePage) {
-      return (
-        <li className={className} onClick={() => scrollToSection(item.id)}>
-          {item.label}
-        </li>
-      );
-    }
-
-    return (
-      <Link href={item.href} className={className} onClick={toggleMenu}>
-        {item.label}
-      </Link>
-    );
   };
 
   return (
@@ -192,7 +161,14 @@ export default function Navbar() {
       >
         <ul className="flex flex-col md:flex-row pt-10 px-2 md:p-8 gap-4 md:gap-10">
           {navItems.map((item) => (
-            <NavItem key={item.id} item={item} />
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-white font-raleway font-bold text-xs border-b border-dotted pb-5 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              {item.label}
+            </Link>
           ))}
         </ul>
 

@@ -32,9 +32,9 @@ export default async function SchoolsGeneralLayout(props: LayoutProps) {
   return (
     <>
       <div className="flex items-center justify-center mb-8 w-full h-56 md:h-86 bg-red-primary text-white text-3xl md:text-6xl font-raleway font-bold text-center uppercase">
-        {data?.title}
+        <h1>{data?.title}</h1>
       </div>
-      <SectionHeader title="UNIT SEKOLAH" />
+      <SectionHeader title="UNIT SEKOLAH" as="h2" />
       {props.children}
     </>
   );

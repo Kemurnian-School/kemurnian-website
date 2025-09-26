@@ -33,7 +33,7 @@ const schools = [
 export default function SchoolsSection() {
   return (
     <main className="mt-20">
-      <SectionHeader title="LOKASI SEKOLAH" />
+      <SectionHeader title="LOKASI SEKOLAH" as="h1" />
       <div className="flex justify-center items-center">
         <section className="mb-34 mx-5 mt-6 flex flex-col md:flex-row gap-12 md:gap-8">
           {schools.map((school, idx) => (
@@ -75,4 +75,3 @@ export default function SchoolsSection() {
     </main>
   );
 }
-

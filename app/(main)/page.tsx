@@ -94,7 +94,7 @@ export default async function Home() {
         id="about"
         className="flex flex-col justify-center items-center px-4"
       >
-        <SectionHeader title="TENTANG KAMI" />
+        <SectionHeader title="TENTANG KAMI" as="h2" />
         <p className="mx-4 max-w-4xl mt-6 font-merriweather font-[100] leading-loose tracking-wider text-xs md:text-lg text-justify md:text-center">
           Sekolah Kemurnian pertama didirikan dengan nama TK Kemurnian, pada
           tanggal 2 Januari 1978 di Jalan Kemurnian V No. 209, Jakarta Barat.
@@ -110,13 +110,13 @@ export default async function Home() {
       <div className="bg-[#e6e6e6]">
         {/* Kurikulum Section */}
         <section id="kurikulum" className="px-4 py-20 mt-12">
-          <SectionHeader title="KURIKULUM" />
+          <SectionHeader title="KURIKULUM" as="h2" />
           <KurikulumList kurikulum={kurikulumList} />
         </section>
 
         {/* News Section */}
         <section id="news" className="px-4 py-16">
-          <SectionHeader title="NEWS AND EVENTS" />
+          <SectionHeader title="NEWS AND EVENTS" as="h2" />
           <NewsPreview news={news} />
           <ButtonPrimary text="MORE NEWS" href="/news" />
         </section>
@@ -130,6 +130,7 @@ export default async function Home() {
             title="PENERMAAN PESERTA DIDIK BARU"
             h2ClassName="text-white tracking-widest"
             hrClassName="border-white"
+            as="h2"
           />
 
           <div className="mx-10">
