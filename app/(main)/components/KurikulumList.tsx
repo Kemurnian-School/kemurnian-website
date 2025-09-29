@@ -8,6 +8,7 @@ interface Kurikulum {
   id: string | number
   title: string
   body: string
+  preview?: string | null
 }
 
 interface KurikulumListProps {
@@ -15,7 +16,8 @@ interface KurikulumListProps {
 }
 
 export default function KurikulumList({ kurikulum }: KurikulumListProps) {
-  const paragraphClasses = 'font-merriweather font-[100] leading-loose tracking-wider text-center list-disc list-inside text-sm md:text-base'
+  const paragraphClasses =
+    'font-merriweather font-[100] leading-loose tracking-wider text-center list-disc list-inside text-sm md:text-base'
 
   return (
     <section className="flex justify-center">
@@ -39,11 +41,19 @@ export default function KurikulumList({ kurikulum }: KurikulumListProps) {
                   className="w-12"
                 />
               </div>
-              <h2 className="
-                font-bold mb-0 md:mb-2
-                text-lg md:text-xl
-              ">{item.title}</h2>
-              <p className={paragraphClasses}>{getSnippet(item.body)}</p>
+              <h2
+                className="
+                  font-bold mb-0 md:mb-2
+                  text-lg md:text-xl
+                "
+              >
+                {item.title}
+              </h2>
+
+              {/* Show full preview if exists, otherwise snippet of body */}
+              <p className={paragraphClasses}>
+                {item.preview ? item.preview : getSnippet(item.body)}
+              </p>
 
               <ButtonPrimary href={`/kurikulum/${item.id}`} text="READ ON" />
             </div>

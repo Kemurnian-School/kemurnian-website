@@ -7,12 +7,15 @@ export async function updateKurikulum(formData: FormData) {
   const id = formData.get('id') as string
   const title = formData.get('title') as string
   const body = formData.get('body') as string
+  const preview = formData.get('preview') as string | null  // can be null
 
-  if (!id || !title || !body) throw new Error('All fields are required')
+  if (!id || !title || !body) throw new Error('ID, title, and body are required')
+
+  const previewValue = preview === '' ? null : preview
 
   const { data, error } = await supabase
     .from('kurikulum')
-    .update({ title, body })
+    .update({ title, body, preview: previewValue })
     .eq('id', id)
     .select()
 
