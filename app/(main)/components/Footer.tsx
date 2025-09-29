@@ -4,9 +4,9 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   const socialLinks = [
-    { href: "#", alt: "Facebook", src: "/facebook.svg" },
-    { href: "#", alt: "Instagram", src: "/instagram.svg" },
-    { href: "#", alt: "YouTube", src: "/youtube.svg" },
+    { href: "https://web.facebook.com/sekolah.kemurnian?_rdc=1&_rdr", alt: "Facebook", src: "/facebook.svg" },
+    { href: "https://www.instagram.com/sekolah.kemurnian/", alt: "Instagram", src: "/instagram.svg" },
+    { href: "https://www.youtube.com/results?search_query=sekolah+kemurnian", alt: "YouTube", src: "/youtube.svg" },
   ];
 
   return (

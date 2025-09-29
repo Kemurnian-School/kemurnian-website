@@ -11,10 +11,12 @@ interface Kurikulum {
   id: string
   title: string
   body: string
+  preview?: string | null
 }
 
 export default function EditKurikulumForm({ initialData }: { initialData: Kurikulum }) {
   const [title, setTitle] = useState(initialData.title)
+  const [preview, setPreview] = useState<string | null>(initialData.preview ?? null)
   const [content, setContent] = useState(initialData.body)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [message, setMessage] = useState('')
@@ -46,6 +48,7 @@ export default function EditKurikulumForm({ initialData }: { initialData: Kuriku
       formData.append('id', initialData.id)
       formData.append('title', title)
       formData.append('body', content)
+      if (preview !== null) formData.append('preview', preview)
 
       await updateKurikulum(formData)
       setMessage('Kurikulum updated successfully!')
@@ -66,6 +69,7 @@ export default function EditKurikulumForm({ initialData }: { initialData: Kuriku
       {message && <div className="mb-4 p-2 rounded bg-gray-200">{message}</div>}
 
       <form onSubmit={handleSubmit}>
+        {/* Title */}
         <div className="mb-4">
           <label className="block mb-2 font-medium">Title</label>
           <input
@@ -77,6 +81,20 @@ export default function EditKurikulumForm({ initialData }: { initialData: Kuriku
           />
         </div>
 
+        {/* Preview */}
+        <div className="mb-4">
+          <label className="block mb-2 font-medium">Preview</label>
+          <textarea
+            value={preview ?? ''}
+            onChange={e => setPreview(e.target.value === '' ? null : e.target.value)}
+            className="w-full p-2 border rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Short description or excerpt..."
+            disabled={isSubmitting}
+            rows={3}
+          />
+        </div>
+
+        {/* Content */}
         <div className="mb-4">
           <label className="block mb-2 font-medium">Content</label>
           <ReactQuill
