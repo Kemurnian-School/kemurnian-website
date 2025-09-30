@@ -37,18 +37,20 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     year: "numeric",
   });
 
+  const pageTitle = `${data.title} - News`
+
   return {
-    title: data.title,
+    title: pageTitle,
     description: description || `News article from ${formattedDate}`,
     openGraph: {
-      title: data.title,
+      title: pageTitle,
       description: description || `News article from ${formattedDate}`,
       type: "article",
       publishedTime: data.date,
     },
     twitter: {
       card: "summary_large_image",
-      title: data.title,
+      title: pageTitle,
       description: description || `News article from ${formattedDate}`,
     },
   };
