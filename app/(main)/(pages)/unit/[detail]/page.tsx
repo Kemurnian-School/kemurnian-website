@@ -1,30 +1,35 @@
 import { Metadata } from "next";
-import schoolsData from "../schools.json";
+import schoolsData from "../../schools.json";
 import Image from "next/image";
 
 interface Props {
-  params: Promise<{ sekolah: string; detail: string }>;
+  params: Promise<{ detail: string }>;
+}
+
+// Helper function to find school and unit by detail slug
+function findSchoolAndUnit(detailSlug: string) {
+  for (const [schoolKey, schoolData] of Object.entries(schoolsData)) {
+    const unit = schoolData.units.find(
+      (u) => u.nama_sekolah.replace(/\s+/g, "-").toLowerCase() === detailSlug
+    );
+    if (unit) {
+      return { schoolKey, schoolData, unit };
+    }
+  }
+  return null;
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params;
-  const schoolData = schoolsData[params.sekolah as keyof typeof schoolsData];
+  const result = findSchoolAndUnit(params.detail);
 
-  if (!schoolData) {
-    return {
-      title: "School Not Found",
-    };
-  }
-
-  const unit = schoolData.units.find(
-    (u) => u.nama_sekolah.replace(/\s+/g, "-").toLowerCase() === params.detail,
-  );
-
-  if (!unit) {
+  if (!result) {
     return {
       title: "Unit Not Found",
     };
   }
+
+  const { schoolData, unit } = result;
 
   return {
     title: `${unit.nama_sekolah}`,
@@ -34,15 +39,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 export default async function SchoolDetailPage(props: Props) {
   const params = await props.params;
-  const schoolData = schoolsData[params.sekolah as keyof typeof schoolsData];
+  const result = findSchoolAndUnit(params.detail);
 
-  if (!schoolData) return <div>School not found</div>;
+  if (!result) return <div>Unit not found</div>;
 
-  const unit = schoolData.units.find(
-    (u) => u.nama_sekolah.replace(/\s+/g, "-").toLowerCase() === params.detail,
-  );
-
-  if (!unit) return <div>Unit not found</div>;
+  const { schoolData, unit } = result;
 
   const DetailRow = ({
     label,

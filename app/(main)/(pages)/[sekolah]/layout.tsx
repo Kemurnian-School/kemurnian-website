@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import schoolsData from "./schools.json";
+import schoolsData from "../schools.json";
 import SectionHeader from "../../components/SectionHeader";
 
 interface LayoutProps {

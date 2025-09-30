@@ -1,5 +1,5 @@
 import Link from "next/link";
-import schoolsData from "./schools.json";
+import schoolsData from "../schools.json";
 import SchoolCard from "../../components/SchoolCard";
 import ImageCardSlider from "../../components/ImageCardSlider";
 import { createClient } from "@/utils/supabase/server";
@@ -39,7 +39,7 @@ export default async function SchoolPage(props: Props) {
         {data.units.map((unit, index) => (
           <Link
             key={index}
-            href={`/${params.sekolah}/${unit.nama_sekolah
+            href={`/unit/${unit.nama_sekolah
               .replace(/\s+/g, "-")
               .toLowerCase()}`}
             className="justify-self-center"
