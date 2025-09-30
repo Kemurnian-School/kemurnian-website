@@ -1,35 +1,41 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/utils/supabase/server'
-import { put, del } from '@vercel/blob'
 
 async function uploadFile(
+  supabase: any, 
   file: File | null,
   device: 'desktop' | 'tablet' | 'mobile'
 ) {
   if (!file) {
-    return null
+    return { publicUrl: null, storagePath: null }
   }
 
   const filename = `hero-banners/${device}/${Date.now()}_${file.name}`
+  const { error: uploadError } = await supabase.storage
+    .from('hero_sliders')
+    .upload(filename, file)
 
-  const blob = await put(filename, file, {
-    access: 'public',
-  })
+  if (uploadError) throw uploadError
 
-  return blob.url
+  const { data: { publicUrl } } = supabase.storage
+    .from('hero_sliders')
+    .getPublicUrl(filename)
+
+  return { publicUrl, storagePath: filename }
 }
+
 
 export async function uploadHeroBanner(formData: FormData) {
   const supabase = await createClient()
-
+  
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error("Unauthorized")
 
   const headerText = formData.get('headerText') as string
   const buttonText = formData.get('buttonText') as string
   const hrefText = formData.get('hrefText') as string
-
+  
   const desktopFile = formData.get('desktopImage') as File | null
   const tabletFile = formData.get('tabletImage') as File | null
   const mobileFile = formData.get('mobileImage') as File | null
@@ -39,9 +45,9 @@ export async function uploadHeroBanner(formData: FormData) {
   }
 
   try {
-    const desktopUrl = await uploadFile(desktopFile, 'desktop')
-    const tabletUrl = await uploadFile(tabletFile, 'tablet')
-    const mobileUrl = await uploadFile(mobileFile, 'mobile')
+    const desktopUpload = await uploadFile(supabase, desktopFile, 'desktop')
+    const tabletUpload = await uploadFile(supabase, tabletFile, 'tablet')
+    const mobileUpload = await uploadFile(supabase, mobileFile, 'mobile')
 
     const { data: maxOrderData } = await supabase
       .from('hero_sliders')
@@ -49,7 +55,7 @@ export async function uploadHeroBanner(formData: FormData) {
       .order('order', { ascending: false })
       .limit(1)
       .single()
-
+    
     const nextOrder = maxOrderData ? maxOrderData.order + 1 : 1
 
     const { error: insertError } = await supabase
@@ -58,9 +64,12 @@ export async function uploadHeroBanner(formData: FormData) {
         header_text: headerText,
         href_text: hrefText,
         button_text: buttonText,
-        image_urls: desktopUrl,
-        tablet_image_urls: tabletUrl,
-        mobile_image_urls: mobileUrl,
+        image_urls: desktopUpload.publicUrl,
+        storage_path: desktopUpload.storagePath,
+        tablet_image_urls: tabletUpload.publicUrl,
+        tablet_storage_path: tabletUpload.storagePath,
+        mobile_image_urls: mobileUpload.publicUrl,
+        mobile_storage_path: mobileUpload.storagePath,
         order: nextOrder
       })
 
@@ -74,44 +83,41 @@ export async function uploadHeroBanner(formData: FormData) {
   }
 }
 
+// CHANGE: Updated delete function to handle single string paths
 export async function deleteHeroBanner(formData: FormData) {
   const id = formData.get('id') as string
   const supabase = await createClient()
-
+  
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
   const { data: record } = await supabase
     .from('hero_sliders')
-    .select('id, image_urls, tablet_image_urls, mobile_image_urls')
+    .select('id, storage_path, tablet_storage_path, mobile_storage_path')
     .eq('id', id)
     .single()
 
   if (record) {
-    const urlsToDelete: string[] = []
+    const filesToDelete: string[] = []
+    // Check for each path individually since they are no longer arrays
+    if (record.storage_path) filesToDelete.push(record.storage_path)
+    if (record.tablet_storage_path) filesToDelete.push(record.tablet_storage_path)
+    if (record.mobile_storage_path) filesToDelete.push(record.mobile_storage_path)
 
-    if (record.image_urls) urlsToDelete.push(record.image_urls)
-    if (record.tablet_image_urls) urlsToDelete.push(record.tablet_image_urls)
-    if (record.mobile_image_urls) urlsToDelete.push(record.mobile_image_urls)
-
-    for (const url of urlsToDelete) {
-      try {
-        await del(url)
-      } catch (error) {
-        console.error(`Failed to delete blob: ${url}`, error)
-      }
+    if (filesToDelete.length > 0) {
+      await supabase.storage.from('hero_sliders').remove(filesToDelete)
     }
   }
 
   await supabase.from('hero_sliders').delete().eq('id', id)
-
+  
   const { data: remaining } = await supabase
     .from('hero_sliders')
     .select('id')
     .order('order', { ascending: true })
 
   if (remaining) {
-    const updates = remaining.map((item, index) =>
+    const updates = remaining.map((item, index) => 
       supabase
         .from('hero_sliders')
         .update({ order: index + 1 })

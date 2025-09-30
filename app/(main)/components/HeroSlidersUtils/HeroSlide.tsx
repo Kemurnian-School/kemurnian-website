@@ -38,6 +38,7 @@ export default function HeroSlide({ slide, priority = false }: HeroSlideProps) {
         priority={priority}
         draggable="false"
         sizes="100vw"
+        quality={95}
       />
 
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4 font-raleway">
