@@ -6,7 +6,6 @@ interface LayoutProps {
   params: Promise<{ detail: string }>;
 }
 
-// Helper function to find school and unit by detail slug
 function findSchoolAndUnit(detailSlug: string) {
   for (const [schoolKey, schoolData] of Object.entries(schoolsData)) {
     const unit = schoolData.units.find(
