@@ -76,9 +76,9 @@ export default function NewsClient({
           <button
             onClick={loadMore}
             disabled={loadingMore}
-            className="px-8 py-3 rounded-full border-2 border-[#8b0000] bg-[#8b0000] text-white hover:bg-transparent hover:text-[#8b0000] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="font-raleway font-bold tracking-wide px-8 py-3 mb-10 rounded-full border-2 border-[#8b0000] bg-[#8b0000] text-white hover:bg-transparent hover:text-[#8b0000] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loadingMore ? "LOADING..." : "LOAD MORE NEWS"}
+            {loadingMore ? "LOADING..." : "LOAD MORE"}
           </button>
         </div>
       )}
