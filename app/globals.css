@@ -15,3 +15,38 @@
     background-color: #ecf0f1;
 }
 
+@layer utilities {
+  .auto-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .auto-scrollbar::-webkit-scrollbar-track {
+    background: white;
+  }
+
+  .auto-scrollbar::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .auto-scrollbar::-webkit-scrollbar-track {
+      background: black;
+    }
+
+    .auto-scrollbar::-webkit-scrollbar-thumb {
+      background: #666;
+    }
+  }
+
+  /* Firefox */
+  .auto-scrollbar {
+    scrollbar-color: #888 white;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .auto-scrollbar {
+      scrollbar-color: #666 black;
+    }
+  }
+}
