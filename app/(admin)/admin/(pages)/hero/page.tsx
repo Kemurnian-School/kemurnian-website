@@ -5,12 +5,13 @@ export default async function AdminHero() {
   const supabase = await createClient()
   const { data: images, error } = await supabase
     .from('hero_sliders')
-    .select('*')
+    .select('id, image_urls, order, header_text') // include header_text
     .order('order', { ascending: true })
 
   if (error) {
     throw new Error('Failed to load images')
   }
+
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
       <div className='flex justify-between'>

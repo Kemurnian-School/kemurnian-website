@@ -7,7 +7,9 @@ interface Hero {
   id: number
   image_urls: string
   order: number
+  header_text: string
 }
+
 export default function HeroList({ initialImages }: { initialImages: Hero[] }) {
   const [images, setImages] = useState<Hero[]>(initialImages)
   const [dragIdx, setDragIdx] = useState<number | null>(null)
@@ -31,7 +33,7 @@ export default function HeroList({ initialImages }: { initialImages: Hero[] }) {
     <div>
       <div className="space-y-4">
         {images.map((img, idx) => (
-          <div 
+          <div
             key={img.id}
             draggable
             onDragStart={() => handleDragStart(idx)}
@@ -40,7 +42,10 @@ export default function HeroList({ initialImages }: { initialImages: Hero[] }) {
             className="flex items-center space-x-4 bg-white p-4 rounded shadow"
           >
             <Image src={img.image_urls} width={150} height={80} alt={`Hero ${img.id}`} />
-            <p className="flex-1">Order: {idx+1}</p>
+            <div className="flex-1">
+              <p>Order: {idx + 1}</p>
+              <p className="text-gray-700 font-medium">{img.header_text}</p>
+            </div>
             <form action={deleteHeroBanner}>
               <input type="hidden" name="id" value={img.id} />
               <button type="submit" className="px-3 py-1 bg-red-600 text-white rounded">
