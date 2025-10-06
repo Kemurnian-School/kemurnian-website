@@ -17,8 +17,11 @@ export default async function SchoolPage(props: Props) {
     .from("fasilitas")
     .select("image_urls, title")
     .eq("nama_sekolah", params.sekolah);
-  const imageUrls =
-    error || !facilities ? [] : facilities.map((f) => f.image_urls);
+
+  const facilityData = facilities ?? [];
+
+  const imageUrls = facilityData.map((f) => f.image_urls);
+  const subTitle = facilityData.length > 0 ? facilityData[0].title : "";
 
   if (!data) return <div>School not found</div>;
 
@@ -49,7 +52,7 @@ export default async function SchoolPage(props: Props) {
             <ImageCardSlider
               images={imageUrls}
               alt={`Fasilitas ${data.title}`}
-              title={data.title}
+              title={subTitle}
             />
           </div>
         </section>
