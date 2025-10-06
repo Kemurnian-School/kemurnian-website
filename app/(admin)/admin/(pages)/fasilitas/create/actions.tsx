@@ -1,6 +1,11 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
+import { getR2Client } from "@/utils/r2/client";
+import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+
+const BUCKET = process.env.R2_BUCKET_NAME!;
+const CDN_URL = process.env.R2_CDN!; // e.g. https://cdn.mystiatesting.online
 
 export async function uploadFacilities(formData: FormData) {
   const supabase = await createClient();
@@ -12,7 +17,6 @@ export async function uploadFacilities(formData: FormData) {
   if (authError || !user) throw new Error("Unauthorized");
 
   const namaSekolah = formData.get("nama_sekolah") as string;
-
   if (!namaSekolah) throw new Error("School selection is required");
 
   const files = formData.getAll("images") as File[];
@@ -26,7 +30,7 @@ export async function uploadFacilities(formData: FormData) {
     throw new Error("Number of images and titles must match");
   }
 
-  // Determine folder name based on nama_sekolah value
+  // Folder mapping
   const folderMapping: { [key: string]: string } = {
     "sekolah-kemurnian-1": "Sekolah Kemurnian I",
     "sekolah-kemurnian-2": "Sekolah Kemurnian II",
@@ -36,7 +40,8 @@ export async function uploadFacilities(formData: FormData) {
   const folderName = folderMapping[namaSekolah];
   if (!folderName) throw new Error("Invalid school selection");
 
-  const facilitiesToInsert = [];
+  const r2 = getR2Client();
+  const facilitiesToInsert: any[] = [];
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
@@ -48,40 +53,38 @@ export async function uploadFacilities(formData: FormData) {
     const timestamp = Date.now();
     const sanitizedTitle = title.replace(/[^a-zA-Z0-9.-]/g, "_");
     const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
-    const filename = `${folderName}/${timestamp}_${i}_${sanitizedTitle}_${sanitizedName}`;
+    const key = `fasilitas/${folderName}/${timestamp}_${i}_${sanitizedTitle}_${sanitizedName}`;
 
-    // Upload image to Supabase storage
-    const { error: uploadError } = await supabase.storage
-      .from("fasilitas")
-      .upload(filename, file, {
-        cacheControl: "3600",
-        upsert: false,
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      await r2.send(
+        new PutObjectCommand({
+          Bucket: BUCKET,
+          Key: key,
+          Body: Buffer.from(arrayBuffer),
+          ContentType: file.type,
+        })
+      );
+
+      const publicUrl = `${CDN_URL}/${key}`;
+
+      facilitiesToInsert.push({
+        nama_sekolah: namaSekolah,
+        title: title.trim(),
+        image_urls: publicUrl,
+        storage_path: key,
       });
-
-    if (uploadError) {
-      console.error(`Upload error for ${filename}:`, uploadError);
-      throw new Error(`Failed to upload ${file.name}: ${uploadError.message}`);
+    } catch (uploadError) {
+      console.error(`Upload error for ${key}:`, uploadError);
+      throw new Error(`Failed to upload ${file.name}`);
     }
-
-    // Get public URL
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from("fasilitas").getPublicUrl(filename);
-
-    // Prepare data for database insertion
-    facilitiesToInsert.push({
-      nama_sekolah: namaSekolah,
-      title: title.trim(),
-      image_urls: publicUrl,
-      storage_path: filename,
-    });
   }
 
   if (facilitiesToInsert.length === 0) {
     throw new Error("No valid facilities to insert");
   }
 
-  // Insert all facilities into database
+  // Insert metadata into Supabase DB
   const { error: insertError } = await supabase
     .from("fasilitas")
     .insert(facilitiesToInsert);
@@ -89,15 +92,24 @@ export async function uploadFacilities(formData: FormData) {
   if (insertError) {
     console.error("Insert error:", insertError);
 
-    // If database insert fails, clean up uploaded files
+    // Rollback: delete uploaded files from R2
     for (const facility of facilitiesToInsert) {
-      await supabase.storage.from("fasilitas").remove([facility.storage_path]);
+      try {
+        await r2.send(
+          new DeleteObjectCommand({
+            Bucket: BUCKET,
+            Key: facility.storage_path,
+          })
+        );
+      } catch (cleanupError) {
+        console.error(`Cleanup failed for ${facility.storage_path}`, cleanupError);
+      }
     }
 
     throw new Error(`Failed to save facilities: ${insertError.message}`);
   }
 
-  revalidatePath("/admin/facilities");
+  revalidatePath("/admin/fasilitas");
 
   return {
     success: true,

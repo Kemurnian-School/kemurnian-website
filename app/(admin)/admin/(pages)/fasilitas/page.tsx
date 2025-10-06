@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/utils/supabase/client'
+import { deleteFacility } from './delete/deleteFunction'
 
 interface Fasilitas {
   id: string
@@ -53,16 +54,15 @@ export default function FasilitasPage() {
   }, [])
 
   async function handleDelete(id: string, sekolah: string) {
-    const supabase = createClient()
-    const { error } = await supabase.from('fasilitas').delete().eq('id', id)
+    try {
+      await deleteFacility(id) // calls server action
 
-    if (error) {
-      console.error('Failed to delete image', error)
-    } else {
       setData((prev) => ({
         ...prev,
         [sekolah]: prev[sekolah].filter((item) => item.id !== id),
       }))
+    } catch (err) {
+      console.error("Failed to delete facility:", err)
     }
   }
 

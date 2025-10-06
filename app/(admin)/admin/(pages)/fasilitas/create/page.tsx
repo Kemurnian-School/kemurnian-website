@@ -155,7 +155,7 @@ export default function NewFacilitiesForm() {
       );
       setImages([]);
 
-      setTimeout(() => router.push("/admin/facilities"), 2000);
+      setTimeout(() => router.push("/admin/fasilitas"), 2000);
     } catch (err) {
       console.error(err);
       setErrorMessage("Failed to save facilities.");
