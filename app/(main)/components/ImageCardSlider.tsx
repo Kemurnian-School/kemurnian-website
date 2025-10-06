@@ -5,9 +5,10 @@ import Image from "next/image";
 interface ImageCardSliderProps {
   images: string[];
   alt: string;
+  title?: string;
 }
 
-export default function ImageCardSlider({ images, alt }: ImageCardSliderProps) {
+export default function ImageCardSlider({ images, alt, title }: ImageCardSliderProps) {
   const [currentIndex, setCurrent] = useState(1);
   const [isTransitioning, setIsTransitioning] = useState(true);
 
@@ -79,7 +80,8 @@ export default function ImageCardSlider({ images, alt }: ImageCardSliderProps) {
           }}
         >
           {slides.map((image, idx) => (
-            <div key={idx} className="flex-shrink-0 w-full flex justify-center">
+            <div key={idx} className="flex-shrink-0 w-full flex justify-center items-center flex-col">
+              <h2 className="font-raleway font-extrabold text-lg mb-2">{title}</h2>
               <Image
                 src={image}
                 alt={alt}
@@ -139,11 +141,10 @@ export default function ImageCardSlider({ images, alt }: ImageCardSliderProps) {
                   setCurrent(index + 1);
                   setIsTransitioning(true);
                 }}
-                className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                  isActive
-                    ? "bg-btn-primary scale-110"
-                    : "bg-gray-300 hover:bg-gray-400"
-                }`}
+                className={`w-2 h-2 rounded-full transition-all duration-200 ${isActive
+                  ? "bg-btn-primary scale-110"
+                  : "bg-gray-300 hover:bg-gray-400"
+                  }`}
                 aria-label={`Go to image ${index + 1}`}
               />
             );

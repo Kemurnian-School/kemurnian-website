@@ -5,7 +5,7 @@ export default async function AdminHero() {
   const supabase = await createClient()
   const { data: images, error } = await supabase
     .from('hero_sliders')
-    .select('id, image_urls, order, header_text') // include header_text
+    .select('id, image_urls, order, header_text')
     .order('order', { ascending: true })
 
   if (error) {

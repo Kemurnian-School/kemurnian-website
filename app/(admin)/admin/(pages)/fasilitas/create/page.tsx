@@ -171,7 +171,7 @@ export default function NewFacilitiesForm() {
   return (
     <div className="mx-auto max-w-4xl p-4">
       <Link
-        href="/admin/facilities"
+        href="/admin/fasilitas"
         className="mb-4 inline-block text-blue-600 hover:text-blue-800 underline"
       >
         ← back
@@ -221,9 +221,8 @@ export default function NewFacilitiesForm() {
             accept="image/*"
             onChange={handleImageChange}
             disabled={isCompressing}
-            className={`border p-3 w-full rounded focus:border-blue-500 focus:outline-none ${
-              isCompressing ? "bg-gray-100" : ""
-            }`}
+            className={`border p-3 w-full rounded focus:border-blue-500 focus:outline-none ${isCompressing ? "bg-gray-100" : ""
+              }`}
           />
         </div>
 
@@ -285,11 +284,10 @@ export default function NewFacilitiesForm() {
             type="button"
             onClick={handleSubmit}
             disabled={isSubmitting || isCompressing || images.length === 0}
-            className={`px-6 py-3 rounded text-white font-medium transition-colors ${
-              isSubmitting || isCompressing || images.length === 0
+            className={`px-6 py-3 rounded text-white font-medium transition-colors ${isSubmitting || isCompressing || images.length === 0
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-blue-600 hover:bg-blue-700"
-            }`}
+              }`}
           >
             {isSubmitting
               ? "Saving..."

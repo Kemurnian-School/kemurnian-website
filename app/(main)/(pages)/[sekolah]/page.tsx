@@ -15,7 +15,7 @@ export default async function SchoolPage(props: Props) {
   const supabase = await createClient();
   const { data: facilities, error } = await supabase
     .from("fasilitas")
-    .select("image_urls")
+    .select("image_urls, title")
     .eq("nama_sekolah", params.sekolah);
   const imageUrls =
     error || !facilities ? [] : facilities.map((f) => f.image_urls);
@@ -49,6 +49,7 @@ export default async function SchoolPage(props: Props) {
             <ImageCardSlider
               images={imageUrls}
               alt={`Fasilitas ${data.title}`}
+              title={data.title}
             />
           </div>
         </section>
