@@ -1,11 +1,56 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/utils/supabase/server'
-import { put, del } from '@vercel/blob'
+import { getR2Client } from '@/utils/r2/client'
+import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
+
+const BUCKET = process.env.R2_BUCKET_NAME!
+const CDN_URL = process.env.R2_CDN! // e.g. https://cdn.mystiatesting.online
+
+function extractKeyFromUrl(url: string): string {
+  return url.replace(`${CDN_URL}/`, '')
+}
+
+async function uploadFile(file: File): Promise<string> {
+  const timestamp = Date.now()
+  const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_')
+  const key = `enrollment/${timestamp}_${sanitizedName}`
+
+  const r2 = getR2Client()
+  const arrayBuffer = await file.arrayBuffer()
+
+  await r2.send(
+    new PutObjectCommand({
+      Bucket: BUCKET,
+      Key: key,
+      Body: Buffer.from(arrayBuffer),
+      ContentType: file.type,
+    })
+  )
+
+  return `${CDN_URL}/${key}`
+}
+
+async function deleteFile(url: string) {
+  if (!url) return
+  const key = extractKeyFromUrl(url)
+  const r2 = getR2Client()
+
+  try {
+    await r2.send(
+      new DeleteObjectCommand({
+        Bucket: BUCKET,
+        Key: key,
+      })
+    )
+    console.log(`Deleted: ${key}`)
+  } catch (error) {
+    console.error(`Failed to delete: ${key}`, error)
+  }
+}
 
 export async function updateEnrollment(formData: FormData) {
   const supabase = await createClient()
-
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) throw new Error('Unauthorized')
 
@@ -31,26 +76,11 @@ export async function updateEnrollment(formData: FormData) {
         .eq('id', id)
         .single()
 
-      // Delete old image from Blob if exists
       if (existingRecord?.image_url) {
-        try {
-          await del(existingRecord.image_url)
-        } catch (error) {
-          console.error('Failed to delete old enrollment image:', error)
-          // Continue anyway
-        }
+        await deleteFile(existingRecord.image_url)
       }
 
-      // Upload new image to Vercel Blob
-      const timestamp = Date.now()
-      const sanitizedName = newImage.name.replace(/[^a-zA-Z0-9.-]/g, '_')
-      const filename = `enrollment/${timestamp}_${sanitizedName}`
-
-      const blob = await put(filename, newImage, {
-        access: 'public',
-      })
-
-      image_url = blob.url
+      image_url = await uploadFile(newImage)
     } catch (error) {
       console.error('Image upload failed:', error)
       throw error
@@ -58,15 +88,17 @@ export async function updateEnrollment(formData: FormData) {
   }
 
   // Update database
-  await supabase
+  const { error: updateError } = await supabase
     .from('enrollment')
     .update({
       title,
       body,
       date,
-      ...(image_url ? { image_url } : {})
+      ...(image_url ? { image_url } : {}),
     })
     .eq('id', id)
+
+  if (updateError) throw updateError
 
   revalidatePath('/admin/enrollment')
   revalidatePath('/')
@@ -79,7 +111,6 @@ export async function deleteEnrollmentImage(formData: FormData) {
   if (!id) throw new Error('Missing enrollment ID')
 
   const supabase = await createClient()
-
   const { data: { user }, error: userError } = await supabase.auth.getUser()
   if (!user || userError) throw new Error('Unauthorized')
 
@@ -93,17 +124,10 @@ export async function deleteEnrollmentImage(formData: FormData) {
   if (selectError) throw selectError
   if (!record) throw new Error('Enrollment not found')
 
-  // Delete image from Vercel Blob if exists
   if (record.image_url) {
-    try {
-      await del(record.image_url)
-    } catch (error) {
-      console.error('Failed to delete blob:', error)
-      // Continue to update DB even if blob deletion fails
-    }
+    await deleteFile(record.image_url)
   }
 
-  // Update the record to remove image reference
   const { error: updateError } = await supabase
     .from('enrollment')
     .update({ image_url: null })

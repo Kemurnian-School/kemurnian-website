@@ -1,5 +1,8 @@
 import type { NextConfig } from "next";
 
+const CDN_URL = process.env.R2_CDN!;
+const CDN_HOSTNAME = new URL(CDN_URL).hostname;
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -14,12 +17,8 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "267375c756d40cfbe24391fd0a83bb87.r2.cloudflarestorage.com",
+        hostname: CDN_HOSTNAME,
       },
-      {
-        protocol: "https",
-        hostname: "mystiatesting.online"
-      }
     ],
   },
   experimental: {
