@@ -14,8 +14,12 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "pub-e20bda3df9c0486abf9f58f78a862e78.r2.dev",
+        hostname: "267375c756d40cfbe24391fd0a83bb87.r2.cloudflarestorage.com",
       },
+      {
+        protocol: "https",
+        hostname: "mystiatesting.online"
+      }
     ],
   },
   experimental: {
