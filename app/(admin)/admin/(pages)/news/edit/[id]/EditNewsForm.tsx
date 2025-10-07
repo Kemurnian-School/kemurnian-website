@@ -103,12 +103,7 @@ export default function EditNewsForm({ initialData }: { initialData: News }) {
 
   // Delete image immediately from storage and update local state
   const removeExistingImage = async (url: string, index: number) => {
-    const storagePath = existingPaths[index]
-    if (!storagePath) {
-      // If no storage path, just remove from local state
-      setExistingImages(prev => prev.filter(img => img !== url))
-      return
-    }
+    const storagePath = existingPaths[index] ?? '' // force empty string if null
 
     setDeletingImage(url)
     setMessage('Deleting image...')
@@ -117,13 +112,14 @@ export default function EditNewsForm({ initialData }: { initialData: News }) {
       const formData = new FormData()
       formData.append('newsId', initialData.id)
       formData.append('imageUrl', url)
-      formData.append('storagePath', storagePath)
+      formData.append('storagePath', storagePath) // always send it
 
       await deleteNewsImage(formData)
-      
+
       // Update local state after successful deletion
       setExistingImages(prev => prev.filter(img => img !== url))
       setExistingPaths(prev => prev.filter((_, i) => i !== index))
+
       setMessage('Image deleted successfully!')
       setTimeout(() => setMessage(''), 2000)
     } catch (err) {

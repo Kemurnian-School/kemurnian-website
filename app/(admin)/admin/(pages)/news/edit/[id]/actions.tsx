@@ -1,61 +1,76 @@
-'use server'
-import { revalidatePath } from 'next/cache'
-import { createClient } from '@/utils/supabase/server'
+'use server';
 
-// Delete individual news image immediately
-export async function deleteNewsImage(formData: FormData) {
-  const newsId = formData.get('newsId') as string
-  const imageUrl = formData.get('imageUrl') as string
-  const storagePath = formData.get('storagePath') as string
+import { revalidatePath } from 'next/cache';
+import { createClient } from '@/utils/supabase/server';
+import { getR2Client } from '@/utils/r2/client';
+import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 
-  if (!newsId || !imageUrl || !storagePath) {
-    throw new Error('Missing required fields for image deletion')
-  }
+const BUCKET = process.env.R2_BUCKET_NAME!;
+const CDN_URL = process.env.R2_CDN!; // e.g. https://cdn.mystiatesting.online
 
-  const supabase = await createClient()
-  const { data: { user }, error: userError } = await supabase.auth.getUser()
-  if (!user || userError) throw new Error('Unauthorized')
-
-  // Fetch current news record
-  const { data: record, error: selectError } = await supabase
-    .from('news')
-    .select('id, image_urls, storage_paths')
-    .eq('id', newsId)
-    .single()
-
-  if (selectError || !record) throw new Error('News not found')
-
-  // Remove the image from storage
-  const { error: removeError } = await supabase.storage
-    .from('news')
-    .remove([storagePath])
-
-  if (removeError) throw removeError
-
-  // Update arrays by removing the deleted image
-  const updatedImageUrls = record.image_urls.filter((url: string) => url !== imageUrl)
-  const updatedStoragePaths = record.storage_paths?.filter((path: string) => path !== storagePath) || []
-
-  // Update the record in database
-  const { error: updateError } = await supabase
-    .from('news')
-    .update({ 
-      image_urls: updatedImageUrls,
-      storage_paths: updatedStoragePaths
-    })
-    .eq('id', newsId)
-
-  if (updateError) throw updateError
-
-  revalidatePath('/admin/news')
-  return { success: true }
+function extractR2KeyFromUrl(url: string): string {
+  return url.replace(`${CDN_URL}/`, '');
 }
 
-// Update news with proper storage path tracking
+export async function deleteNewsImage(formData: FormData) {
+  const newsId = formData.get('newsId') as string;
+  const imageUrl = formData.get('imageUrl') as string;
+  const rawPath = formData.get('storagePath');
+
+  if (!newsId || !imageUrl) throw new Error('Missing required fields for image deletion');
+
+  const storagePath =
+    rawPath === null || rawPath === '' || rawPath === 'null' ? null : (rawPath as string);
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (userError || !user) throw new Error('Unauthorized');
+
+  // Old (Supabase) image
+  if (storagePath) {
+    const { error: removeError } = await supabase.storage.from('news').remove([storagePath]);
+    if (removeError) throw removeError;
+  } else {
+    // New (R2) image
+    const r2 = getR2Client();
+    const key = extractR2KeyFromUrl(imageUrl);
+    await r2.send(
+      new DeleteObjectCommand({
+        Bucket: BUCKET,
+        Key: key,
+      })
+    );
+  }
+
+  const { data: record, error: selectError } = await supabase
+    .from('news')
+    .select('image_urls')
+    .eq('id', newsId)
+    .single();
+  if (selectError || !record) throw new Error('News not found');
+
+  const nextUrls = (record.image_urls as string[]).filter((u) => u !== imageUrl);
+
+  const { error: updateError } = await supabase
+    .from('news')
+    .update({ image_urls: nextUrls })
+    .eq('id', newsId);
+  if (updateError) throw updateError;
+
+  revalidatePath('/admin/news');
+  return { success: true };
+}
+
 export async function updateNews(formData: FormData) {
   const supabase = await createClient();
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-  if (authError || !user) throw new Error("Unauthorized");
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+  if (authError || !user) throw new Error('Unauthorized');
 
   const id = formData.get('id') as string;
   const title = formData.get('title') as string;
@@ -63,47 +78,58 @@ export async function updateNews(formData: FormData) {
   const date = formData.get('date') as string;
   const embed = formData.get('embed') as string | null;
   const from = formData.get('from') as string;
-  const existingImages = JSON.parse(formData.get('existingImages') as string || '[]') as string[];
-  const existingPaths = JSON.parse(formData.get('existingPaths') as string || '[]') as string[];
 
-  if (!id || !title || !body || !date || !from) throw new Error("Missing required fields");
+  // existing image URLs (keep them)
+  const existingImages = JSON.parse((formData.get('existingImages') as string) || '[]') as string[];
+
+  if (!id || !title || !body || !date || !from) throw new Error('Missing required fields');
 
   const files = formData.getAll('images') as File[];
-  const imageUrls: string[] = [...existingImages]; // start with existing images
-  const storagePaths: string[] = [...existingPaths]; // start with existing paths
+  const imageUrls: string[] = [...existingImages];
 
-  // Upload new images and track their storage paths
+  // build folder structure by date + title
+  const newsDate = new Date(date);
+  const year = newsDate.getFullYear();
+  const month = newsDate.toLocaleString('default', { month: 'long' });
+  const sanitizedTitle = title.replace(/[^a-zA-Z0-9.-]/g, '_');
+
+  const r2 = getR2Client();
+
+  // Upload new images to R2 only
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     if (!file || file.size === 0) continue;
 
     const timestamp = Date.now();
     const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-    const filename = `news/${timestamp}_${i}_${sanitizedName}`;
+    const key = `news/${year}/${month}/${sanitizedTitle}/${timestamp}_${i}_${sanitizedName}`;
 
-    const { error: uploadError } = await supabase.storage
-      .from('news')
-      .upload(filename, file, { cacheControl: '3600', upsert: false });
+    const arrayBuffer = await file.arrayBuffer();
+    await r2.send(
+      new PutObjectCommand({
+        Bucket: BUCKET,
+        Key: key,
+        Body: Buffer.from(arrayBuffer),
+        ContentType: file.type,
+      })
+    );
 
-    if (uploadError) throw uploadError;
-
-    const { data: { publicUrl } } = supabase.storage.from('news').getPublicUrl(filename);
-    imageUrls.push(publicUrl);
-    storagePaths.push(filename);
+    imageUrls.push(`${CDN_URL}/${key}`);
   }
 
-  // Update the news record with both image URLs and storage paths
-  await supabase.from('news')
-    .update({ 
-      title, 
-      body, 
-      date, 
-      embed: embed || null, 
-      from, 
+  const { error: updateError } = await supabase
+    .from('news')
+    .update({
+      title,
+      body,
+      date,
+      embed: embed || null,
+      from,
       image_urls: imageUrls,
-      storage_paths: storagePaths
     })
     .eq('id', id);
+
+  if (updateError) throw updateError;
 
   revalidatePath('/admin/news');
   return { success: true, imageCount: imageUrls.length };
