@@ -1,6 +1,6 @@
 export const revalidate = 86400;
 
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/client";
 import Image from "next/image";
 import QuillRenderer from "@/app/(main)/components/QuillRenderer";
 import { Metadata } from "next";

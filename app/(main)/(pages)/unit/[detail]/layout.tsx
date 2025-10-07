@@ -1,3 +1,4 @@
+export const revalidate = false;
 import SectionHeader from "../../../components/SectionHeader";
 import schoolsData from "../../schools.json";
 
