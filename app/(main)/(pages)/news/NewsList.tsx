@@ -4,22 +4,25 @@ import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import NewsPreview from "@/app/(main)/components/NewsPreview";
 
-interface NewsClientProps {
+interface NewsListProps {
   initialNews: any[];
   initialHasMore: boolean;
+  itemsPerPage: number;
+  filter?: string[];
 }
 
-export default function NewsClient({
+export default function NewsList({
   initialNews,
   initialHasMore,
-}: NewsClientProps) {
+  itemsPerPage,
+  filter,
+}: NewsListProps) {
   const [news, setNews] = useState<any[]>(initialNews);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(initialHasMore);
   const [offset, setOffset] = useState(initialNews.length);
   const [error, setError] = useState<string | null>(null);
 
-  const ITEMS_PER_PAGE = 12;
   const supabase = createClient();
 
   const loadMore = async () => {
@@ -29,17 +32,24 @@ export default function NewsClient({
       setLoadingMore(true);
       setError(null);
 
-      const { data: newsData, error: newsError } = await supabase
+      let query = supabase
         .from("news")
         .select("*")
         .order("date", { ascending: false })
-        .range(offset, offset + ITEMS_PER_PAGE - 1);
+        .range(offset, offset + itemsPerPage - 1);
+
+      // Apply filter if provided (for category pages)
+      if (filter && filter.length > 0) {
+        query = query.in("from", filter);
+      }
+
+      const { data: newsData, error: newsError } = await query;
 
       if (newsError) throw newsError;
 
       if (newsData) {
         setNews((prev) => [...prev, ...newsData]);
-        setHasMore(newsData.length === ITEMS_PER_PAGE);
+        setHasMore(newsData.length === itemsPerPage);
         setOffset((prev) => prev + newsData.length);
       }
     } catch (err) {
@@ -58,7 +68,7 @@ export default function NewsClient({
   return (
     <>
       <NewsPreview news={news} />
-
+      
       {error && (
         <div className="text-center mt-8">
           <p className="text-red-600 mb-4">{error}</p>
