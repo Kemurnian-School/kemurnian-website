@@ -37,6 +37,7 @@ export default async function Home() {
 
   // Fetch latest news with 2-year logic
   let news = [];
+  console.log("FETCH: hero_sliders")
 
   const { data: latestNews, error: latestNewsError } = await supabase
     .from("news")
