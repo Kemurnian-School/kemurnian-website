@@ -5,7 +5,7 @@ import Image from "next/image";
 interface ImageCardSliderProps {
   images: string[];
   alt: string;
-  title?: string;
+  title?: string[];
 }
 
 export default function ImageCardSlider({ images, alt, title }: ImageCardSliderProps) {
@@ -79,18 +79,27 @@ export default function ImageCardSlider({ images, alt, title }: ImageCardSliderP
             transition: isTransitioning ? "transform 0.5s ease-in-out" : "none",
           }}
         >
-          {slides.map((image, idx) => (
-            <div key={idx} className="flex-shrink-0 w-full flex justify-center items-center flex-col">
-              <h2 className="font-raleway font-extrabold text-lg mb-2">{title}</h2>
-              <Image
-                src={image}
-                alt={alt}
-                width={400}
-                height={300}
-                className="rounded object-cover"
-              />
-            </div>
-          ))}
+          {slides.map((image, idx) => {
+            const actualIndex = totalImages > 1 
+              ? (idx === 0 ? totalImages - 1 : idx === slides.length - 1 ? 0 : idx - 1)
+              : 0;
+            
+            return (
+              <div key={idx} className="flex-shrink-0 w-full max-h-[300px] flex justify-center items-center flex-col">
+                <h2 className="font-raleway font-extrabold text-lg mb-2">
+                  {title && title[actualIndex]}
+                </h2>
+                <Image
+                  src={image}
+                  alt={alt}
+                  width={400}
+                  height={300}
+                  className="rounded object-cover"
+                  unoptimized
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
 

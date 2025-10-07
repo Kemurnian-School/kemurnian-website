@@ -21,7 +21,7 @@ export default async function SchoolPage(props: Props) {
   const facilityData = facilities ?? [];
 
   const imageUrls = facilityData.map((f) => f.image_urls);
-  const subTitle = facilityData.length > 0 ? facilityData[0].title : "";
+  const subTitles = facilityData.map((f) => f.title);
 
   if (!data) return <div>School not found</div>;
 
@@ -52,7 +52,7 @@ export default async function SchoolPage(props: Props) {
             <ImageCardSlider
               images={imageUrls}
               alt={`Fasilitas ${data.title}`}
-              title={subTitle}
+              title={subTitles}  // Pass array instead of single string
             />
           </div>
         </section>
