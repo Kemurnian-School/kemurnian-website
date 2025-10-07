@@ -7,7 +7,7 @@ import KurikulumList from "./components/KurikulumList";
 import NewsPreview from "./components/NewsPreview";
 import ButtonPrimary from "./components/ButtonPrimary";
 import SectionHeader from "./components/SectionHeader";
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/client";
 import Image from "next/image";
 
 export const metadata: Metadata = {
