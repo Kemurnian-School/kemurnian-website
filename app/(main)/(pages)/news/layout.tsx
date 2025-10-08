@@ -3,7 +3,7 @@ import CategoryFilter from "@/app/(main)/components/NewsCategoryFilter";
 
 export const metadata: Metadata = {
   title: "News",
-  description: "Read the latest news and events from Sekolah Kemurnian.",
+  description: "Berita terbaru dari Sekolah Kemurnian",
 };
 
 export default function NewsLayout({

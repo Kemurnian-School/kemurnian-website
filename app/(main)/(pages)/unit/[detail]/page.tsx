@@ -1,3 +1,4 @@
+export const revalidate = false;
 import { Metadata } from "next";
 import schoolsData from "../../schools.json";
 import Image from "next/image";

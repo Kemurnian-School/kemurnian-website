@@ -2,9 +2,7 @@ import Image from "next/image";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About Us | Sekolah Kemurnian",
-  description:
-    "Learn more about the history, vision, and mission of Sekolah Kemurnian, from its founding in 1978 to its expansion across Jakarta.",
+  title: "About",
 };
 
 export default async function AboutPage() {

@@ -1,8 +1,10 @@
+export const revalidate = 86400;
+
 import Link from "next/link";
 import schoolsData from "../schools.json";
 import SchoolCard from "../../components/SchoolCard";
 import ImageCardSlider from "../../components/ImageCardSlider";
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/client";
 import SectionHeader from "../../components/SectionHeader";
 
 interface Props {
@@ -52,7 +54,7 @@ export default async function SchoolPage(props: Props) {
             <ImageCardSlider
               images={imageUrls}
               alt={`Fasilitas ${data.title}`}
-              title={subTitles}  // Pass array instead of single string
+              title={subTitles}
             />
           </div>
         </section>
