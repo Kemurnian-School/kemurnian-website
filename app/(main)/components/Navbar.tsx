@@ -6,7 +6,12 @@ import { useState } from "react";
 import { navItems } from "./NavbarUtils/constants";
 import { useSearch } from "./NavbarUtils/useSearch";
 
-export default function Navbar() {
+interface Page {
+  title: string;
+  url: string;
+}
+
+export default function Navbar({ searchPages }: { searchPages: Page[] }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const {
     query,
@@ -17,7 +22,12 @@ export default function Navbar() {
     searchContainerRef,
     handleKeyDown,
     clearSearch,
+    updatePages,
   } = useSearch(isMenuOpen);
+
+  useState(() => {
+    updatePages(searchPages);
+  });
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 

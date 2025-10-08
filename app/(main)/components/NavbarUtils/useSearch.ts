@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Page } from "./types";
+
+export interface Page {
+  title: string;
+  url: string;
+}
 
 export function useSearch(isMenuOpen: boolean) {
   const [query, setQuery] = useState("");
@@ -11,15 +15,9 @@ export function useSearch(isMenuOpen: boolean) {
   const [highlightIndex, setHighlightIndex] = useState(-1);
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const url = process.env.NEXT_PUBLIC_SEARCH_BLOB_URL;
-    if (!url) return;
-
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => setPages(data))
-      .catch((err) => console.error("Search data fetch error:", err));
-  }, []);
+  const updatePages = (data: Page[]) => {
+    setPages(data);
+  };
 
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedQuery(query), 300);
@@ -39,7 +37,7 @@ export function useSearch(isMenuOpen: boolean) {
     }
     const matches = pages
       .filter((p) =>
-        p.title.toLowerCase().includes(debouncedQuery.toLowerCase()),
+        p.title.toLowerCase().includes(debouncedQuery.toLowerCase())
       )
       .slice(0, 10);
     setSuggestions(matches);
@@ -77,12 +75,12 @@ export function useSearch(isMenuOpen: boolean) {
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setHighlightIndex((prev) =>
-        prev < suggestions.length - 1 ? prev + 1 : 0,
+        prev < suggestions.length - 1 ? prev + 1 : 0
       );
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setHighlightIndex((prev) =>
-        prev > 0 ? prev - 1 : suggestions.length - 1,
+        prev > 0 ? prev - 1 : suggestions.length - 1
       );
     } else if (e.key === "Enter" && highlightIndex > -1) {
       e.preventDefault();
@@ -99,5 +97,6 @@ export function useSearch(isMenuOpen: boolean) {
     searchContainerRef,
     handleKeyDown,
     clearSearch,
+    updatePages,
   };
 }
