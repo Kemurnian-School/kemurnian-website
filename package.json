@@ -11,7 +11,6 @@
     "@aws-sdk/client-s3": "^3.899.0",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.57.0",
-    "@vercel/blob": "^2.0.0",
     "isomorphic-dompurify": "^2.26.0",
     "next": "15.5.2",
     "react": "19.1.0",
