@@ -20,8 +20,8 @@ export default async function NewsPage() {
     const hasMore = (initialNews?.length ?? 0) === ITEMS_PER_PAGE;
 
     return (
-      <NewsList 
-        initialNews={initialNews || []} 
+      <NewsList
+        initialNews={initialNews || []}
         initialHasMore={hasMore}
         itemsPerPage={ITEMS_PER_PAGE}
       />
