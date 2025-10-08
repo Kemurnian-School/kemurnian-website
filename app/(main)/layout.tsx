@@ -3,7 +3,7 @@ import { Merriweather, Raleway } from "next/font/google";
 import Footer from "./components/Footer";
 import FixedBottom from "./components/FixedBottom";
 import Navbar from "./components/Navbar";
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/client";
 
 const merriweather = Merriweather({
   subsets: ["latin"],
