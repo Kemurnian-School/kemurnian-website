@@ -3,10 +3,4 @@
   "git": {
     "deploymentEnabled": false
   },
-  "crons": [
-    {
-      "path": "/api/update-search?token=@cron_secret",
-      "schedule": "0 2 1,15 * *"
-    }
-  ]
 }
