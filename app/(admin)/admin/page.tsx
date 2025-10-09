@@ -4,7 +4,7 @@ import { useState } from 'react'
 const WEB_PAGE = process.env.NEXT_PUBLIC_SITE_DOMAIN!
 
 export default function AdminHome() {
-  const [width, setWidth] = useState(1440)
+  const [width, setWidth] = useState(1040)
 
   const handleWidthChange = (value: number) => {
     if (value < 320) value = 320
