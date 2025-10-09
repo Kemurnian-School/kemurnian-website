@@ -82,6 +82,7 @@ export default function EnrollmentEditForm({ initialData }: { initialData: Enrol
       const result = await updateEnrollment(formData)
       setMessage('Enrollment updated successfully!')
       if (result.image_url) setExistingImage(result.image_url)
+
       router.push('/admin/enrollment?success=' + encodeURIComponent('Enrollent edit successful'))
     } catch (err) {
       console.error(err)
