@@ -14,7 +14,7 @@ interface Props {
 export default async function SchoolPage(props: Props) {
   const params = await props.params;
   const data = schoolsData[params.sekolah as keyof typeof schoolsData];
-  const supabase = await createClient();
+  const supabase = createClient();
   const { data: facilities, error } = await supabase
     .from("fasilitas")
     .select("image_urls, title")
@@ -40,7 +40,7 @@ export default async function SchoolPage(props: Props) {
               href={`/unit/${unit.nama_sekolah
                 .replace(/\s+/g, "-")
                 .toLowerCase()}`}
-              className="flex-shrink-0 w-80"
+              className="flex-shrink-0"
             >
               <SchoolCard title={unit.nama_sekolah} />
             </Link>
