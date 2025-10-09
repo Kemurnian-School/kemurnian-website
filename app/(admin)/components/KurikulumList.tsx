@@ -1,5 +1,7 @@
 'use client'
-import { useState } from 'react'
+
+import { useState, startTransition } from 'react'
+import { deleteKurikulum } from '@/app/(admin)/admin/(pages)/kurikulum/actions'
 
 interface Kurikulum {
   id: number
@@ -10,10 +12,23 @@ interface Kurikulum {
 
 export default function KurikulumList({ initialKurikulums }: { initialKurikulums: Kurikulum[] }) {
   const [kurikulums, setKurikulums] = useState<Kurikulum[]>(initialKurikulums)
+  const [loadingId, setLoadingId] = useState<number | null>(null)
 
-  function handleDelete(id: number) {
+  async function handleDelete(id: number) {
     if (!confirm('Are you sure you want to delete this curriculum?')) return
-    setKurikulums(kurikulums.filter(k => k.id !== id))
+    setLoadingId(id)
+
+    try {
+      await deleteKurikulum(id)
+      startTransition(() => {
+        setKurikulums(prev => prev.filter(k => k.id !== id))
+      })
+    } catch (err) {
+      alert('Failed to delete curriculum.')
+      console.error(err)
+    } finally {
+      setLoadingId(null)
+    }
   }
 
   return (
@@ -87,7 +102,11 @@ export default function KurikulumList({ initialKurikulums }: { initialKurikulums
                   </a>
                   <button
                     onClick={() => handleDelete(item.id)}
-                    className="text-red-600 hover:text-red-800 hover:bg-red-50 p-2 rounded-full transition-colors duration-200"
+                    disabled={loadingId === item.id}
+                    className={`${loadingId === item.id
+                        ? 'opacity-50 cursor-not-allowed'
+                        : 'text-red-600 hover:text-red-800 hover:bg-red-50'
+                      } p-2 rounded-full transition-colors duration-200`}
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path

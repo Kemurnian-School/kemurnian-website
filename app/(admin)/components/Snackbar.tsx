@@ -56,7 +56,7 @@ export default function Snackbar({ success: propSuccess, message: propMessage }:
           width={20}
           height={20}
         />
-        <span className="mb-1 text-green-900">{message}</span>
+        <span className="text-green-900">{message}</span>
       </div>
     </div>
   );

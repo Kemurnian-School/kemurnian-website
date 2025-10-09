@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { redirect } from 'next/navigation'
 import { createClient } from "@/utils/supabase/server";
 import { getR2Client } from "@/utils/r2/client";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
@@ -64,5 +64,5 @@ export async function deleteNews(newsId: string) {
 
   await supabase.from("news").delete().eq("id", newsId);
 
-  revalidatePath("/admin/news");
+  redirect('/admin/news?success=' + encodeURIComponent('News deleted successfully!'))
 }

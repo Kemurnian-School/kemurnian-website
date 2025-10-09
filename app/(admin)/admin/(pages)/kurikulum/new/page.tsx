@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { uploadKurikulum } from './actions'
 import dynamic from 'next/dynamic'
 
-const ReactQuill = dynamic(() => import('react-quill-new'), { 
+const ReactQuill = dynamic(() => import('react-quill-new'), {
   ssr: false,
   loading: () => <div className="min-h-[200px] rounded border p-2 bg-gray-50">Loading editor...</div>
 })
@@ -59,14 +59,11 @@ export default function NewKurikulumForm() {
 
       await uploadKurikulum(formData)
 
-      setSuccessMessage('Kurikulum saved successfully!')
       setTitle('')
       setPreview('')
       setContent('')
 
-      setTimeout(() => {
-        router.push('/admin/kurikulum')
-      }, 2000)
+      router.push('/admin/kurikulum?success=' + encodeURIComponent('Kurikulum saved successfully'))
     } catch (error) {
       console.error('Error saving kurikulum:', error)
       setErrorMessage('Failed to save kurikulum. Please try again.')
@@ -153,9 +150,8 @@ export default function NewKurikulumForm() {
       <div className="flex items-center gap-4">
         <button
           onClick={handleSubmit}
-          className={`rounded px-4 py-2 text-white transition-colors ${
-            isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800'
-          }`}
+          className={`rounded px-4 py-2 text-white transition-colors ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800'
+            }`}
           disabled={isSubmitting || !title.trim() || !content.trim()}
         >
           {isSubmitting ? 'Saving...' : 'Save'}

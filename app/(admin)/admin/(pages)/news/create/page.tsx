@@ -78,7 +78,7 @@ export default function NewNewsForm() {
 
       setImages(compressedFiles)
       setSuccessMessage(`Images compressed successfully! Saved ${savings}% in file size.`)
-      
+
       setTimeout(() => setSuccessMessage(''), 3000)
     } catch (error) {
       console.error('Compression failed:', error)
@@ -128,7 +128,7 @@ export default function NewNewsForm() {
       setFrom(fromOptions[0])
       setImages([])
 
-      setTimeout(() => router.push('/admin/news'), 2000)
+      router.push('/admin/news?success=' + encodeURIComponent('News added successfully!'))
     } catch (err) {
       console.error(err)
       setErrorMessage('Failed to save news.')
@@ -158,20 +158,20 @@ export default function NewNewsForm() {
       <form className="space-y-4">
         <div>
           <label className="block mb-1 font-medium">Title</label>
-          <input 
-            type="text" 
-            value={title} 
-            onChange={e => setTitle(e.target.value)} 
+          <input
+            type="text"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
             className="w-full border rounded p-2 focus:border-blue-500 focus:outline-none"
           />
         </div>
 
         <div>
           <label className="block mb-1 font-medium">Date</label>
-          <input 
-            type="date" 
-            value={date} 
-            onChange={e => setDate(e.target.value)} 
+          <input
+            type="date"
+            value={date}
+            onChange={e => setDate(e.target.value)}
             className="border rounded p-2 focus:border-blue-500 focus:outline-none"
           />
         </div>
@@ -185,10 +185,10 @@ export default function NewNewsForm() {
 
         <div>
           <label className="block mb-1 font-medium">Embed (optional)</label>
-          <input 
-            type="text" 
-            value={embed} 
-            onChange={e => setEmbed(e.target.value)} 
+          <input
+            type="text"
+            value={embed}
+            onChange={e => setEmbed(e.target.value)}
             className="w-full border rounded p-2 focus:border-blue-500 focus:outline-none"
             placeholder="YouTube embed link"
           />
@@ -199,17 +199,16 @@ export default function NewNewsForm() {
           <p className="text-sm text-gray-600 mb-2">
             Images will be automatically compressed to WebP format (max 1920×1080, 80% quality)
           </p>
-          <input 
-            type="file" 
-            multiple 
+          <input
+            type="file"
+            multiple
             accept="image/*"
             onChange={handleImageChange}
             disabled={isCompressing}
-            className={`border p-2 w-full rounded focus:border-blue-500 focus:outline-none ${
-              isCompressing ? 'bg-gray-100' : ''
-            }`}
+            className={`border p-2 w-full rounded focus:border-blue-500 focus:outline-none ${isCompressing ? 'bg-gray-100' : ''
+              }`}
           />
-          
+
           {/* Image Preview */}
           {images.length > 0 && (
             <div className="mt-3">
@@ -249,15 +248,14 @@ export default function NewNewsForm() {
           />
         </div>
 
-        <button 
+        <button
           type="button"
           onClick={handleSubmit}
           disabled={isSubmitting || isCompressing}
-          className={`px-4 py-2 rounded text-white transition-colors ${
-            isSubmitting || isCompressing 
-              ? 'bg-gray-400 cursor-not-allowed' 
-              : 'bg-blue-600 hover:bg-blue-700'
-          }`}
+          className={`px-4 py-2 rounded text-white transition-colors ${isSubmitting || isCompressing
+            ? 'bg-gray-400 cursor-not-allowed'
+            : 'bg-blue-600 hover:bg-blue-700'
+            }`}
         >
           {isSubmitting ? 'Saving...' : isCompressing ? 'Compressing...' : 'Save'}
         </button>
