@@ -7,8 +7,14 @@ import KurikulumList from "./components/KurikulumList";
 import NewsPreview from "./components/NewsPreview";
 import ButtonPrimary from "./components/ButtonPrimary";
 import SectionHeader from "./components/SectionHeader";
-import { createClient } from "@/utils/supabase/client";
 import Image from "next/image";
+
+import {
+  getHeroData,
+  getKurikulumData,
+  getLatestNewsData,
+  getEnrollmentData
+} from "@/utils/supabase/fetches";
 
 export const metadata: Metadata = {
   title: "Sekolah Kemurnian",
@@ -19,63 +25,12 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const supabase = await createClient();
 
-  // Fetch hero sliders
-  const { data: heroImages, error: heroImagesError } = await supabase
-    .from("hero_sliders")
-    .select("*")
-    .order("order", { ascending: true });
-  const images = heroImagesError ? [] : heroImages || [];
-
-  // Fetch kurikulum
-  const { data: kurikulums, error: kurikulumsError } = await supabase
-    .from("kurikulum")
-    .select("*")
-    .order("order", { ascending: true });
-  const kurikulumList = kurikulumsError ? [] : kurikulums || [];
-
-  // Fetch latest news with 2-year logic
-  let news = [];
-  console.log("FETCH: hero_sliders")
-
-  const { data: latestNews, error: latestNewsError } = await supabase
-    .from("news")
-    .select("date")
-    .order("date", { ascending: false })
-    .limit(1);
-
-  if (!latestNewsError && latestNews && latestNews.length > 0) {
-    // Calculate the date 2 years before the latest news date
-    const latestDate = new Date(latestNews[0].date);
-    const twoYearsBefore = new Date(latestDate);
-    twoYearsBefore.setFullYear(latestDate.getFullYear() - 2);
-
-    const twoYearsBeforeFormatted = twoYearsBefore.toISOString().split("T")[0];
-
-    const { data: newsData, error: newsError } = await supabase
-      .from("news")
-      .select("*")
-      .gte("date", twoYearsBeforeFormatted)
-      .order("date", { ascending: false })
-      .limit(9);
-
-    news = newsError ? [] : newsData || [];
-  } else {
-    const { data: newsData, error: newsError } = await supabase
-      .from("news")
-      .select("*")
-      .order("date", { ascending: false })
-      .limit(9);
-    news = newsError ? [] : newsData || [];
-  }
-
-  // Fetch enrollment (always 1 row)
-  const { data: enrollmentData, error: enrollmentError } = await supabase
-    .from("enrollment")
-    .select("*")
-    .single();
-  const enrollment = enrollmentError ? null : enrollmentData;
+  // data fetches
+  const fromHero = await getHeroData();
+  const fromKurikulum = await getKurikulumData();
+  const fromLatestNews = await getLatestNewsData();
+  const fromEnrollment = await getEnrollmentData();
 
   const socialMediaStyles: string =
     "bg-[#818FAB] px-4 py-4 rounded-sm text-white font-raleway font-bold";
@@ -84,7 +39,7 @@ export default async function Home() {
     <>
       {/* Hero Section */}
       <div id="hero">
-        <HeroSliders images={images} />
+        <HeroSliders images={fromHero} />
       </div>
 
       {/* Schools Info Section */}
@@ -114,13 +69,13 @@ export default async function Home() {
         {/* Kurikulum Section */}
         <section id="kurikulum" className="px-4 py-20 mt-12">
           <SectionHeader title="KURIKULUM" as="h2" />
-          <KurikulumList kurikulum={kurikulumList} />
+          <KurikulumList kurikulum={fromKurikulum} />
         </section>
 
         {/* News Section */}
         <section id="news" className="px-4 py-16">
           <SectionHeader title="NEWS AND EVENTS" as="h2" />
-          <NewsPreview news={news} />
+          <NewsPreview news={fromLatestNews} />
           <ButtonPrimary text="MORE NEWS" href="/news" />
         </section>
 
@@ -138,7 +93,7 @@ export default async function Home() {
 
           <div className="mx-10">
             <Image
-              src={enrollment?.image_url || "/placeholder-image.png"}
+              src={fromEnrollment?.image_url || "/placeholder-image.png"}
               alt="Enrollment"
               width={460}
               height={0}
