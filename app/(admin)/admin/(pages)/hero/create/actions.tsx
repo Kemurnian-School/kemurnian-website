@@ -1,5 +1,6 @@
 'use server'
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 import { getR2Client } from '@/utils/r2/client'
 import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
@@ -189,8 +190,7 @@ export async function reorderHeroBanners(formData: FormData) {
 
     await Promise.all(updates)
 
-    revalidatePath('/admin/hero')
-    revalidatePath('/admin')
+    redirect('/admin/hero?success=' + encodeURIComponent('Hero banner reorder successful!'))
   } catch (error) {
     console.error('Reorder failed:', error)
     throw error

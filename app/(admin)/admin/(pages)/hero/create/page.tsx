@@ -118,16 +118,7 @@ export default function NewHeroBannerForm() {
       if (mobileImage) formData.append('mobileImage', mobileImage)
 
       await uploadHeroBanner(formData)
-
-      setSuccessMessage('Hero banner saved successfully!')
-      setHeaderText('')
-      setButtonText('')
-      setHrefText('')
-      setDesktopImage(null)
-      setTabletImage(null)
-      setMobileImage(null)
-
-      setTimeout(() => router.push('/admin/hero'), 2000)
+      router.push('/admin/hero?success=' + encodeURIComponent('Hero banner created successfully!'))
     } catch (err) {
       console.error(err)
       setErrorMessage('Failed to save hero banner.')
@@ -245,11 +236,10 @@ export default function NewHeroBannerForm() {
           type="button"
           onClick={handleSubmit}
           disabled={isSubmitting || isAnyCompressing}
-          className={`px-4 py-2 rounded text-white transition-colors ${
-            isSubmitting || isAnyCompressing
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700'
-          }`}
+          className={`px-4 py-2 rounded text-white transition-colors ${isSubmitting || isAnyCompressing
+            ? 'bg-gray-400 cursor-not-allowed'
+            : 'bg-blue-600 hover:bg-blue-700'
+            }`}
         >
           {isSubmitting ? 'Saving...' : isAnyCompressing ? 'Compressing...' : 'Save Hero Banner'}
         </button>

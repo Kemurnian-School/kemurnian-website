@@ -37,7 +37,7 @@ export default function EnrollmentEditForm({ initialData }: { initialData: Enrol
       ['link'], ['clean']
     ]
   }
-  const quillFormats = ['header','bold','italic','underline','color','background','list','link']
+  const quillFormats = ['header', 'bold', 'italic', 'underline', 'color', 'background', 'list', 'link']
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null
@@ -82,7 +82,7 @@ export default function EnrollmentEditForm({ initialData }: { initialData: Enrol
       const result = await updateEnrollment(formData)
       setMessage('Enrollment updated successfully!')
       if (result.image_url) setExistingImage(result.image_url)
-      setTimeout(() => router.push('/admin/enrollment'), 1500)
+      router.push('/admin/enrollment?success=' + encodeURIComponent('Enrollent edit successful'))
     } catch (err) {
       console.error(err)
       setMessage('Failed to update enrollment.')
@@ -99,32 +99,32 @@ export default function EnrollmentEditForm({ initialData }: { initialData: Enrol
         <div>
           <label className="block mb-1 font-medium">Title</label>
           <input type="text" value={title} onChange={e => setTitle(e.target.value)}
-            className="w-full border rounded p-2 focus:border-blue-500 focus:outline-none"/>
+            className="w-full border rounded p-2 focus:border-blue-500 focus:outline-none" />
         </div>
 
         <div>
           <label className="block mb-1 font-medium">Date</label>
           <input type="date" value={date} onChange={e => setDate(e.target.value)}
-            className="w-full border rounded p-2 focus:border-blue-500 focus:outline-none"/>
+            className="w-full border rounded p-2 focus:border-blue-500 focus:outline-none" />
         </div>
 
         <div>
           <label className="block mb-1 font-medium">Image</label>
           {existingImage ? (
             <div className="relative w-48 h-48">
-              <img src={existingImage} alt="Enrollment" className="w-full h-full object-cover rounded"/>
+              <img src={existingImage} alt="Enrollment" className="w-full h-full object-cover rounded" />
               <button type="button" onClick={handleRemoveImage}
                 className="absolute top-0 right-0 bg-red-500 text-white px-1 rounded">×</button>
             </div>
           ) : (
             <input type="file" accept="image/*" onChange={handleImageChange}
-              className="w-full border rounded p-2 focus:border-blue-500 focus:outline-none"/>
+              className="w-full border rounded p-2 focus:border-blue-500 focus:outline-none" />
           )}
         </div>
 
         <div>
           <label className="block mb-1 font-medium">Body</label>
-          <ReactQuill value={body} onChange={setBody} modules={quillModules} formats={quillFormats} className="bg-white min-h-[200px]"/>
+          <ReactQuill value={body} onChange={setBody} modules={quillModules} formats={quillFormats} className="bg-white min-h-[200px]" />
         </div>
 
         <button type="submit"
