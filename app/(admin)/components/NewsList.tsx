@@ -205,7 +205,7 @@ export default function NewsList({ initialNews }: { initialNews: News[] }) {
 
                 {/* Body Preview */}
                 <div className="flex-1 overflow-hidden">
-                  <p className="text-xs text-gray-600 leading-relaxed line-clamp-3">
+                  <p className="text-xs text-gray-600 leading-relaxed line-clamp-3" suppressHydrationWarning>
                     {stripHtml(item.body).substring(0, 80)}
                     {stripHtml(item.body).length > 80 && "..."}
                   </p>

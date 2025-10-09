@@ -6,7 +6,7 @@ export default async function AdminNews() {
   const { data: news, error } = await supabase
     .from("news")
     .select("*")
-    .order("created_at", { ascending: false });
+    .order("date", { ascending: false });
 
   if (error) {
     throw new Error("Failed to load news");
