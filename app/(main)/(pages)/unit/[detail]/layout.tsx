@@ -1,5 +1,5 @@
 export const revalidate = false;
-import SectionHeader from "../../../components/SectionHeader";
+import SectionHeader from "@component/SectionHeader";
 import schoolsData from "../../schools.json";
 
 interface LayoutProps {

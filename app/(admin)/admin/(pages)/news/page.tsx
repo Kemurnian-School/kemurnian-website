@@ -1,8 +1,8 @@
 import NewsList from "@/app/(admin)/components/NewsList";
-import { createClient } from "@/utils/supabase/server";
+import { createClientAuth } from "@/utils/supabase/server";
 
 export default async function AdminNews() {
-  const supabase = await createClient();
+  const supabase = await createClientAuth();
   const { data: news, error } = await supabase
     .from("news")
     .select("*")

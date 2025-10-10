@@ -1,28 +1,6 @@
 import { createClient } from "@/utils/supabase/client";
 const supabase = createClient();
 
-export async function getHeroData() {
-  const { data: heroData, error: heroDataError } = await supabase
-    .from("hero_sliders")
-    .select("*")
-    .order("order", { ascending: true });
-
-  const heroImages = heroDataError ? [] : heroData || [];
-
-  return heroImages;
-}
-
-export async function getKurikulumData() {
-  const { data: kurikulumData, error: kurikulumDataError } = await supabase
-    .from("kurikulum")
-    .select("*")
-    .order("order", { ascending: true })
-
-  const kurikulumTable = kurikulumDataError ? [] : kurikulumData || [];
-
-  return kurikulumTable;
-}
-
 export async function getNewsData() {
   const { data: newsData, error: newsDataError } = await supabase
     .from("news")
@@ -70,15 +48,4 @@ export async function getLatestNewsData() {
   } catch {
     return [];
   }
-}
-
-export async function getEnrollmentData() {
-  const { data: enrollmentData, error: enrollmentDataError } = await supabase
-    .from("enrollment")
-    .select("*")
-    .single()
-
-  const enrollmentTable = enrollmentDataError ? [] : enrollmentData || [];
-
-  return enrollmentTable;
 }

@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/server'
+import { createClientAuth } from '@/utils/supabase/server'
 import EditKurikulumForm from './EditKurikulumForm'
 
 import 'react-quill-new/dist/quill.snow.css'
@@ -9,7 +9,7 @@ interface PageProps {
 
 export default async function EditKurikulumPage(props: PageProps) {
   const params = await props.params;
-  const supabase = await createClient()
+  const supabase = await createClientAuth()
   const { data, error } = await supabase
     .from('kurikulum')
     .select('*')

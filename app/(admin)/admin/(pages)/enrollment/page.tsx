@@ -1,8 +1,8 @@
-import { createClient } from "@/utils/supabase/server";
+import { createClientAuth } from "@/utils/supabase/server";
 import Link from "next/link";
 
 export default async function EnrollmentManagement() {
-  const supabase = await createClient();
+  const supabase = await createClientAuth();
   const { data: enrollment, error } = await supabase
     .from("enrollment")
     .select("*")

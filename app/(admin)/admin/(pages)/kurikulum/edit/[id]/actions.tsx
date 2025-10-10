@@ -1,9 +1,9 @@
 'use server'
-import { createClient } from '@/utils/supabase/server'
+import { createClientAuth } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
 
 export async function updateKurikulum(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = await createClientAuth()
   const id = formData.get('id') as string
   const title = formData.get('title') as string
   const body = formData.get('body') as string

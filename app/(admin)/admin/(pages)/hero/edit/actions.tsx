@@ -1,6 +1,6 @@
 'use server'
 import { revalidatePath } from 'next/cache'
-import { createClient } from '@/utils/supabase/server'
+import { createClientAuth } from '@/utils/supabase/server'
 import { getR2Client } from '@/utils/r2/client'
 import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
 
@@ -54,7 +54,7 @@ async function deleteFile(url: string | null) {
 }
 
 export async function uploadHeroBanner(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = await createClientAuth()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) throw new Error('Unauthorized')
@@ -107,7 +107,7 @@ export async function uploadHeroBanner(formData: FormData) {
 
 export async function deleteHeroBanner(formData: FormData) {
   const id = formData.get('id') as string
-  const supabase = await createClient()
+  const supabase = await createClientAuth()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) throw new Error('Unauthorized')
@@ -164,7 +164,7 @@ export async function deleteHeroBanner(formData: FormData) {
 
 export async function updateHeroBanner(formData: FormData) {
   const id = formData.get('id') as string
-  const supabase = await createClient()
+  const supabase = await createClientAuth()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
@@ -232,7 +232,7 @@ export async function reorderHeroBanners(formData: FormData) {
   const orderStr = formData.get('order') as string
   if (!orderStr) return
 
-  const supabase = await createClient()
+  const supabase = await createClientAuth()
   const { data: { user }, error: userError } = await supabase.auth.getUser()
 
   if (!user || userError) throw new Error('Unauthorized')

@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { createClient } from '@/utils/supabase/server';
+import { createClientAuth } from '@/utils/supabase/server';
 import { getR2Client } from '@/utils/r2/client';
 import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 
@@ -22,7 +22,7 @@ export async function deleteNewsImage(formData: FormData) {
   const storagePath =
     rawPath === null || rawPath === '' || rawPath === 'null' ? null : (rawPath as string);
 
-  const supabase = await createClient();
+  const supabase = await createClientAuth();
   const {
     data: { user },
     error: userError,
@@ -65,7 +65,7 @@ export async function deleteNewsImage(formData: FormData) {
 }
 
 export async function updateNews(formData: FormData) {
-  const supabase = await createClient();
+  const supabase = await createClientAuth();
   const {
     data: { user },
     error: authError,

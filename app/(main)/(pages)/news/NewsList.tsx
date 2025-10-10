@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import NewsPreview from "@/app/(main)/components/NewsPreview";
+import NewsPreview from "@component/NewsPreview";
 
 interface NewsListProps {
   initialNews: any[];
@@ -68,7 +68,7 @@ export default function NewsList({
   return (
     <>
       <NewsPreview news={news} />
-      
+
       {error && (
         <div className="text-center mt-8">
           <p className="text-red-600 mb-4">{error}</p>

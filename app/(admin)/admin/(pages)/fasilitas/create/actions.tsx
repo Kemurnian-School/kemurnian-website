@@ -1,14 +1,14 @@
 "use server";
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/utils/supabase/server";
+import { createClientAuth } from "@/utils/supabase/server";
 import { getR2Client } from "@/utils/r2/client";
 import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 const BUCKET = process.env.R2_BUCKET_NAME!;
-const CDN_URL = process.env.R2_CDN!; // e.g. https://cdn.mystiatesting.online
+const CDN_URL = process.env.R2_CDN!;
 
 export async function uploadFacilities(formData: FormData) {
-  const supabase = await createClient();
+  const supabase = await createClientAuth();
   const {
     data: { user },
     error: authError,

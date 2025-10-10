@@ -1,9 +1,11 @@
 import "../globals.css";
 import { Merriweather, Raleway } from "next/font/google";
-import Footer from "./components/Footer";
-import FixedBottom from "./components/FixedBottom";
-import Navbar from "./components/Navbar";
-import { createClient } from "@/utils/supabase/client";
+
+import Footer from "@component/Footer";
+import FixedBottom from '@component/FixedBottom';
+import Navbar from "@component/Navbar";
+
+import { getSearchData } from '@/utils/supabase/fetch/searchSuggestions';
 
 const merriweather = Merriweather({
   subsets: ["latin"],
@@ -24,21 +26,13 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-
-  const { data: searchData, error } = await supabase
-    .from("search_index")
-    .select("title, url");
-
-  if (error) {
-    console.error("Failed to fetch search data:", error);
-  }
+  const fromSearch = await getSearchData();
 
   return (
     <div
       className={`${raleway.variable} ${merriweather.variable} antialiased bg-[#e6e6e6] scroll-smooth`}
     >
-      <Navbar searchPages={searchData || []} />
+      <Navbar searchPages={fromSearch || []} />
       {children}
       <Footer />
       <FixedBottom />

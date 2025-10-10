@@ -1,8 +1,8 @@
 export const revalidate = 86400;
 
-import { getKurikulumData } from "@/utils/supabase/fetches";
+import { getKurikulumData } from "@/utils/supabase/fetch/kurikulum";
 import { Metadata } from "next";
-import QuillRenderer from "@/app/(main)/components/QuillRenderer";
+import QuillRenderer from "@component/QuillRenderer";
 
 interface PageProps {
   params: { id: string };

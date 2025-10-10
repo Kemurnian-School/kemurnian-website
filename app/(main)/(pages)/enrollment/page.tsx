@@ -1,8 +1,8 @@
 export const revalidate = 86400;
 
-import { getEnrollmentData } from "@/utils/supabase/fetches"
+import { getEnrollmentData } from "@/utils/supabase/fetch/enrollment"
 import Image from "next/image";
-import QuillRenderer from "@/app/(main)/components/QuillRenderer";
+import QuillRenderer from "@component/QuillRenderer";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

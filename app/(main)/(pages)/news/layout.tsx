@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import CategoryFilter from "@/app/(main)/components/NewsCategoryFilter";
+import CategoryFilter from "@component/NewsCategoryFilter";
 
 export const metadata: Metadata = {
   title: "News",

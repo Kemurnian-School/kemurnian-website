@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { uploadHeroBanner } from './actions'
+import { uploadHeroBanner } from '@server/hero/uploadHeroBanner';
 import { compressImageToWebP } from '@/utils/ImageCompression'
 
 export default function EditHeroBannerForm() {
@@ -246,8 +246,8 @@ export default function EditHeroBannerForm() {
           onClick={handleSubmit}
           disabled={isSubmitting || isAnyCompressing}
           className={`px-4 py-2 rounded text-white transition-colors ${isSubmitting || isAnyCompressing
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700'
+            ? 'bg-gray-400 cursor-not-allowed'
+            : 'bg-blue-600 hover:bg-blue-700'
             }`}
         >
           {isSubmitting ? 'Saving...' : isAnyCompressing ? 'Compressing...' : 'Save Hero Banner'}

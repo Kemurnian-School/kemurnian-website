@@ -1,20 +1,20 @@
 export const revalidate = 86400;
 
 import { Metadata } from "next";
-import HeroSliders from "./components/HeroSliders";
-import SchoolsInfo from "./components/SchoolsInfo";
-import KurikulumList from "./components/KurikulumList";
-import NewsPreview from "./components/NewsPreview";
-import ButtonPrimary from "./components/ButtonPrimary";
-import SectionHeader from "./components/SectionHeader";
 import Image from "next/image";
 
-import {
-  getHeroData,
-  getKurikulumData,
-  getLatestNewsData,
-  getEnrollmentData
-} from "@/utils/supabase/fetches";
+import HeroSliders from "@component/HeroSliders";
+import SchoolsInfo from "@component/SchoolsInfo";
+import KurikulumList from "@component/KurikulumList";
+import NewsPreview from "@component/NewsPreview";
+import ButtonPrimary from "@component/ButtonPrimary";
+import SectionHeader from "@component/SectionHeader";
+
+// data fetches import
+import { getHeroData } from "@/utils/supabase/fetch/hero"
+import { getKurikulumData } from "@/utils/supabase/fetch/kurikulum"
+import { getLatestNewsData } from "@/utils/supabase/fetch/news"
+import { getEnrollmentData } from "@/utils/supabase/fetch/enrollment"
 
 export const metadata: Metadata = {
   title: "Sekolah Kemurnian",

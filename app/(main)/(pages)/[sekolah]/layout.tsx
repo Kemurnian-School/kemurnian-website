@@ -2,7 +2,7 @@ export const revalidate = 86400;
 
 import { Metadata } from "next";
 import schoolsData from "../schools.json";
-import SectionHeader from "../../components/SectionHeader";
+import SectionHeader from "@component/SectionHeader";
 
 interface LayoutProps {
   children: React.ReactNode;

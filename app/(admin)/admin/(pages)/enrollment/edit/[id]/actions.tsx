@@ -1,6 +1,6 @@
 'use server'
 import { revalidatePath } from 'next/cache'
-import { createClient } from '@/utils/supabase/server'
+import { createClientAuth } from '@/utils/supabase/server'
 import { getR2Client } from '@/utils/r2/client'
 import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
 
@@ -50,7 +50,7 @@ async function deleteFile(url: string) {
 }
 
 export async function updateEnrollment(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = await createClientAuth()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) throw new Error('Unauthorized')
 
@@ -110,7 +110,7 @@ export async function deleteEnrollmentImage(formData: FormData) {
   const id = formData.get('id') as string
   if (!id) throw new Error('Missing enrollment ID')
 
-  const supabase = await createClient()
+  const supabase = await createClientAuth()
   const { data: { user }, error: userError } = await supabase.auth.getUser()
   if (!user || userError) throw new Error('Unauthorized')
 

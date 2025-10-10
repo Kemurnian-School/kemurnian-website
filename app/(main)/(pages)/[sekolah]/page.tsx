@@ -2,10 +2,10 @@ export const revalidate = 86400;
 
 import Link from "next/link";
 import schoolsData from "../schools.json";
-import SchoolCard from "../../components/SchoolCard";
-import ImageCardSlider from "../../components/ImageCardSlider";
+import SchoolCard from "@component/SchoolCard";
+import ImageCardSlider from "@component/ImageCardSlider";
 import { createClient } from "@/utils/supabase/client";
-import SectionHeader from "../../components/SectionHeader";
+import SectionHeader from "@component/SectionHeader";
 
 interface Props {
   params: Promise<{ sekolah: string }>;

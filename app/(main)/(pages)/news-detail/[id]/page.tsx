@@ -1,10 +1,10 @@
 export const revalidate = 86400;
 
 import { Metadata } from "next";
-import QuillRenderer from "@/app/(main)/components/QuillRenderer";
-import ImageCardSlider from "@/app/(main)/components/ImageCardSlider";
-import NewsPreview from "@/app/(main)/components/NewsPreview";
-import { getNewsData } from "@/utils/supabase/fetches";
+import QuillRenderer from "@component/QuillRenderer";
+import ImageCardSlider from "@component/ImageCardSlider";
+import NewsPreview from "@component/NewsPreview";
+import { getNewsData } from "@/utils/supabase/fetch/news";
 
 interface PageProps {
   params: { id: string };

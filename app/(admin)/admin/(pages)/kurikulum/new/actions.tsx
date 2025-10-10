@@ -1,10 +1,10 @@
 'use server'
 import { revalidatePath } from 'next/cache'
-import { createClient } from '@/utils/supabase/server'
+import { createClientAuth } from '@/utils/supabase/server'
 
 export async function uploadKurikulum(formData: FormData) {
   try {
-    const supabase = await createClient()
+    const supabase = await createClientAuth()
     const { data: { session }, error: sessionError } = await supabase.auth.getSession()
     if (sessionError) {
       console.log("Session error:", sessionError)

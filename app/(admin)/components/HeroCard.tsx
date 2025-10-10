@@ -1,7 +1,7 @@
 'use client'
 import { useRef, useState } from 'react'
 import Image from 'next/image'
-import { deleteHeroBanner } from '@/app/(admin)/admin/(pages)/hero/create/actions'
+import { deleteHeroBanner } from '@server/hero/deleteHeroBanner'
 import { Hero } from './heroUtils/types'
 
 interface Props {

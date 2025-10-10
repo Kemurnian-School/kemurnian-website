@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from 'next/navigation'
-import { createClient } from "@/utils/supabase/server";
+import { createClientAuth } from "@/utils/supabase/server";
 import { getR2Client } from "@/utils/r2/client";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 
@@ -13,7 +13,7 @@ function extractR2KeyFromUrl(url: string): string {
 }
 
 export async function deleteNews(newsId: string) {
-  const supabase = await createClient();
+  const supabase = await createClientAuth();
   const {
     data: { user },
     error: authError,

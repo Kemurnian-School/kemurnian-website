@@ -1,7 +1,8 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
-import { reorderHeroBanners, deleteHeroBanner } from '@/app/(admin)/admin/(pages)/hero/create/actions'
+import { reorderHeroBanners } from '@server/hero/reorderHeroBanners';
+import { deleteHeroBanner } from '@server/hero/deleteHeroBanner'
 
 interface Hero {
   id: number

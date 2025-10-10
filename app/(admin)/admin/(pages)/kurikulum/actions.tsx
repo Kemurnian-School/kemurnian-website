@@ -1,10 +1,10 @@
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
+import { createClientAuth } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 
 export async function deleteKurikulum(id: number) {
-  const supabase = await createClient()
+  const supabase = await createClientAuth()
 
   // Ensure user is authenticated
   const {

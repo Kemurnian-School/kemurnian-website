@@ -1,13 +1,13 @@
 import KurikulumList from "@/app/(admin)/components/KurikulumList";
-import { createClient } from "@/utils/supabase/server";
+import { createClientAuth } from "@/utils/supabase/server";
 
 export default async function AdminKurikulum() {
-  const supabase = await createClient();
+  const supabase = await createClientAuth();
   const { data: kurikulums, error } = await supabase
     .from("kurikulum")
     .select("*")
     .order("created_at", { ascending: false });
-  
+
   if (error) {
     throw new Error("Failed to load kurikulums");
   }
