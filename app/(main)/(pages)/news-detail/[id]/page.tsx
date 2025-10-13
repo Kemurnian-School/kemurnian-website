@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import QuillRenderer from "@component/QuillRenderer";
 import ImageCardSlider from "@component/ImageCardSlider";
 import NewsPreview from "@component/NewsPreview";
-import { getNewsData } from "@/utils/supabase/fetch/news";
+import { getNewsData } from "@/utils/supabase/fetch/client/news";
 
 interface PageProps {
   params: { id: string };

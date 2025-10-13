@@ -11,10 +11,10 @@ import ButtonPrimary from "@component/ButtonPrimary";
 import SectionHeader from "@component/SectionHeader";
 
 // data fetches import
-import { getHeroData } from "@/utils/supabase/fetch/hero"
-import { getKurikulumData } from "@/utils/supabase/fetch/kurikulum"
-import { getLatestNewsData } from "@/utils/supabase/fetch/news"
-import { getEnrollmentData } from "@/utils/supabase/fetch/enrollment"
+import { getHeroData } from "@fetch/client/hero"
+import { getKurikulumData } from "@fetch/client/kurikulum"
+import { getLatestNewsData } from "@fetch/client/news"
+import { getEnrollmentData } from "@fetch/client/enrollment"
 
 export const metadata: Metadata = {
   title: "Sekolah Kemurnian",

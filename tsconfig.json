@@ -21,6 +21,7 @@
     "paths": {
       "@/*": ["./*"],
       "@server/*": ["./app/(admin)/_actions/*"],
+      "@fetch/*": ["./utils/supabase/fetch/*"],
       "@component/*": ["./app/(main)/components/*"]
     }
   },
