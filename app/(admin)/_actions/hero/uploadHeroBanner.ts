@@ -4,6 +4,12 @@ import { revalidatePath } from 'next/cache'
 import { uploadToR2 } from '@/utils/r2/upload'
 import { getHeroRepository } from '@/utils/supabase/repository/hero'
 
+/**
+ * Creates a new hero banner entry in the database.
+ * Uploads the provided desktop/tablet/mobile images to R2,
+ * assigns the next available display order,
+ * and revalidates the admin pages.
+ */
 export async function uploadHeroBanner(formData: FormData) {
   const headerText = formData.get('headerText') as string
   const buttonText = formData.get('buttonText') as string

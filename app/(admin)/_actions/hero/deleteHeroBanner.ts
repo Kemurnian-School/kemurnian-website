@@ -5,6 +5,10 @@ import { redirect } from 'next/navigation'
 import { deleteFromR2 } from '@/utils/r2/delete'
 import { getHeroRepository } from '@/utils/supabase/repository/hero'
 
+/**
+ * Deletes a hero banner and all associated images from R2.
+ * Also reorders remaining banners and revalidates the admin pages.
+ */
 export async function deleteHeroBanner(formData: FormData) {
   const id = formData.get('id') as string
   if (!id) throw new Error('Missing hero banner ID')
