@@ -7,7 +7,7 @@ import { getAuthorizedClient } from '@/utils/supabase/auth'
  */
 
 export interface HeroBannerFetch {
-  id: number | null
+  id: number
   image_urls: string
   order: number
   header_text: string
@@ -40,18 +40,14 @@ export async function heroRepository() {
      * Fetch a all hero banners.
      * Returns null if the record is not found.
      */
-    async getAllImages(): Promise<HeroBannerFetch[] | null> {
+    async getAllImages(): Promise<HeroBannerFetch[]> {
       const { data, error } = await supabase
         .from('hero_sliders')
         .select('id, image_urls, order, header_text')
         .order('order', { ascending: true })
 
-      if (error) {
-        if (error.code === 'PGRST116') return null // no rows found
-        throw error
-      }
-
-      return data
+      if (error) throw error
+      return data || []
     },
 
     /**
