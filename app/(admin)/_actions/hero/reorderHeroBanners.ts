@@ -1,7 +1,7 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import { getHeroRepository } from '@/utils/supabase/repository/hero'
+import { heroRepository } from '@/utils/supabase/repository/hero'
 
 /**
  * Reorders hero banners based on a list of IDs from the client.
@@ -12,7 +12,7 @@ export async function reorderHeroBanners(formData: FormData) {
   if (!orderStr) return
 
   try {
-    const repo = await getHeroRepository()
+    const repo = await heroRepository()
     const orderedIds: number[] = JSON.parse(orderStr)
 
     // Validate IDs

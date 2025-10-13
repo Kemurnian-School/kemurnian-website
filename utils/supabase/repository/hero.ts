@@ -1,10 +1,18 @@
 'use server'
 
-import { createClientAuth } from '@/utils/supabase/server'
+import { getAuthorizedClient } from '@/utils/supabase/auth'
 
 /**
  * Represents a single record in the "hero_sliders" table.
  */
+
+export interface HeroBannerFetch {
+  id: number | null
+  image_urls: string
+  order: number
+  header_text: string
+}
+
 export interface HeroBannerRecord {
   id?: string
   header_text?: string
@@ -16,21 +24,35 @@ export interface HeroBannerRecord {
   order?: number
 }
 
+
 /**
  * Provides safe and authenticated access to the "hero_sliders" table.
  * This wraps Supabase operations into clearly named methods.
  */
-export async function getHeroRepository() {
-  const supabase = await createClientAuth()
-  const { data: { user }, error: authError } = await supabase.auth.getUser()
-
-  if (authError || !user) {
-    throw new Error('Unauthorized: user session is missing or invalid.')
-  }
+export async function heroRepository() {
+  const { supabase, user } = await getAuthorizedClient()
 
   return {
     supabase,
     user,
+
+    /**
+     * Fetch a all hero banners.
+     * Returns null if the record is not found.
+     */
+    async getAllImages(): Promise<HeroBannerFetch[] | null> {
+      const { data, error } = await supabase
+        .from('hero_sliders')
+        .select('id, image_urls, order, header_text')
+        .order('order', { ascending: true })
+
+      if (error) {
+        if (error.code === 'PGRST116') return null // no rows found
+        throw error
+      }
+
+      return data
+    },
 
     /**
      * Fetch a single hero banner by ID.

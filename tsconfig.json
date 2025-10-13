@@ -22,6 +22,7 @@
       "@/*": ["./*"],
       "@server/*": ["./app/(admin)/_actions/*"],
       "@fetch/*": ["./utils/supabase/fetch/*"],
+      "@repository/*": ["./utils/supabase/repository/*"]
       "@component/*": ["./app/(main)/components/*"],
       "@admin/*": ["./app/(admin)/*"]
     }

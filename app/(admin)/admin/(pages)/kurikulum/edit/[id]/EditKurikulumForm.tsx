@@ -1,14 +1,14 @@
 'use client'
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
-import { updateKurikulum } from './actions'
+import { updateKurikulum } from '@server/kurikulum/updateKurikulum'
 import Link from 'next/link'
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
 import 'react-quill-new/dist/quill.snow.css'
 
 interface Kurikulum {
-  id: string
+  id: number
   title: string
   body: string
   preview?: string | null
@@ -45,7 +45,7 @@ export default function EditKurikulumForm({ initialData }: { initialData: Kuriku
 
     try {
       const formData = new FormData()
-      formData.append('id', initialData.id)
+      Number(formData.get('id'))
       formData.append('title', title)
       formData.append('body', content)
       if (preview !== null) formData.append('preview', preview)

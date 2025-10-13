@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { uploadKurikulum } from './actions'
+import { uploadKurikulum } from '@server/kurikulum/createKurikulum'
 import dynamic from 'next/dynamic'
 
 const ReactQuill = dynamic(() => import('react-quill-new'), {

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { uploadToR2 } from '@/utils/r2/upload'
-import { getHeroRepository } from '@/utils/supabase/repository/hero'
+import { heroRepository } from '@repository/hero'
 
 /**
  * Creates a new hero banner entry in the database.
@@ -22,15 +22,15 @@ export async function uploadHeroBanner(formData: FormData) {
   if (!desktopFile) throw new Error('A desktop image is required')
 
   try {
-    const heroRepo = await getHeroRepository()
+    const repo = await heroRepository()
 
     const desktopUrl = await uploadToR2(desktopFile, 'hero-banners', { subfolder: 'desktop' })
     const tabletUrl = await uploadToR2(tabletFile, 'hero-banners', { subfolder: 'tablet' })
     const mobileUrl = await uploadToR2(mobileFile, 'hero-banners', { subfolder: 'mobile' })
 
-    const nextOrder = await heroRepo.getNextOrderNumber()
+    const nextOrder = await repo.getNextOrderNumber()
 
-    await heroRepo.createHeroBanner({
+    await repo.createHeroBanner({
       header_text: headerText,
       href_text: hrefText,
       button_text: buttonText,

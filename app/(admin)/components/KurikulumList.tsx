@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, startTransition } from 'react'
-import { deleteKurikulum } from '@/app/(admin)/admin/(pages)/kurikulum/actions'
+import { deleteKurikulum } from '@server/kurikulum/deleteKurikulum'
 
 interface Kurikulum {
   id: number
@@ -104,8 +104,8 @@ export default function KurikulumList({ initialKurikulums }: { initialKurikulums
                     onClick={() => handleDelete(item.id)}
                     disabled={loadingId === item.id}
                     className={`${loadingId === item.id
-                        ? 'opacity-50 cursor-not-allowed'
-                        : 'text-red-600 hover:text-red-800 hover:bg-red-50'
+                      ? 'opacity-50 cursor-not-allowed'
+                      : 'text-red-600 hover:text-red-800 hover:bg-red-50'
                       } p-2 rounded-full transition-colors duration-200`}
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

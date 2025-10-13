@@ -1,16 +1,10 @@
 import HeroList from '@admin/components/HeroList'
-import { createClientAuth } from '@/utils/supabase/server'
+import { heroRepository } from '@repository/hero'
 
 export default async function AdminHero() {
-  const supabase = await createClientAuth()
-  const { data: images, error } = await supabase
-    .from('hero_sliders')
-    .select('id, image_urls, order, header_text')
-    .order('order', { ascending: true })
 
-  if (error) {
-    throw new Error('Failed to load images')
-  }
+  const heroRepo = await heroRepository();
+  const images = await heroRepo.getAllImages();
 
   return (
     <div className="p-8 bg-gray-100 min-h-screen">

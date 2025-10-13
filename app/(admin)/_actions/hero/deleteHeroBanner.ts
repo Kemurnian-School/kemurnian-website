@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { deleteFromR2 } from '@/utils/r2/delete'
-import { getHeroRepository } from '@/utils/supabase/repository/hero'
+import { heroRepository } from '@/utils/supabase/repository/hero'
 
 /**
  * Deletes a hero banner and all associated images from R2.
@@ -14,8 +14,8 @@ export async function deleteHeroBanner(formData: FormData) {
   if (!id) throw new Error('Missing hero banner ID')
 
   try {
-    const heroRepo = await getHeroRepository()
-    const record = await heroRepo.getById(id)
+    const repo = await heroRepository()
+    const record = await repo.getById(id)
     if (!record) throw new Error('Hero banner not found')
 
     // Delete all images from R2 concurrently
@@ -28,10 +28,10 @@ export async function deleteHeroBanner(formData: FormData) {
     )
 
     // Delete from database
-    await heroRepo.deleteById(id)
+    await repo.deleteById(id)
 
     // Normalize remaining order
-    await heroRepo.normalizeOrder()
+    await repo.normalizeOrder()
 
     // Revalidate pages
     revalidatePath('/admin/hero')
