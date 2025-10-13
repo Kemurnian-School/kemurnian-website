@@ -1,15 +1,10 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { createClientAuth } from '@/utils/supabase/server'
-import { uploadImage } from './helper/uploadImage'
+import { uploadToR2 } from '@/utils/r2/upload'
+import { getHeroRepository } from '@/utils/supabase/repository/hero'
 
 export async function uploadHeroBanner(formData: FormData) {
-  const supabase = await createClientAuth()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) throw new Error('Unauthorized')
-
   const headerText = formData.get('headerText') as string
   const buttonText = formData.get('buttonText') as string
   const hrefText = formData.get('hrefText') as string
@@ -21,32 +16,23 @@ export async function uploadHeroBanner(formData: FormData) {
   if (!desktopFile) throw new Error('A desktop image is required')
 
   try {
-    const desktopUrl = await uploadImage(desktopFile, 'desktop')
-    const tabletUrl = await uploadImage(tabletFile, 'tablet')
-    const mobileUrl = await uploadImage(mobileFile, 'mobile')
+    const heroRepo = await getHeroRepository()
 
-    const { data: maxOrderData } = await supabase
-      .from('hero_sliders')
-      .select('order')
-      .order('order', { ascending: false })
-      .limit(1)
-      .single()
+    const desktopUrl = await uploadToR2(desktopFile, 'hero-banners', { subfolder: 'desktop' })
+    const tabletUrl = await uploadToR2(tabletFile, 'hero-banners', { subfolder: 'tablet' })
+    const mobileUrl = await uploadToR2(mobileFile, 'hero-banners', { subfolder: 'mobile' })
 
-    const nextOrder = maxOrderData ? maxOrderData.order + 1 : 1
+    const nextOrder = await heroRepo.getNextOrderNumber()
 
-    const { error: insertError } = await supabase
-      .from('hero_sliders')
-      .insert({
-        header_text: headerText,
-        href_text: hrefText,
-        button_text: buttonText,
-        image_urls: desktopUrl,
-        tablet_image_urls: tabletUrl,
-        mobile_image_urls: mobileUrl,
-        order: nextOrder,
-      })
-
-    if (insertError) throw insertError
+    await heroRepo.createHeroBanner({
+      header_text: headerText,
+      href_text: hrefText,
+      button_text: buttonText,
+      image_urls: desktopUrl,
+      tablet_image_urls: tabletUrl,
+      mobile_image_urls: mobileUrl,
+      order: nextOrder,
+    })
 
     revalidatePath('/admin/hero')
     revalidatePath('/admin')

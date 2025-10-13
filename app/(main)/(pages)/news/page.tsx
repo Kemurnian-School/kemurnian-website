@@ -1,7 +1,7 @@
 export const revalidate = 86400;
 
 import NewsList from "./NewsList";
-import { getNewsData } from "@/utils/supabase/fetch/client/news";
+import { getNewsData } from "@/utils/supabase/fetch/news";
 
 const ITEMS_PER_PAGE = 12;
 

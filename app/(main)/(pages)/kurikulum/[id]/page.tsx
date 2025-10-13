@@ -1,6 +1,6 @@
 export const revalidate = 86400;
 
-import { getKurikulumData } from "@fetch/client/kurikulum";
+import { getKurikulumData } from "@/utils/supabase/fetch/kurikulum";
 import { Metadata } from "next";
 import QuillRenderer from "@component/QuillRenderer";
 

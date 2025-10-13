@@ -1,4 +1,4 @@
-import HeroList from '@/app/(admin)/components/HeroList'
+import HeroList from '@admin/components/HeroList'
 import { createClientAuth } from '@/utils/supabase/server'
 
 export default async function AdminHero() {

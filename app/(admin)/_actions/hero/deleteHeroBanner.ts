@@ -1,68 +1,41 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { createClientAuth } from '@/utils/supabase/server'
-import { deleteImage } from './helper/deleteImage'
 import { redirect } from 'next/navigation'
+import { deleteFromR2 } from '@/utils/r2/delete'
+import { getHeroRepository } from '@/utils/supabase/repository/hero'
 
 export async function deleteHeroBanner(formData: FormData) {
   const id = formData.get('id') as string
-  const supabase = await createClientAuth()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) throw new Error('Unauthorized')
+  if (!id) throw new Error('Missing hero banner ID')
 
   try {
-    const { data: record, error: fetchError } = await supabase
-      .from('hero_sliders')
-      .select('id, image_urls, tablet_image_urls, mobile_image_urls')
-      .eq('id', id)
-      .single()
+    const heroRepo = await getHeroRepository()
+    const record = await heroRepo.getById(id)
+    if (!record) throw new Error('Hero banner not found')
 
-    if (fetchError) throw fetchError
+    // Delete all images from R2 concurrently
+    const urls = [record.image_urls, record.tablet_image_urls, record.mobile_image_urls]
 
-    if (record) {
-      const urlsToDelete: string[] = []
-      if (record.image_urls) urlsToDelete.push(record.image_urls)
-      if (record.tablet_image_urls) urlsToDelete.push(record.tablet_image_urls)
-      if (record.mobile_image_urls) urlsToDelete.push(record.mobile_image_urls)
+    await Promise.all(
+      urls
+        .filter((url): url is string => Boolean(url))
+        .map((url) => deleteFromR2(url))
+    )
 
-      await Promise.all(
-        urlsToDelete.map(async (url) => {
-          try {
-            await deleteImage(url)
-          } catch (err) {
-            console.error(`Failed to delete R2 object: ${url}`, err)
-          }
-        })
-      )
-    }
+    // Delete from database
+    await heroRepo.deleteById(id)
 
-    const { error: deleteError } = await supabase
-      .from('hero_sliders')
-      .delete()
-      .eq('id', id)
+    // Normalize remaining order
+    await heroRepo.normalizeOrder()
 
-    if (deleteError) throw deleteError
-
-    const { data: remaining } = await supabase
-      .from('hero_sliders')
-      .select('id')
-      .order('order', { ascending: true })
-
-    if (remaining && remaining.length > 0) {
-      const updates = remaining.map((item, index) =>
-        supabase.from('hero_sliders').update({ order: index + 1 }).eq('id', item.id)
-      )
-      await Promise.all(updates)
-    }
-
+    // Revalidate pages
     revalidatePath('/admin/hero')
     revalidatePath('/admin')
-
   } catch (error) {
     console.error('Delete failed:', error)
     throw error
   }
+
   redirect('/admin/hero?success=' + encodeURIComponent('Hero banner deleted successfully!'))
 }

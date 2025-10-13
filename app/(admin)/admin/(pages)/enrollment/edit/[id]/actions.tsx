@@ -5,7 +5,7 @@ import { getR2Client } from '@/utils/r2/client'
 import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
 
 const BUCKET = process.env.R2_BUCKET_NAME!
-const CDN_URL = process.env.R2_CDN! // e.g. https://cdn.mystiatesting.online
+const CDN_URL = process.env.R2_CDN!
 
 function extractKeyFromUrl(url: string): string {
   return url.replace(`${CDN_URL}/`, '')
@@ -66,10 +66,8 @@ export async function updateEnrollment(formData: FormData) {
 
   let image_url: string | null = null
 
-  // Upload new image if provided
   if (newImage && newImage.size > 0) {
     try {
-      // Get existing record to delete old image
       const { data: existingRecord } = await supabase
         .from('enrollment')
         .select('image_url')
@@ -87,7 +85,6 @@ export async function updateEnrollment(formData: FormData) {
     }
   }
 
-  // Update database
   const { error: updateError } = await supabase
     .from('enrollment')
     .update({
@@ -114,7 +111,6 @@ export async function deleteEnrollmentImage(formData: FormData) {
   const { data: { user }, error: userError } = await supabase.auth.getUser()
   if (!user || userError) throw new Error('Unauthorized')
 
-  // Fetch the enrollment record
   const { data: record, error: selectError } = await supabase
     .from('enrollment')
     .select('id, image_url')

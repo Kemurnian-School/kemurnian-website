@@ -5,7 +5,7 @@ import Footer from "@component/Footer";
 import FixedBottom from '@component/FixedBottom';
 import Navbar from "@component/Navbar";
 
-import { getSearchData } from '@fetch/client/searchSuggestions';
+import { getSearchData } from '@/utils/supabase/fetch/searchSuggestions';
 
 const merriweather = Merriweather({
   subsets: ["latin"],

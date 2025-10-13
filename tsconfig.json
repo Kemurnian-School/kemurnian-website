@@ -22,7 +22,8 @@
       "@/*": ["./*"],
       "@server/*": ["./app/(admin)/_actions/*"],
       "@fetch/*": ["./utils/supabase/fetch/*"],
-      "@component/*": ["./app/(main)/components/*"]
+      "@component/*": ["./app/(main)/components/*"],
+      "@admin/*": ["./app/(admin)/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
