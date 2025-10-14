@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/utils/supabase/client'
-import { deleteFacility } from './delete/deleteFunction'
+import { deleteFacility } from '@server/fasilitas/deleteFasilitas'
 
 interface Fasilitas {
   id: string
@@ -55,7 +55,7 @@ export default function FasilitasPage() {
 
   async function handleDelete(id: string, sekolah: string) {
     try {
-      await deleteFacility(id) // calls server action
+      await deleteFacility(id)
 
       setData((prev) => ({
         ...prev,

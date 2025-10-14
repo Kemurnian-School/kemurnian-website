@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { uploadFacilities } from "./actions";
+import { uploadFacilities } from '@/app/(admin)/_actions/fasilitas/createFasilitas';
 import { compressMultipleImages } from "@/utils/ImageCompression";
 
 const sekolahOptions = [
@@ -285,8 +285,8 @@ export default function NewFacilitiesForm() {
             onClick={handleSubmit}
             disabled={isSubmitting || isCompressing || images.length === 0}
             className={`px-6 py-3 rounded text-white font-medium transition-colors ${isSubmitting || isCompressing || images.length === 0
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
               }`}
           >
             {isSubmitting

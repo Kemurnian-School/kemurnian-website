@@ -25,6 +25,7 @@
       "@repository/*": ["./utils/supabase/repository/*"],
       "@component/*": ["./app/(main)/components/*"],
       "@admin/*": ["./app/(admin)/*"]
+      "@models/*": ["./app/(admin)/models/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
