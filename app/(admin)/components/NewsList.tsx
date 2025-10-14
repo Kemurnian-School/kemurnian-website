@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { deleteNews } from "@/app/(admin)/admin/(pages)/news/actions";
+import { useState } from 'react';
+import { deleteNews } from '@server/news/deleteNews';
 
 interface News {
   id: number;
@@ -9,7 +9,7 @@ interface News {
   date: string;
   from: string;
   image_urls: string[];
-  embed?: string;
+  embed?: string | null;
   created_at: string;
 }
 
@@ -20,7 +20,7 @@ export default function NewsList({ initialNews }: { initialNews: News[] }) {
     if (!confirm("Are you sure you want to delete this news?")) return;
 
     try {
-      await deleteNews(id.toString());
+      await deleteNews(id);
 
       setNews((prev) => prev.filter((n) => n.id !== id));
     } catch (error) {

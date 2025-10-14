@@ -8,10 +8,10 @@ interface PageProps {
 }
 
 export default async function EditKurikulumPage({ params }: PageProps) {
-  const kurikulumRepo = await kurikulumRepository()
+  const repo = await kurikulumRepository()
   const id = Number(params.id)
 
-  const data = await kurikulumRepo.getById(id)
+  const data = await repo.getById(id)
 
   if (!data) {
     return <div className="p-4 text-red-600">Failed to load kurikulum data</div>

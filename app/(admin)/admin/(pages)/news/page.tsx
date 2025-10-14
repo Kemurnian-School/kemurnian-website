@@ -1,16 +1,9 @@
 import NewsList from "@/app/(admin)/components/NewsList";
-import { createClientAuth } from "@/utils/supabase/server";
+import { newsRepository } from "@repository/news"
 
 export default async function AdminNews() {
-  const supabase = await createClientAuth();
-  const { data: news, error } = await supabase
-    .from("news")
-    .select("*")
-    .order("date", { ascending: false });
-
-  if (error) {
-    throw new Error("Failed to load news");
-  }
+  const repo = await newsRepository()
+  const news = await repo.getAll()
 
   return (
     <section className="p-8 bg-gray-100 min-h-screen">

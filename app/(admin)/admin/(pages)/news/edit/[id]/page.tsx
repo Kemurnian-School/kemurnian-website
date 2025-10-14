@@ -1,22 +1,21 @@
-import { createClientAuth } from '@/utils/supabase/server'
+import { newsRepository } from '@repository/news'
 import EditNewsForm from './EditNewsForm'
 
 interface PageProps {
-  params: Promise<{ id: string }>
+  params: { id: number }
 }
 
-export default async function EditNewsPage(props: PageProps) {
-  const params = await props.params;
-  const supabase = await createClientAuth()
-  const { data, error } = await supabase
-    .from('news')
-    .select('*')
-    .eq('id', params.id)
-    .single()
+export default async function EditNewsPage({ params }: PageProps) {
+  const repo = await newsRepository()
+  const newsItem = await repo.getById(params.id)
 
-  if (error || !data) {
-    return <div className="p-4 text-red-600">Failed to load news data</div>
+  if (!newsItem) {
+    return (
+      <div className="p-4 text-red-600">
+        News not found or failed to load.
+      </div>
+    )
   }
 
-  return <EditNewsForm initialData={data} />
+  return <EditNewsForm initialData={newsItem} />
 }

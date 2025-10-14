@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { uploadNews } from './actions'
+import { uploadNews } from '@server/news/createNews'
 import dynamic from 'next/dynamic'
 import { compressMultipleImages } from '@/utils/ImageCompression'
 
@@ -10,9 +10,10 @@ const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
 import 'react-quill-new/dist/quill.snow.css'
 
 const fromOptions = [
+  'General',
   'TK Kemurnian', 'SD Kemurnian', 'SMP Kemurnian', 'Kemurnian',
   'TK Kemurnian II', 'SD Kemurnian II', 'SMP Kemurnian II', 'SMA Kemurnian II', 'Kemurnian II',
-  'TK Kemurnian III', 'SD Kemurnian III', 'Kemurnian III', 'General'
+  'TK Kemurnian III', 'SD Kemurnian III', 'Kemurnian III'
 ]
 
 export default function NewNewsForm() {
