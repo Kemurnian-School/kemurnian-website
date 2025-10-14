@@ -2,7 +2,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
-import { updateEnrollment, deleteEnrollmentImage } from './actions'
+import { updateEnrollment } from '@server/enrollment/enrollmentUpdate'
+import { deleteEnrollmentImage } from '@server/enrollment/enrollmentImageDelete'
 import 'react-quill-new/dist/quill.snow.css'
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
