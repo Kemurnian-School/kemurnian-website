@@ -1,3 +1,4 @@
+export const revalidate = 86400;
 import { createClient } from '@/utils/supabase/client';
 
 const supabase = createClient();
