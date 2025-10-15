@@ -1,3 +1,4 @@
+export const revalidate = 86400;
 import { Metadata } from "next";
 import CategoryFilter from "@component/NewsCategoryFilter";
 
@@ -21,4 +22,3 @@ export default function NewsLayout({
     </div>
   );
 }
-
