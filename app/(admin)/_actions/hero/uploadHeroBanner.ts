@@ -1,8 +1,8 @@
-'use server'
+"use server";
 
-import { revalidatePath } from 'next/cache'
-import { uploadToR2 } from '@/utils/r2/upload'
-import { heroRepository } from '@repository/hero'
+import { revalidatePath } from "next/cache";
+import { uploadToR2 } from "@/utils/r2/upload";
+import { heroRepository } from "@repository/hero";
 
 /**
  * Creates a new hero banner entry in the database.
@@ -11,39 +11,45 @@ import { heroRepository } from '@repository/hero'
  * and revalidates the admin pages.
  */
 export async function uploadHeroBanner(formData: FormData) {
-  const headerText = formData.get('headerText') as string
-  const buttonText = formData.get('buttonText') as string
-  const hrefText = formData.get('hrefText') as string
+  const headerText = formData.get("headerText") as string;
+  const buttonText = formData.get("buttonText") as string;
+  const hrefText = formData.get("hrefText") as string;
 
-  const desktopFile = formData.get('desktopImage') as File | null
-  const tabletFile = formData.get('tabletImage') as File | null
-  const mobileFile = formData.get('mobileImage') as File | null
+  const desktopFile = formData.get("desktopImage") as File;
+  const tabletFile = formData.get("tabletImage") as File | null;
+  const mobileFile = formData.get("mobileImage") as File | null;
 
-  if (!desktopFile) throw new Error('A desktop image is required')
+  if (!desktopFile) throw new Error("A desktop image is required");
 
   try {
-    const repo = await heroRepository()
+    const repo = await heroRepository();
 
-    const desktopUrl = await uploadToR2(desktopFile, 'hero-banners', { subfolder: 'desktop' })
-    const tabletUrl = await uploadToR2(tabletFile, 'hero-banners', { subfolder: 'tablet' })
-    const mobileUrl = await uploadToR2(mobileFile, 'hero-banners', { subfolder: 'mobile' })
+    const desktopUrl = await uploadToR2(desktopFile, "hero-banners", {
+      subfolder: "desktop",
+    });
+    const tabletUrl = await uploadToR2(tabletFile, "hero-banners", {
+      subfolder: "tablet",
+    });
+    const mobileUrl = await uploadToR2(mobileFile, "hero-banners", {
+      subfolder: "mobile",
+    });
 
-    const nextOrder = await repo.getNextOrderNumber()
+    const nextOrder = await repo.getNextOrderNumber();
 
     await repo.createHeroBanner({
       header_text: headerText,
       href_text: hrefText,
       button_text: buttonText,
-      image_urls: desktopUrl,
+      image_urls: desktopUrl ?? "",
       tablet_image_urls: tabletUrl,
       mobile_image_urls: mobileUrl,
       order: nextOrder,
-    })
+    });
 
-    revalidatePath('/admin/hero')
-    revalidatePath('/admin')
+    revalidatePath("/admin/hero");
+    revalidatePath("/admin");
   } catch (error) {
-    console.error('Upload failed:', error)
-    throw error
+    console.error("Upload failed:", error);
+    throw error;
   }
 }

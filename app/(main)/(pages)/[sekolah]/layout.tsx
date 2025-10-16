@@ -6,12 +6,11 @@ import SectionHeader from "@component/SectionHeader";
 
 interface LayoutProps {
   children: React.ReactNode;
-  params: { sekolah: string };
+  params: Promise<{ sekolah: string }>;
 }
 
-export async function generateMetadata({
-  params,
-}: LayoutProps): Promise<Metadata> {
+export async function generateMetadata(props: LayoutProps): Promise<Metadata> {
+  const params = await props.params;
   const schoolId = params.sekolah;
   const data = schoolsData[schoolId as keyof typeof schoolsData];
 
@@ -27,10 +26,8 @@ export async function generateMetadata({
   };
 }
 
-export default async function SchoolsGeneralLayout({
-  children,
-  params,
-}: LayoutProps) {
+export default async function SchoolsGeneralLayout(props: LayoutProps) {
+  const params = await props.params;
   const schoolId = params.sekolah;
   const data = schoolsData[schoolId as keyof typeof schoolsData];
 
@@ -40,7 +37,7 @@ export default async function SchoolsGeneralLayout({
         <h1>{data?.title}</h1>
       </div>
       <SectionHeader title="UNIT SEKOLAH" as="h2" />
-      {children}
+      {props.children}
     </>
   );
 }
