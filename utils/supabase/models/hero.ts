@@ -6,12 +6,12 @@ export interface HeroBannerFetch {
 }
 
 export interface HeroBannerRecord {
-  id?: string;
-  header_text?: string;
-  href_text?: string;
-  button_text?: string;
-  image_urls?: string | null;
+  id: string;
+  header_text: string;
+  href_text: string;
+  button_text: string;
+  image_urls: string;
   tablet_image_urls?: string | null;
   mobile_image_urls?: string | null;
-  order?: number;
+  order: number;
 }

@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useRef } from "react";
-import { HeroImage } from "./HeroSlidersUtils/types";
+import type { HeroBannerRecord } from "@models/hero";
 import { useSlider } from "./HeroSlidersUtils/useSlider";
 import { useDrag } from "./HeroSlidersUtils/useDrag";
 import HeroSlide from "./HeroSlidersUtils/HeroSlide";
@@ -18,7 +18,7 @@ const NoBanners = () => (
 );
 
 interface HeroSlidersProps {
-  images?: HeroImage[];
+  images?: HeroBannerRecord[];
   interval?: number;
 }
 

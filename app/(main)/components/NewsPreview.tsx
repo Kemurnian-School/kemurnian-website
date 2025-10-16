@@ -1,17 +1,10 @@
 "use client";
 import Image from "next/image";
 import { getSnippet } from "@/utils/sanitize";
-
-interface News {
-  id: string | number;
-  title: string;
-  body: string;
-  image_urls: string[];
-  date: string;
-}
+import type { NewsRecord } from "@models/news";
 
 interface NewsPreviewProps {
-  news: News[];
+  news: NewsRecord[];
 }
 
 export default function NewsPreview({ news }: NewsPreviewProps) {
@@ -50,4 +43,3 @@ export default function NewsPreview({ news }: NewsPreviewProps) {
     </section>
   );
 }
-

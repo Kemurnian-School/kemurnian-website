@@ -1,7 +1,7 @@
-import { HeroImage } from "./types";
+import type { HeroBannerRecord } from "@models/hero";
 
 interface SliderDotsProps {
-  slides: HeroImage[];
+  slides: HeroBannerRecord[];
   currentIndex: number;
   goToSlide: (index: number) => void;
 }

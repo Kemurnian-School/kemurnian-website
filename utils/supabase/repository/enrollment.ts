@@ -10,7 +10,7 @@ export async function enrollmentRepository() {
     supabase,
     user,
 
-    async get(): Promise<EnrollmentRecord | null> {
+    async get(): Promise<EnrollmentRecord> {
       const { data, error } = await supabase
         .from("enrollment")
         .select("*")

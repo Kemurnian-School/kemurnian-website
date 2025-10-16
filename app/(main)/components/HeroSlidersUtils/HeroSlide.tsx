@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { HeroImage } from "./types";
+import type { HeroBannerRecord } from "@models/hero";
 
 interface HeroSlideProps {
-  slide: HeroImage;
+  slide: HeroBannerRecord;
   priority?: boolean;
 }
 

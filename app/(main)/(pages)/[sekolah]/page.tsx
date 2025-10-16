@@ -7,19 +7,18 @@ import ImageCardSlider from "@component/ImageCardSlider";
 import SectionHeader from "@component/SectionHeader";
 import { getFasilitasData } from "@fetch/fasilitas";
 
-interface Props {
-  params: Promise<{ sekolah: string }>;
+interface PageProps {
+  params: { sekolah: string };
 }
 
-export default async function SchoolPage(props: Props) {
-  const params = await props.params;
+export default async function SchoolPage({ params }: PageProps) {
   const data = schoolsData[params.sekolah as keyof typeof schoolsData];
   const fasilitasData = await getFasilitasData(params.sekolah);
 
+  if (!data) return <div>School not found</div>;
+
   const imageUrls = fasilitasData.map((f) => f.image_urls);
   const subTitles = fasilitasData.map((f) => f.title);
-
-  if (!data) return <div>School not found</div>;
 
   const unitCount = data.units.length;
   const isTwoColumnLayout = unitCount === 2 || unitCount === 4;
