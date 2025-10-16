@@ -1,29 +1,23 @@
-'use client'
+"use client";
 
-import Image from 'next/image'
-import ButtonPrimary from './ButtonPrimary'
-import { getSnippet } from '@/utils/sanitize'
-
-interface Kurikulum {
-  id: string | number
-  title: string
-  body: string
-  preview?: string | null
-}
+import Image from "next/image";
+import ButtonPrimary from "./ButtonPrimary";
+import { getSnippet } from "@/utils/sanitize";
+import { KurikulumRecord } from "@models/kurikulum";
 
 interface KurikulumListProps {
-  kurikulum: Kurikulum[]
+  kurikulum: KurikulumRecord[];
 }
 
 export default function KurikulumList({ kurikulum }: KurikulumListProps) {
   const paragraphClasses =
-    'font-merriweather font-[100] leading-loose tracking-wider text-center list-disc list-inside text-sm md:text-base'
+    "font-merriweather font-[100] leading-loose tracking-wider text-center list-disc list-inside text-sm md:text-base";
 
   return (
     <section className="flex justify-center">
       <div className="w-full px-4">
         <div className="flex flex-wrap justify-center gap-6">
-          {kurikulum.map(item => (
+          {kurikulum.map((item) => (
             <div
               key={item.id}
               className="
@@ -61,5 +55,5 @@ export default function KurikulumList({ kurikulum }: KurikulumListProps) {
         </div>
       </div>
     </section>
-  )
+  );
 }

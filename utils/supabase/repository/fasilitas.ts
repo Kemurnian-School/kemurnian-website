@@ -26,7 +26,7 @@ export async function fasilitasRepository() {
       return data || [];
     },
 
-    async deleteById(id: string): Promise<{ storage_path: string | null }> {
+    async deleteById(id: number): Promise<{ storage_path: string | null }> {
       const { data, error } = await supabase
         .from("fasilitas")
         .select("storage_path")
