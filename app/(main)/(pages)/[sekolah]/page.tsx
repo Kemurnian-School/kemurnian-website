@@ -4,8 +4,8 @@ import Link from "next/link";
 import schoolsData from "../schools.json";
 import SchoolCard from "@component/SchoolCard";
 import ImageCardSlider from "@component/ImageCardSlider";
-import { createClient } from "@/utils/supabase/client";
 import SectionHeader from "@component/SectionHeader";
+import { getFasilitasData } from "@fetch/fasilitas";
 
 interface Props {
   params: Promise<{ sekolah: string }>;
@@ -14,16 +14,10 @@ interface Props {
 export default async function SchoolPage(props: Props) {
   const params = await props.params;
   const data = schoolsData[params.sekolah as keyof typeof schoolsData];
-  const supabase = createClient();
-  const { data: facilities, error } = await supabase
-    .from("fasilitas")
-    .select("image_urls, title")
-    .eq("nama_sekolah", params.sekolah);
+  const fasilitasData = await getFasilitasData(params.sekolah);
 
-  const facilityData = facilities ?? [];
-
-  const imageUrls = facilityData.map((f) => f.image_urls);
-  const subTitles = facilityData.map((f) => f.title);
+  const imageUrls = fasilitasData.map((f) => f.image_urls);
+  const subTitles = fasilitasData.map((f) => f.title);
 
   if (!data) return <div>School not found</div>;
 
@@ -33,7 +27,11 @@ export default async function SchoolPage(props: Props) {
   return (
     <>
       <div className="flex justify-center p-4 mx-2">
-        <div className={`flex flex-wrap justify-center gap-4 ${isTwoColumnLayout ? 'max-w-[656px]' : 'max-w-[1080]'}`}>
+        <div
+          className={`flex flex-wrap justify-center gap-4 ${
+            isTwoColumnLayout ? "max-w-[656px]" : "max-w-[1080px]"
+          }`}
+        >
           {data.units.map((unit, index) => (
             <Link
               key={index}
@@ -47,6 +45,7 @@ export default async function SchoolPage(props: Props) {
           ))}
         </div>
       </div>
+
       {imageUrls.length > 0 && (
         <section className="mb-16">
           <SectionHeader title="FASILITAS" />

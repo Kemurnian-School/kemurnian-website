@@ -1,9 +1,8 @@
 export const revalidate = 86400;
-import { createClient } from '@/utils/supabase/client';
-
-const supabase = createClient();
+import { createClient } from "@/utils/supabase/client";
 
 export async function getSearchData() {
+  const supabase = createClient();
   const { data: searchData, error: searchDataError } = await supabase
     .from("search_index")
     .select("title, url");

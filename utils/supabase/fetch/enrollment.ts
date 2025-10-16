@@ -1,11 +1,11 @@
 import { createClient } from "@/utils/supabase/client";
-const supabase = createClient();
 
 export async function getEnrollmentData() {
+  const supabase = createClient();
   const { data: enrollmentData, error: enrollmentDataError } = await supabase
     .from("enrollment")
     .select("*")
-    .single()
+    .single();
 
   const enrollmentTable = enrollmentDataError ? [] : enrollmentData || [];
 

@@ -1,11 +1,11 @@
 import { createClient } from "@/utils/supabase/client";
-const supabase = createClient();
 
 export async function getNewsData() {
+  const supabase = createClient();
   const { data: newsData, error: newsDataError } = await supabase
     .from("news")
     .select("*")
-    .order("date", { ascending: false })
+    .order("date", { ascending: false });
 
   const newsTable = newsDataError ? [] : newsData || [];
 
@@ -13,6 +13,7 @@ export async function getNewsData() {
 }
 
 export async function getLatestNewsData() {
+  const supabase = createClient();
   try {
     const { data: latestNews } = await supabase
       .from("news")
