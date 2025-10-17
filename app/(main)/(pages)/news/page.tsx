@@ -1,21 +1,19 @@
 export const revalidate = 86400;
 
-import NewsList from "./NewsList";
 import { getNewsData } from "@fetch/news";
+import NewsPageClient from "./NewsPageClient";
 
 const ITEMS_PER_PAGE = 12;
 
 export default async function NewsPage() {
   try {
     const allNews = await getNewsData();
-
     const initialNews = allNews.slice(0, ITEMS_PER_PAGE);
-    const hasMore = allNews.length >= ITEMS_PER_PAGE;
 
     return (
-      <NewsList
+      <NewsPageClient
+        allNews={allNews}
         initialNews={initialNews}
-        initialHasMore={hasMore}
         itemsPerPage={ITEMS_PER_PAGE}
       />
     );
