@@ -57,7 +57,7 @@ export default function Navbar({ searchPages }: { searchPages: Page[] }) {
                 alt="Logo"
                 width={245}
                 height={245}
-                className="w-auto h-auto"
+                className="w-65 h-auto"
                 priority
               />
             </Link>
