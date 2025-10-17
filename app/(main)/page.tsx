@@ -11,10 +11,10 @@ import ButtonPrimary from "@component/ButtonPrimary";
 import SectionHeader from "@component/SectionHeader";
 
 // data fetches import
-import { getHeroData } from "@/utils/supabase/fetch/hero"
-import { getKurikulumData } from "@/utils/supabase/fetch/kurikulum"
-import { getLatestNewsData } from "@/utils/supabase/fetch/news"
-import { getEnrollmentData } from "@/utils/supabase/fetch/enrollment"
+import { getHeroData } from "@/utils/supabase/fetch/hero";
+import { getKurikulumData } from "@/utils/supabase/fetch/kurikulum";
+import { getLatestNewsData } from "@/utils/supabase/fetch/news";
+import { getEnrollmentData } from "@/utils/supabase/fetch/enrollment";
 
 export const metadata: Metadata = {
   title: "Sekolah Kemurnian",
@@ -25,7 +25,6 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-
   const fromHero = await getHeroData();
   const fromKurikulum = await getKurikulumData();
   const fromLatestNews = await getLatestNewsData();
@@ -96,7 +95,7 @@ export default async function Home() {
               alt="Enrollment"
               width={460}
               height={0}
-              className="mx-auto mt-6 mb-10 rounded shadow-lg w-auto h-auto"
+              className="mx-auto mt-6 mb-10 rounded shadow-lg w-auto h-auto w-lg"
             />
           </div>
           <a
