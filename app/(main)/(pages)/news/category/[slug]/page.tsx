@@ -1,14 +1,18 @@
 export const revalidate = 86400;
 
-import { createClient } from "@/utils/supabase/client";
-import NewsList from "../../NewsList";
+import { getNewsData } from "@fetch/news";
 import { notFound } from "next/navigation";
+import NewsPageClient from "../../NewsPageClient";
 
 const ITEMS_PER_PAGE = 12;
 
 const CATEGORY_FILTERS: Record<string, string[]> = {
   "sekolah-kemurnian": ["TK Kemurnian", "SD Kemurnian", "SMP Kemurnian"],
-  "sekolah-kemurnian-ii": ["TK Kemurnian II", "SD Kemurnian II", "SMP Kemurnian II"],
+  "sekolah-kemurnian-ii": [
+    "TK Kemurnian II",
+    "SD Kemurnian II",
+    "SMP Kemurnian II",
+  ],
   "sekolah-kemurnian-iii": ["TK Kemurnian III", "SD Kemurnian III"],
 };
 
@@ -26,26 +30,20 @@ export default async function CategoryNewsPage({ params }: CategoryPageProps) {
     notFound();
   }
 
-  const supabase = await createClient();
-
   try {
-    const { data: initialNews, error: newsError } = await supabase
-      .from("news")
-      .select("*")
-      .in("from", filterValues)
-      .order("date", { ascending: false })
-      .range(0, ITEMS_PER_PAGE - 1);
+    const allNews = await getNewsData();
 
-    if (newsError) throw newsError;
+    const filteredNews = allNews.filter((item) =>
+      filterValues.includes(item.from),
+    );
 
-    const hasMore = (initialNews?.length ?? 0) === ITEMS_PER_PAGE;
+    const initialNews = filteredNews.slice(0, ITEMS_PER_PAGE);
 
     return (
-      <NewsList
-        initialNews={initialNews || []}
-        initialHasMore={hasMore}
+      <NewsPageClient
+        allNews={filteredNews}
+        initialNews={initialNews}
         itemsPerPage={ITEMS_PER_PAGE}
-        filter={filterValues}
       />
     );
   } catch (error) {
