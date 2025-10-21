@@ -34,7 +34,7 @@ export async function uploadFacilities(formData: FormData) {
   if (!folderName) throw new Error("Invalid school selection");
 
   const repo = await fasilitasRepository();
-  const uploadedFacilities: FasilitasRecord[] = [];
+  const uploadedFasilitas: FasilitasRecord[] = [];
 
   try {
     // Upload each file to R2 and prepare DB records
@@ -51,7 +51,7 @@ export async function uploadFacilities(formData: FormData) {
 
       if (!uploadedUrl) throw new Error(`Failed to upload ${file.name}`);
 
-      uploadedFacilities.push({
+      uploadedFasilitas.push({
         nama_sekolah: namaSekolah,
         title: title.trim(),
         image_urls: uploadedUrl,
@@ -59,27 +59,25 @@ export async function uploadFacilities(formData: FormData) {
       });
     }
 
-    if (uploadedFacilities.length === 0)
+    if (uploadedFasilitas.length === 0)
       throw new Error("No valid facilities to insert");
 
     // Insert metadata into Supabase
-    await repo.createMany(uploadedFacilities);
+    await repo.createFasilitas(uploadedFasilitas);
 
     // Revalidate page
     revalidatePath("/admin/fasilitas");
 
     return {
       success: true,
-      facilitiesCount: uploadedFacilities.length,
+      facilitiesCount: uploadedFasilitas.length,
       school: folderName,
     };
   } catch (error) {
     console.error("Upload failed:", error);
 
     // Rollback: delete already uploaded files
-    await Promise.all(
-      uploadedFacilities.map((f) => deleteFromR2(f.image_urls)),
-    );
+    await Promise.all(uploadedFasilitas.map((f) => deleteFromR2(f.image_urls)));
 
     throw new Error(
       "Upload failed — all uploaded files have been rolled back.",

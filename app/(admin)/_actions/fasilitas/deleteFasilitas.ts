@@ -1,8 +1,8 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { deleteFromR2 } from "@/utils/r2/delete";
 import { fasilitasRepository } from "@repository/fasilitas";
+import { redirect } from "next/navigation";
 
 /**
  * Deletes a facility from both the database and R2 storage.
@@ -13,18 +13,21 @@ export async function deleteFacility(id: number) {
   const repo = await fasilitasRepository();
 
   try {
-    // Delete from DB and get storage path
-    const { storage_path } = await repo.deleteById(id);
+    const record = await repo.getById(id);
 
-    // Delete the file from R2
-    if (storage_path) {
-      await deleteFromR2(`${process.env.R2_CDN}/${storage_path}`);
+    if (!record) {
+      throw new Error("Fasilitas not found");
     }
+    const imageUrl = record.image_urls;
 
-    // Revalidate related paths
-    revalidatePath("/admin/fasilitas");
+    // Delete the file from R2 and db
+    await deleteFromR2(imageUrl);
+    await repo.deleteFasilitas(id);
 
-    return { success: true };
+    redirect(
+      "/admin/fasilitas?success=" +
+        encodeURIComponent("Facility deleted successfully"),
+    );
   } catch (error) {
     console.error("Failed to delete facility:", error);
     throw new Error("Failed to delete facility");

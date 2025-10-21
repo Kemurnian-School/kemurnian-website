@@ -45,12 +45,12 @@ export default function NewFacilitiesForm() {
         <div className="bg-gray-100 text-gray-800 p-2 rounded">{message}</div>
       )}
 
-      <div>
-        <label className="block mb-2 font-medium">School</label>
+      <div className="mt-10">
+        <label className="block mb-2 font-medium">Select School</label>
         <select
           value={school}
           onChange={(e) => setSchool(e.target.value)}
-          className="border rounded p-2 w-full"
+          className="border rounded p-2 w-full cursor-pointer"
         >
           {sekolahOptions.map((s) => (
             <option key={s.value} value={s.value}>
@@ -62,11 +62,13 @@ export default function NewFacilitiesForm() {
 
       <div>
         <label className="block mb-2 font-medium">Upload Images</label>
+
         <input
           type="file"
           multiple
           accept="image/*"
           onChange={(e) => handleImageChange(e.target.files)}
+          className="border-1 w-full p-2 rounded cursor-pointer"
         />
       </div>
 
@@ -97,7 +99,7 @@ export default function NewFacilitiesForm() {
       <button
         onClick={handleSubmit}
         disabled={status === "submitting" || status === "compressing"}
-        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded cursor-pointer"
       >
         {status === "compressing"
           ? "Compressing..."

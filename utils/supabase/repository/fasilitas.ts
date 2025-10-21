@@ -10,7 +10,7 @@ export async function fasilitasRepository() {
     supabase,
     user,
 
-    async createMany(records: FasilitasRecord[]): Promise<void> {
+    async createFasilitas(records: FasilitasRecord[]): Promise<void> {
       const { error } = await supabase.from("fasilitas").insert(records);
       if (error) throw error;
     },
@@ -26,7 +26,24 @@ export async function fasilitasRepository() {
       return data || [];
     },
 
-    async deleteById(id: number): Promise<{ storage_path: string | null }> {
+    async getById(id: number): Promise<FasilitasRecord | null> {
+      const { data, error } = await supabase
+        .from("fasilitas")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        if (error.code === "PGRST116") return null; // no rows found
+        throw error;
+      }
+
+      return data;
+    },
+
+    async deleteFasilitas(
+      id: number,
+    ): Promise<{ storage_path: string | null }> {
       const { data, error } = await supabase
         .from("fasilitas")
         .select("storage_path")

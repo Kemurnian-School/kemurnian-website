@@ -40,22 +40,9 @@ export default function FasilitasClient({
         </h1>
         <a
           href="/admin/fasilitas/create"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200"
+          className="bg-red-primary h-10 px-4 py-2 text-white flex items-center justify-center rounded"
         >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-            />
-          </svg>
-          <span>Add New</span>
+          <span>+ Add New</span>
         </a>
       </div>
 
@@ -89,7 +76,7 @@ export default function FasilitasClient({
                     />
                     <button
                       onClick={() => handleDelete(item.id!, sekolah.key)}
-                      className="absolute top-2 right-2 bg-white/90 text-red-600 hover:text-red-800 hover:bg-red-50 p-1.5 rounded-full shadow"
+                      className="absolute top-2 right-2 bg-white/90 text-red-600 hover:text-red-800 hover:bg-red-50 p-1.5 rounded-full shadow cursor-pointer"
                     >
                       <svg
                         className="w-4 h-4"

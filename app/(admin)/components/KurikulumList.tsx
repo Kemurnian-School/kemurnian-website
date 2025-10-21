@@ -1,56 +1,51 @@
-'use client'
+"use client";
 
-import { useState, startTransition } from 'react'
-import { deleteKurikulum } from '@server/kurikulum/deleteKurikulum'
+import { useState, startTransition } from "react";
+import { deleteKurikulum } from "@server/kurikulum/deleteKurikulum";
 
 interface Kurikulum {
-  id: number
-  title: string
-  body: string
-  created_at: string
+  id: number;
+  title: string;
+  body: string;
+  created_at: string;
 }
 
-export default function KurikulumList({ initialKurikulums }: { initialKurikulums: Kurikulum[] }) {
-  const [kurikulums, setKurikulums] = useState<Kurikulum[]>(initialKurikulums)
-  const [loadingId, setLoadingId] = useState<number | null>(null)
+export default function KurikulumList({
+  initialKurikulums,
+}: {
+  initialKurikulums: Kurikulum[];
+}) {
+  const [kurikulums, setKurikulums] = useState<Kurikulum[]>(initialKurikulums);
+  const [loadingId, setLoadingId] = useState<number | null>(null);
 
   async function handleDelete(id: number) {
-    if (!confirm('Are you sure you want to delete this curriculum?')) return
-    setLoadingId(id)
+    if (!confirm("Are you sure you want to delete this curriculum?")) return;
+    setLoadingId(id);
 
     try {
-      await deleteKurikulum(id)
+      await deleteKurikulum(id);
       startTransition(() => {
-        setKurikulums(prev => prev.filter(k => k.id !== id))
-      })
+        setKurikulums((prev) => prev.filter((k) => k.id !== id));
+      });
     } catch (err) {
-      alert('Failed to delete curriculum.')
-      console.error(err)
+      alert("Failed to delete curriculum.");
+      console.error(err);
     } finally {
-      setLoadingId(null)
+      setLoadingId(null);
     }
   }
 
   return (
     <div>
-      {/* Header Section */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Kurikulum Management</h1>
-        <a
-          href="/admin/kurikulum/new"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-          </svg>
-          <span>New Curriculum</span>
-        </a>
-      </div>
-
       {/* Curriculum List */}
       {kurikulums.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 bg-gray-50 rounded-lg">
-          <svg className="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-16 h-16 text-gray-400 mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -58,8 +53,12 @@ export default function KurikulumList({ initialKurikulums }: { initialKurikulums
               d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
             ></path>
           </svg>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No curriculum yet</h3>
-          <p className="text-gray-600 mb-4">Get started by creating your first curriculum content</p>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            No curriculum yet
+          </h3>
+          <p className="text-gray-600 mb-4">
+            Get started by creating your first curriculum content
+          </p>
           <a
             href="/admin/new-kurikulum"
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors duration-200"
@@ -76,22 +75,39 @@ export default function KurikulumList({ initialKurikulums }: { initialKurikulums
             >
               <div className="flex-1 mb-4 md:mb-0">
                 <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-lg font-semibold text-gray-900 truncate pr-2">{item.title}</h3>
-                  <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">#{item.id}</span>
+                  <h3 className="text-lg font-semibold text-gray-900 truncate pr-2">
+                    {item.title}
+                  </h3>
+                  <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                    #{item.id}
+                  </span>
                 </div>
                 <p className="text-gray-600 text-sm leading-relaxed">
-                  {item.body.length > 30 ? item.body.substring(0, 30) + '...' : item.body}
+                  {item.body.length > 30
+                    ? item.body.substring(0, 30) + "..."
+                    : item.body}
                 </p>
               </div>
 
               <div className="flex flex-col md:flex-row items-start md:items-center space-y-2 md:space-y-0 md:space-x-2 text-gray-500 text-xs mt-2 md:mt-0">
-                <span>{new Date(item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                <span>
+                  {new Date(item.created_at).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </span>
                 <div className="flex items-center space-x-2">
                   <a
                     href={`/admin/kurikulum/edit/${item.id}`}
                     className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 p-2 rounded-full transition-colors duration-200"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -103,12 +119,18 @@ export default function KurikulumList({ initialKurikulums }: { initialKurikulums
                   <button
                     onClick={() => handleDelete(item.id)}
                     disabled={loadingId === item.id}
-                    className={`${loadingId === item.id
-                      ? 'opacity-50 cursor-not-allowed'
-                      : 'text-red-600 hover:text-red-800 hover:bg-red-50'
-                      } p-2 rounded-full transition-colors duration-200`}
+                    className={`${
+                      loadingId === item.id
+                        ? "opacity-50 cursor-not-allowed"
+                        : "text-red-600 hover:text-red-800 hover:bg-red-50"
+                    } p-2 rounded-full transition-colors duration-200 cursor-pointer`}
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -124,5 +146,5 @@ export default function KurikulumList({ initialKurikulums }: { initialKurikulums
         </div>
       )}
     </div>
-  )
+  );
 }
