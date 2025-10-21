@@ -22,7 +22,7 @@ export async function heroRepository() {
      * Fetch a all hero banners.
      * Returns null if the record is not found.
      */
-    async getAllImages(): Promise<HeroBannerFetch[]> {
+    async getAll(): Promise<HeroBannerFetch[]> {
       const { data, error } = await supabase
         .from("hero_sliders")
         .select("id, image_urls, order, header_text")
@@ -52,6 +52,25 @@ export async function heroRepository() {
     },
 
     /**
+     * Inserts a new hero banner record into the database.
+     */
+    async createHero(record: HeroBannerRecord): Promise<void> {
+      const { error } = await supabase.from("hero_sliders").insert(record);
+      if (error) throw error;
+    },
+
+    /**
+     * Deletes a hero banner by ID.
+     */
+    async deleteHero(id: string): Promise<void> {
+      const { error } = await supabase
+        .from("hero_sliders")
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
+    },
+
+    /**
      * Returns the next available "order" number for a new hero banner.
      */
     async getNextOrderNumber(): Promise<number> {
@@ -64,25 +83,6 @@ export async function heroRepository() {
 
       if (error && error.code !== "PGRST116") throw error;
       return data ? data.order + 1 : 1;
-    },
-
-    /**
-     * Inserts a new hero banner record into the database.
-     */
-    async createHeroBanner(record: HeroBannerRecord): Promise<void> {
-      const { error } = await supabase.from("hero_sliders").insert(record);
-      if (error) throw error;
-    },
-
-    /**
-     * Deletes a hero banner by ID.
-     */
-    async deleteById(id: string): Promise<void> {
-      const { error } = await supabase
-        .from("hero_sliders")
-        .delete()
-        .eq("id", id);
-      if (error) throw error;
     },
 
     /**

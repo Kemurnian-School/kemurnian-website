@@ -36,7 +36,7 @@ export async function uploadHeroBanner(formData: FormData) {
 
     const nextOrder = await repo.getNextOrderNumber();
 
-    await repo.createHeroBanner({
+    await repo.createHero({
       header_text: headerText,
       href_text: hrefText,
       button_text: buttonText,
