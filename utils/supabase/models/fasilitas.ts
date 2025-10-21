@@ -1,5 +1,5 @@
 export interface FasilitasRecord {
-  id?: number; // Optional for creation, present after DB insert
+  id?: number;
   nama_sekolah: string;
   title: string;
   image_urls: string;
