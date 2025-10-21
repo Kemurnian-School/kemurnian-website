@@ -1,16 +1,16 @@
-'use client'
-import { useState } from 'react'
+"use client";
+import { useState } from "react";
 
-const WEB_PAGE = process.env.NEXT_PUBLIC_SITE_DOMAIN!
+const WEB_PAGE = process.env.NEXT_PUBLIC_SITE_DOMAIN!;
 
 export default function AdminHome() {
-  const [width, setWidth] = useState(1040)
+  const [width, setWidth] = useState(1040);
 
   const handleWidthChange = (value: number) => {
-    if (value < 320) value = 320
-    if (value > 1920) value = 1920
-    setWidth(value)
-  }
+    if (value < 320) value = 320;
+    if (value > 1920) value = 1920;
+    setWidth(value);
+  };
 
   return (
     <div className="p-6 h-screen flex flex-col">
@@ -28,7 +28,7 @@ export default function AdminHome() {
           max={1920}
           value={width}
           onChange={(e) => handleWidthChange(Number(e.target.value))}
-          className="w-48 accent-blue-600"
+          className="w-48 accent-red-primary"
         />
 
         {/* Typable input */}
@@ -45,18 +45,19 @@ export default function AdminHome() {
         {/* Presets */}
         <div className="flex items-center gap-2">
           {[
-            { label: 'Mobile', value: 375 },
-            { label: 'Tablet', value: 768 },
-            { label: 'Laptop', value: 1280 },
-            { label: 'Desktop', value: 1920 },
+            { label: "Mobile", value: 375 },
+            { label: "Tablet", value: 768 },
+            { label: "Laptop", value: 1280 },
+            { label: "Desktop", value: 1920 },
           ].map((preset) => (
             <button
               key={preset.label}
               onClick={() => handleWidthChange(preset.value)}
-              className={`px-3 py-1 text-sm rounded border transition-colors ${width === preset.value
-                ? 'bg-blue-600 text-white border-blue-600'
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'
-                }`}
+              className={`px-3 py-1 text-sm rounded border transition-colors ${
+                width === preset.value
+                  ? "bg-blue-600 text-white border-blue-600"
+                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+              }`}
             >
               {preset.label}
             </button>
@@ -68,7 +69,7 @@ export default function AdminHome() {
       <div className="flex-1 flex justify-center items-start overflow-auto bg-gray-100 p-4 rounded-lg">
         <div
           className="border rounded-lg shadow-lg bg-white"
-          style={{ width: `${width}px`, height: '100%' }}
+          style={{ width: `${width}px`, height: "100%" }}
         >
           <iframe
             src={WEB_PAGE}
@@ -79,5 +80,5 @@ export default function AdminHome() {
         </div>
       </div>
     </div>
-  )
+  );
 }

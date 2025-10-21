@@ -55,7 +55,7 @@ export default function FasilitasClient({
                 [sekolah.key]: !prev[sekolah.key],
               }))
             }
-            className="w-full flex justify-between items-center px-4 py-3 bg-gray-100 hover:bg-gray-200 rounded-t-lg"
+            className="w-full flex justify-between items-center px-4 py-3 bg-gray-100 hover:bg-gray-200 rounded-t-lg cursor-pointer"
           >
             <span className="font-semibold text-lg">{sekolah.label}</span>
             <span>{open[sekolah.key] ? "−" : "+"}</span>

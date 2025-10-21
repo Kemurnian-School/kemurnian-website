@@ -11,7 +11,7 @@ export default async function AdminHero() {
         <h1 className="text-3xl font-bold mb-4">Hero Slider Admin</h1>
         <a
           href="/admin/hero/create"
-          className="mb-6 inline-block px-4 py-2 bg-red-primary text-white rounded hover:bg-blue-700"
+          className="mb-6 inline-block px-4 py-2 bg-btn-primary text-white rounded hover:bg-red-primary"
         >
           + New Banner
         </a>

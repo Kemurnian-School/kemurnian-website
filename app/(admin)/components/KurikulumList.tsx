@@ -78,9 +78,6 @@ export default function KurikulumList({
                   <h3 className="text-lg font-semibold text-gray-900 truncate pr-2">
                     {item.title}
                   </h3>
-                  <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                    #{item.id}
-                  </span>
                 </div>
                 <p className="text-gray-600 text-sm leading-relaxed">
                   {item.body.length > 30
