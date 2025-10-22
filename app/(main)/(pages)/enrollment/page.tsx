@@ -1,4 +1,4 @@
-export const revalidate = 86400;
+export const revalidate = 604800;
 
 import { getEnrollmentData } from "@fetch/enrollment";
 import Image from "next/image";

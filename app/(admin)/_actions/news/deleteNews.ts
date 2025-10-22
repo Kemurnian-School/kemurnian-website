@@ -21,6 +21,8 @@ export async function deleteNews(id: number) {
 
   // Refresh admin dashboard
   revalidatePath("/admin/news");
+  revalidatePath("/");
+  revalidatePath("/news");
 
   // Redirect with success message
   redirect(

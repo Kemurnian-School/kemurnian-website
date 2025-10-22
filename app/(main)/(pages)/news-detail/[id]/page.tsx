@@ -1,4 +1,4 @@
-export const revalidate = 86400;
+export const revalidate = 604800;
 
 import { Metadata } from "next";
 import QuillRenderer from "@component/QuillRenderer";

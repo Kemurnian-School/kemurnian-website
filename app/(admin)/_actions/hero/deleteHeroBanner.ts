@@ -40,6 +40,7 @@ export async function deleteHeroBanner(formData: FormData) {
     // Revalidate pages
     revalidatePath("/admin/hero");
     revalidatePath("/admin");
+    revalidatePath("/");
   } catch (error) {
     console.error("Delete failed:", error);
     throw error;

@@ -1,7 +1,8 @@
-'use server'
+"use server";
 
-import { redirect } from 'next/navigation'
-import { kurikulumRepository } from '@repository/kurikulum'
+import { redirect } from "next/navigation";
+import { kurikulumRepository } from "@repository/kurikulum";
+import { revalidatePath } from "next/cache";
 
 /**
  * Deletes a Kurikulum record by its ID.
@@ -9,16 +10,17 @@ import { kurikulumRepository } from '@repository/kurikulum'
  */
 export async function deleteKurikulum(id: number) {
   try {
-    const repo = await kurikulumRepository()
+    const repo = await kurikulumRepository();
 
-    await repo.deleteById(id)
+    await repo.deleteById(id);
 
+    revalidatePath("/");
     redirect(
-      '/admin/kurikulum?success=' +
-      encodeURIComponent('Kurikulum deleted successfully')
-    )
+      "/admin/kurikulum?success=" +
+        encodeURIComponent("Kurikulum deleted successfully"),
+    );
   } catch (error) {
-    console.error('Delete failed:', error)
-    throw error
+    console.error("Delete failed:", error);
+    throw error;
   }
 }

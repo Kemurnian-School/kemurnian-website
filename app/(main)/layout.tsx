@@ -2,10 +2,10 @@ import "../globals.css";
 import { Merriweather, Raleway } from "next/font/google";
 
 import Footer from "@component/Footer";
-import FixedBottom from '@component/FixedBottom';
+import FixedBottom from "@component/FixedBottom";
 import Navbar from "@component/Navbar";
 
-import { getSearchData } from '@/utils/supabase/fetch/searchSuggestions';
+import { getSearchData } from "@/utils/supabase/fetch/searchSuggestions";
 
 const merriweather = Merriweather({
   subsets: ["latin"],
@@ -19,7 +19,7 @@ const raleway = Raleway({
   variable: "--font-raleway",
 });
 
-export const revalidate = 86400;
+export const revalidate = 604800;
 
 export default async function RootLayout({
   children,

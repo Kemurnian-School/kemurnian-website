@@ -3,6 +3,7 @@
 import { deleteFromR2 } from "@/utils/r2/delete";
 import { fasilitasRepository } from "@repository/fasilitas";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 /**
  * Deletes a facility from both the database and R2 storage.
@@ -15,14 +16,16 @@ export async function deleteFacility(id: number) {
   try {
     const record = await repo.getById(id);
 
-    if (!record) {
-      throw new Error("Fasilitas not found");
-    }
-    const imageUrl = record.image_urls;
+    if (!record) throw new Error("Fasilitas not found");
 
-    // Delete the file from R2 and db
+    const imageUrl = record.image_urls;
+    const namaSekolah = record.nama_sekolah;
+
     await deleteFromR2(imageUrl);
     await repo.deleteFasilitas(id);
+
+    revalidatePath("/admin/fasilitas");
+    revalidatePath(`/${namaSekolah}`);
 
     redirect(
       "/admin/fasilitas?success=" +

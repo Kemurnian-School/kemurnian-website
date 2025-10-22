@@ -1,4 +1,4 @@
-export const revalidate = 86400;
+export const revalidate = 604800;
 
 import { getNewsData } from "@fetch/news";
 import { notFound } from "next/navigation";

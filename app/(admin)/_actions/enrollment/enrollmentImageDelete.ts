@@ -18,6 +18,7 @@ export async function deleteEnrollmentImage(formData: FormData) {
 
   revalidatePath("/admin/enrollment");
   revalidatePath("/");
+  revalidatePath("/enrollment");
 
   return { success: true };
 }

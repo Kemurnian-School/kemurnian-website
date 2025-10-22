@@ -1,4 +1,4 @@
-export const revalidate = 259200;
+export const revalidate = 604800;
 
 import { getKurikulumData } from "@/utils/supabase/fetch/kurikulum";
 import { Metadata } from "next";

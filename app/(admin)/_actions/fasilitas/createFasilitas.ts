@@ -67,6 +67,7 @@ export async function uploadFacilities(formData: FormData) {
 
     // Revalidate page
     revalidatePath("/admin/fasilitas");
+    revalidatePath(`/${namaSekolah}`);
 
     return {
       success: true,
