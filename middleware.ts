@@ -21,19 +21,18 @@ function createSupabaseClient(request: NextRequest, response: NextResponse) {
 export async function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   const hostname = request.headers.get("host") || "";
-
-  // Extract subdomain
   const subdomain = hostname.split(".")[0];
-  const isAdminSubdomain =
-    subdomain === "master" || hostname.startsWith("admin.");
+
+  // --- 1. Quick exits for performance ---
   const isStaticAsset = url.pathname.match(
     /\.(webp|jpg|jpeg|png|gif|svg|ico|css|js|woff2?|ttf|eot)$/i,
   );
-
-  // Skip static assets early
   if (isStaticAsset) return NextResponse.next();
 
-  // Block admin routes on main domain
+  const isAdminSubdomain =
+    subdomain === "master" || hostname.startsWith("admin.");
+
+  // --- 2. Prevent access to admin routes from public site ---
   if (
     !isAdminSubdomain &&
     (url.pathname.startsWith("/admin") || url.pathname === "/login")
@@ -41,48 +40,43 @@ export async function middleware(request: NextRequest) {
     return NextResponse.json({ message: "Not Found" }, { status: 404 });
   }
 
-  // If it's NOT the admin subdomain → continue as usual
+  // --- 3. If not admin subdomain → continue normally ---
   if (!isAdminSubdomain) return NextResponse.next();
 
-  // For admin subdomain → rewrite non-/admin routes to /admin/*
+  // --- 4. Rewrite all non-admin routes on admin subdomain ---
+  // Example: admin.mysite.com/ → /admin
   if (!url.pathname.startsWith("/admin") && url.pathname !== "/login") {
     url.pathname = url.pathname === "/" ? "/admin" : `/admin${url.pathname}`;
   }
 
-  // Initialize a response for Supabase cookie sync
+  // --- 5. Initialize Supabase Auth for session checks ---
   let response = NextResponse.rewrite(url);
   const supabase = createSupabaseClient(request, response);
+  const { data } = await supabase.auth.getUser();
+  const user = data?.user;
 
-  // Handle /admin routes (require authentication)
+  // --- 6. Protect /admin routes (must be logged in) ---
   if (url.pathname.startsWith("/admin")) {
-    const { data, error } = await supabase.auth.getUser();
-
-    if (error || !data.user) {
+    if (!user) {
       const loginUrl = new URL("/login", request.url);
       loginUrl.hostname = hostname;
       return NextResponse.redirect(loginUrl);
     }
-
     return response;
   }
 
-  // Handle /login route
-  if (url.pathname === "/login") {
-    const { data } = await supabase.auth.getUser();
-
-    if (data.user) {
-      // User already logged in → redirect to /admin
-      const adminUrl = new URL("/admin", request.url);
-      adminUrl.hostname = hostname;
-      return NextResponse.redirect(adminUrl);
-    }
-
-    return response;
+  // --- 7. Redirect logged-in users away from login page ---
+  if (url.pathname === "/login" && user) {
+    const adminUrl = new URL("/admin", request.url);
+    adminUrl.hostname = hostname;
+    return NextResponse.redirect(adminUrl);
   }
 
+  // --- 8. Default: rewrite and continue ---
   return response;
 }
 
+// --- Apply middleware to everything except static assets & API routes ---
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|api).*)"],
 };
