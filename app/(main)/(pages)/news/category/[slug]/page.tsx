@@ -17,26 +17,17 @@ const CATEGORY_FILTERS: Record<string, string[]> = {
 };
 
 interface CategoryPageProps {
-  params: {
-    slug: string;
-  };
+  params: { slug: string };
 }
 
 export default async function CategoryNewsPage({ params }: CategoryPageProps) {
   const { slug } = params;
   const filterValues = CATEGORY_FILTERS[slug];
 
-  if (!filterValues) {
-    notFound();
-  }
+  if (!filterValues) notFound();
 
   try {
-    const allNews = await getNewsData();
-
-    const filteredNews = allNews.filter((item) =>
-      filterValues.includes(item.from),
-    );
-
+    const filteredNews = await getNewsData(filterValues);
     const initialNews = filteredNews.slice(0, ITEMS_PER_PAGE);
 
     return (

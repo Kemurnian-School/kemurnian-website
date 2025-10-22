@@ -1,15 +1,18 @@
 import { createClient } from "@/utils/supabase/client";
 
-export async function getNewsData() {
+export async function getNewsData(filterFrom?: string[]) {
   const supabase = createClient();
-  const { data: newsData, error: newsDataError } = await supabase
+  let query = supabase
     .from("news")
     .select("*")
     .order("date", { ascending: false });
 
-  const newsTable = newsDataError ? [] : newsData || [];
+  if (filterFrom?.length) {
+    query = query.in("from", filterFrom);
+  }
 
-  return newsTable;
+  const { data, error } = await query;
+  return error ? [] : data || [];
 }
 
 export async function getLatestNewsData() {
@@ -49,4 +52,10 @@ export async function getLatestNewsData() {
   } catch {
     return [];
   }
+}
+
+// fetch single record instead of all
+export async function getSingleNews(id: string) {
+  const supabase = createClient();
+  return await supabase.from("news").select("*").eq("id", id).single();
 }

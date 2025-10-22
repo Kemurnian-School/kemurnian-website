@@ -1,4 +1,4 @@
-export const revalidate = 86400;
+export const revalidate = 259200;
 
 import { getKurikulumData } from "@/utils/supabase/fetch/kurikulum";
 import { Metadata } from "next";
@@ -10,7 +10,9 @@ interface PageProps {
 
 const fromKurikulum = await getKurikulumData();
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const item = fromKurikulum.find((k) => String(k.id) === params.id);
 
   if (!item) {
@@ -28,9 +30,7 @@ export default async function KurikulumDetailPage({ params }: PageProps) {
 
   if (!data) {
     return (
-      <div className="p-4 text-red-600">
-        Failed to load kurikulum content.
-      </div>
+      <div className="p-4 text-red-600">Failed to load kurikulum content.</div>
     );
   }
 

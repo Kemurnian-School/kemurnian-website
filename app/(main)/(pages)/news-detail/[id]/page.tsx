@@ -4,36 +4,44 @@ import { Metadata } from "next";
 import QuillRenderer from "@component/QuillRenderer";
 import ImageCardSlider from "@component/ImageCardSlider";
 import NewsPreview from "@component/NewsPreview";
-import { getNewsData } from "@/utils/supabase/fetch/news";
+import {
+  getLatestNewsData,
+  getSingleNews,
+  getNewsData,
+} from "@/utils/supabase/fetch/news";
 
 interface PageProps {
   params: { id: string };
 }
 
-const allNews = await getNewsData();
+export async function generateStaticParams() {
+  const allNews = await getNewsData();
+  return allNews.map((n) => ({ id: String(n.id) }));
+}
 
-// Generate Metadata
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const data = allNews.find((n) => String(n.id) === params.id);
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { data: news, error } = await getSingleNews(params.id);
 
-  if (!data) {
+  if (error || !news) {
     return {
       title: "News Not Found",
       description: "This news article could not be found.",
     };
   }
 
-  const bodyText = data.body?.replace(/<[^>]*>/g, "") || "";
+  const bodyText = news.body?.replace(/<[^>]*>/g, "") || "";
   const description =
     bodyText.length > 160 ? bodyText.substring(0, 157) + "..." : bodyText;
 
-  const formattedDate = new Date(data.date).toLocaleDateString("id-ID", {
+  const formattedDate = new Date(news.date).toLocaleDateString("id-ID", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
 
-  const pageTitle = `${data.title} - News`;
+  const pageTitle = `${news.title} - News`;
 
   return {
     title: pageTitle,
@@ -42,7 +50,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: pageTitle,
       description: description || `News article from ${formattedDate}`,
       type: "article",
-      publishedTime: data.date,
+      publishedTime: news.date,
     },
     twitter: {
       card: "summary_large_image",
@@ -52,70 +60,50 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-// Helper function for random content generator
-function getRandomRecentNews(currentNewsId: string, newsList: any[]) {
-  if (!newsList.length) return [];
-
-  // Filter out current article
-  const others = newsList.filter((n) => String(n.id) !== currentNewsId);
-
-  const sorted = others.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
-
-  // Take up to last 2 years
-  const latestDate = new Date(sorted[0]?.date ?? Date.now());
-  const twoYearsBefore = new Date(latestDate);
-  twoYearsBefore.setFullYear(latestDate.getFullYear() - 2);
-
-  const recent = sorted.filter(
-    (n) => new Date(n.date) >= twoYearsBefore
-  );
-
-  const shuffled = [...recent].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, 3);
-}
-
-// Main Page
 export default async function NewsDetailPage({ params }: PageProps) {
-  const data = allNews.find((n) => String(n.id) === params.id);
+  const { data: news, error } = await getSingleNews(params.id);
 
-  if (!data) {
+  if (error || !news) {
     return <div className="p-4 text-red-600">Failed to load news content.</div>;
   }
 
-  const randomNews = getRandomRecentNews(params.id, allNews);
+  const recentNews = await getLatestNewsData();
+
+  const otherNews = recentNews
+    .filter((n) => String(n.id) !== params.id)
+    .sort(() => 0.5 - Math.random())
+    .slice(0, 3);
 
   return (
     <div className="flex justify-center items-center flex-col px-4 py-8">
       <h1 className="font-raleway font-extrabold tracking-widest uppercase text-2xl mb-4 text-center mt-4 md:mt-12">
-        {data.title}
+        {news.title}
       </h1>
 
       <p className="text-center underline text-btn-primary font-bold text-lg mb-4">
-        {new Date(data.date).toLocaleDateString("id-ID", {
+        {new Date(news.date).toLocaleDateString("id-ID", {
           day: "numeric",
           month: "long",
           year: "numeric",
         })}
       </p>
 
-      {data.image_urls?.length > 0 && (
-        <ImageCardSlider images={data.image_urls} alt={data.title} />
+      {news.image_urls?.length > 0 && (
+        <ImageCardSlider images={news.image_urls} alt={news.title} />
       )}
 
       {/* Quill content */}
       <QuillRenderer
-        content={data.body}
+        content={news.body}
         className="text-justify text-sm md:text-base font-merriweather font-light tracking-wider leading-loose max-w-2xl md:max-w-3xl w-full"
       />
 
       {/* YouTube embed */}
-      {data.embed && (
+      {news.embed && (
         <div className="w-full max-w-2xl md:max-w-3xl my-8">
           <div
             className="relative w-full aspect-video [&>iframe]:w-full [&>iframe]:h-full [&>iframe]:absolute [&>iframe]:top-0 [&>iframe]:left-0"
-            dangerouslySetInnerHTML={{ __html: data.embed }}
+            dangerouslySetInnerHTML={{ __html: news.embed }}
           />
         </div>
       )}
@@ -126,9 +114,9 @@ export default async function NewsDetailPage({ params }: PageProps) {
         OTHER NEWS AND EVENTS
       </h2>
 
-      {randomNews.length > 0 ? (
+      {otherNews.length > 0 ? (
         <div className="w-full max-w-6xl">
-          <NewsPreview news={randomNews} />
+          <NewsPreview news={otherNews} />
         </div>
       ) : (
         <p className="text-gray-600 font-merriweather">

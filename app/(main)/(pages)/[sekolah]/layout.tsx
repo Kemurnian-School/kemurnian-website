@@ -1,4 +1,4 @@
-export const revalidate = 86400;
+export const revalidate = false;
 
 import { Metadata } from "next";
 import schoolsData from "../schools.json";
