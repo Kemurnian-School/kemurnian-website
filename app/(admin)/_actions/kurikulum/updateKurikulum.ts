@@ -16,7 +16,6 @@ export async function updateKurikulum(formData: FormData) {
     const repo = await kurikulumRepository();
     await repo.updateKurikulum({ id, title, body, preview });
 
-    revalidatePath("/admin/kurikulum");
     revalidatePath(`/${id}`);
     revalidatePath("/");
     return { success: true };

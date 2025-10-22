@@ -18,7 +18,6 @@ export async function deleteNewsImage(formData: FormData) {
   const nextImages = record.image_urls.filter((u) => u !== url);
   await repo.updateNews({ id, image_urls: nextImages });
 
-  revalidatePath("/admin/news");
   revalidatePath(`/news/${id}`);
   revalidatePath("/");
   revalidatePath("/news");

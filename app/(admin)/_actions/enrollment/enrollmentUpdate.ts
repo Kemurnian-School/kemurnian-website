@@ -39,7 +39,6 @@ export async function updateEnrollment(formData: FormData) {
     image_url,
   });
 
-  revalidatePath("/admin/enrollment");
   revalidatePath("/enrollment");
   revalidatePath("/");
 
