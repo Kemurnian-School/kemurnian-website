@@ -1,18 +1,19 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { useFacilitiesForm } from "./hooks/useFasilitas";
-
 const sekolahOptions = [
   { label: "Sekolah Kemurnian I", value: "sekolah-kemurnian-1" },
   { label: "Sekolah Kemurnian II", value: "sekolah-kemurnian-2" },
   { label: "Sekolah Kemurnian III", value: "sekolah-kemurnian-3" },
 ];
-
 export default function NewFacilitiesForm() {
   const router = useRouter();
   const [school, setSchool] = useState(sekolahOptions[0].value);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const titleRefs = useRef<Record<string, HTMLInputElement>>({});
   const {
     images,
     status,
@@ -22,8 +23,41 @@ export default function NewFacilitiesForm() {
     removeImage,
     submit,
   } = useFacilitiesForm();
-
   const handleSubmit = async () => {
+    const newErrors: Record<string, string> = {};
+
+    // Validate images uploaded
+    if (images.length === 0) {
+      newErrors.images = "Field is required";
+      setErrors(newErrors);
+      fileInputRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+      return;
+    }
+
+    // Validate each title
+    images.forEach((img) => {
+      if (!img.title.trim()) {
+        newErrors[img.id] = "Field is required";
+      }
+    });
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      // Scroll to first error
+      const firstErrorId = Object.keys(newErrors)[0];
+      if (firstErrorId !== "images") {
+        titleRefs.current[firstErrorId]?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+      return;
+    }
+
+    setErrors({});
     try {
       await submit(school);
       setTimeout(() => router.push("/admin/fasilitas"), 1500);
@@ -40,11 +74,9 @@ export default function NewFacilitiesForm() {
       >
         ← Back
       </Link>
-
       {message && (
         <div className="bg-gray-100 text-gray-800 p-2 rounded">{message}</div>
       )}
-
       <div className="mt-10">
         <label className="block mb-2 font-medium">Select School</label>
         <select
@@ -59,19 +91,28 @@ export default function NewFacilitiesForm() {
           ))}
         </select>
       </div>
-
       <div>
         <label className="block mb-2 font-medium">Upload Images</label>
-
         <input
+          ref={fileInputRef}
           type="file"
           multiple
           accept="image/*"
-          onChange={(e) => handleImageChange(e.target.files)}
-          className="border-1 w-full p-2 rounded cursor-pointer"
+          onChange={(e) => {
+            handleImageChange(e.target.files);
+            setErrors((prev) => {
+              const { images, ...rest } = prev;
+              return rest;
+            });
+          }}
+          className={`border-1 w-full p-2 rounded cursor-pointer ${
+            errors.images ? "border-red-500 border-2" : ""
+          }`}
         />
+        {errors.images && (
+          <p className="text-red-500 text-sm mt-1">{errors.images}</p>
+        )}
       </div>
-
       {images.length > 0 && (
         <div className="space-y-3">
           {images.map((img, i) => (
@@ -86,20 +127,35 @@ export default function NewFacilitiesForm() {
                 </button>
               </div>
               <input
+                ref={(el) => {
+                  if (el) titleRefs.current[img.id] = el;
+                }}
                 value={img.title}
-                onChange={(e) => updateTitle(img.id, e.target.value)}
-                className="mt-2 border p-2 w-full"
+                onChange={(e) => {
+                  updateTitle(img.id, e.target.value);
+                  if (e.target.value.trim()) {
+                    setErrors((prev) => {
+                      const { [img.id]: _, ...rest } = prev;
+                      return rest;
+                    });
+                  }
+                }}
+                className={`mt-2 border p-2 w-full ${
+                  errors[img.id] ? "border-red-500 border-2" : ""
+                }`}
                 placeholder={`Title for image ${i + 1}`}
               />
+              {errors[img.id] && (
+                <p className="text-red-500 text-sm mt-1">{errors[img.id]}</p>
+              )}
             </div>
           ))}
         </div>
       )}
-
       <button
         onClick={handleSubmit}
         disabled={status === "submitting" || status === "compressing"}
-        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded cursor-pointer"
+        className="bg-btn-primary hover:bg-red-primary text-white px-4 py-2 rounded cursor-pointer"
       >
         {status === "compressing"
           ? "Compressing..."
