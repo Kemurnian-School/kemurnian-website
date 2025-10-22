@@ -38,8 +38,6 @@ export async function deleteHeroBanner(formData: FormData) {
     await repo.normalizeOrder();
 
     // Revalidate pages
-    revalidatePath("/admin/hero");
-    revalidatePath("/admin");
     revalidatePath("/");
   } catch (error) {
     console.error("Delete failed:", error);

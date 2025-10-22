@@ -46,7 +46,6 @@ export async function updateNews(formData: FormData) {
       image_urls: imageUrls,
     });
 
-    revalidatePath("/admin/news");
     revalidatePath(`/news/${id}`);
     revalidatePath("/");
     revalidatePath("/news");

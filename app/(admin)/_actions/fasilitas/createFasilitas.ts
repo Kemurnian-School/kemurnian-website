@@ -66,7 +66,6 @@ export async function uploadFacilities(formData: FormData) {
     await repo.createFasilitas(uploadedFasilitas);
 
     // Revalidate page
-    revalidatePath("/admin/fasilitas");
     revalidatePath(`/${namaSekolah}`);
 
     return {

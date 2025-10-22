@@ -21,7 +21,6 @@ export async function uploadKurikulum(formData: FormData) {
       order: nextOrder,
     });
 
-    revalidatePath("/admin/kurikulum");
     revalidatePath("/");
     return { success: true };
   } catch (error) {

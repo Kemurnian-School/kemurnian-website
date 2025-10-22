@@ -48,7 +48,6 @@ export async function uploadNews(formData: FormData) {
       image_urls: uploadedImagesUrls,
     });
 
-    revalidatePath("/admin/news");
     revalidatePath("/");
     revalidatePath("/news");
     return { success: true, uploaded: uploadedImagesUrls.length };

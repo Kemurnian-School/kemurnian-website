@@ -20,7 +20,6 @@ export async function deleteNews(id: number) {
   await repo.deleteById(id);
 
   // Refresh admin dashboard
-  revalidatePath("/admin/news");
   revalidatePath("/");
   revalidatePath("/news");
 

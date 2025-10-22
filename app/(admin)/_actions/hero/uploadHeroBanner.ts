@@ -46,8 +46,6 @@ export async function uploadHeroBanner(formData: FormData) {
       order: nextOrder,
     });
 
-    revalidatePath("/admin/hero");
-    revalidatePath("/admin");
     revalidatePath("/");
   } catch (error) {
     console.error("Upload failed:", error);

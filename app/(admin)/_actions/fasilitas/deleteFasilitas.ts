@@ -24,7 +24,6 @@ export async function deleteFacility(id: number) {
     await deleteFromR2(imageUrl);
     await repo.deleteFasilitas(id);
 
-    revalidatePath("/admin/fasilitas");
     revalidatePath(`/${namaSekolah}`);
 
     redirect(

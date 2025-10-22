@@ -16,7 +16,6 @@ export async function deleteEnrollmentImage(formData: FormData) {
   await deleteFromR2(imageUrl);
   await repo.update(id, { image_url: null });
 
-  revalidatePath("/admin/enrollment");
   revalidatePath("/");
   revalidatePath("/enrollment");
 
