@@ -21,7 +21,6 @@ function createSupabaseClient(request: NextRequest, response: NextResponse) {
 export async function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   const hostname = request.headers.get("host") || "";
-  const subdomain = hostname.split(".")[0];
 
   // --- 1. Quick exits for performance ---
   const isStaticAsset = url.pathname.match(
@@ -29,8 +28,7 @@ export async function middleware(request: NextRequest) {
   );
   if (isStaticAsset) return NextResponse.next();
 
-  const isAdminSubdomain =
-    subdomain === "master" || hostname.startsWith("admin.");
+  const isAdminSubdomain = hostname.startsWith("admin.");
 
   // --- 2. Prevent access to admin routes from public site ---
   if (
