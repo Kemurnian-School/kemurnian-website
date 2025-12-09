@@ -12,7 +12,7 @@
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.57.0",
     "isomorphic-dompurify": "^2.26.0",
-    "next": "15.5.2",
+    "next": "^15.5.7",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-quill-new": "^3.6.0"
