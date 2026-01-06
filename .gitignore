@@ -44,3 +44,5 @@ next-env.d.ts
 *:[Zz]one.Identifier
 
 /app/generated/prisma
+
+/minio-data

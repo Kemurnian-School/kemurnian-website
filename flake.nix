@@ -1,6 +1,4 @@
 {
-  description = "Kemurnian Website Development Shell";
-
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
