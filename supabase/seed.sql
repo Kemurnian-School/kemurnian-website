@@ -1,4 +1,3 @@
--- 1. Create the User (auth.users)
 INSERT INTO auth.users (
   id,
   instance_id,
@@ -22,8 +21,8 @@ INSERT INTO auth.users (
   '00000000-0000-0000-0000-000000000000',
   'authenticated',
   'authenticated',
-  'admin@kemurnian.sch.id', -- YOUR LOGIN EMAIL
-  crypt('password', gen_salt('bf', 10)), -- PASSWORD: "password"
+  'admin@kemurnian.sch.id',
+  crypt('password', gen_salt('bf', 10)),
   now(),
   now(),
   now(),
@@ -37,13 +36,12 @@ INSERT INTO auth.users (
   ''
 ) ON CONFLICT (id) DO NOTHING;
 
--- 2. Create the Identity (auth.identities) - FIXED WITH PROVIDER_ID
 INSERT INTO auth.identities (
   id,
   user_id,
   identity_data,
   provider,
-  provider_id, -- <--- THIS WAS MISSING CAUSING THE ERROR
+  provider_id,
   last_sign_in_at,
   created_at,
   updated_at
@@ -52,7 +50,7 @@ INSERT INTO auth.identities (
   'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
   '{"sub": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11", "email": "admin@kemurnian.sch.id"}',
   'email',
-  'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', -- <--- MATCHING ID IS REQUIRED HERE
+  'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
   now(),
   now(),
   now()
