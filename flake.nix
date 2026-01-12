@@ -7,8 +7,11 @@
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
-    in {
+    in
+    {
       devShells.${system}.default = pkgs.mkShell {
+        NODE_TLS_REJECT_UNAUTHORIZED = "0";
+				NODE_OPTIONS = "--tls-cipher-list=DEFAULT@SECLEVEL=0";
         packages = with pkgs; [
           nodejs
           nodePackages.pnpm

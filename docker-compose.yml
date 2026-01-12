@@ -11,3 +11,30 @@ services:
     command: server /data --console-address ":9001"
     volumes:
       - ./minio-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+      
+  create-buckets:
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      until mc alias set myminio http://minio:9000 minioadmin minioadmin; do
+        echo '...waiting for minio...';
+        sleep 1;
+      done;
+      mc mb myminio/kemurnian-bucket --ignore-existing;
+      mc anonymous set public myminio/kemurnian-bucket;
+      echo 'placeholder' > /tmp/.keep
+      mc cp /tmp/.keep myminio/kemurnian-bucket/enrollment/.keep
+      mc cp /tmp/.keep myminio/kemurnian-bucket/fasilitas/.keep
+      mc cp /tmp/.keep myminio/kemurnian-bucket/hero-banners/.keep
+      mc cp /tmp/.keep myminio/kemurnian-bucket/news/.keep
+      echo '✅ Production mirror created: kemurnian-bucket';
+      exit 0;
+      "
