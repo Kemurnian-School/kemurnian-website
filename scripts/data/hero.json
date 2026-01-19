@@ -1,0 +1,32 @@
+[
+  {
+    "filename": "slide-1.webp",
+    "header_text": "",
+    "button_text": "",
+    "href_text": ""
+  },
+  {
+    "filename": "slide-2.webp",
+    "header_text": "",
+    "button_text": "",
+    "href_text": ""
+  },
+  {
+    "filename": "slide-3.webp",
+    "header_text": "",
+    "button_text": "",
+    "href_text": ""
+  },
+  {
+    "filename": "slide-4.webp",
+    "header_text": "Modern Facilities & Learning",
+    "button_text": "Take a Tour",
+    "href_text": "/"
+  },
+  {
+    "filename": "slide-5.webp",
+    "header_text": "Building Character & Integrity",
+    "button_text": "Contact Us",
+    "href_text": "/about-us"
+  }
+]
