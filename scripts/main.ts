@@ -3,6 +3,7 @@ import { S3Client } from '@aws-sdk/client-s3';
 import dotenv from 'dotenv';
 import { seedHero } from './seeds/hero';
 import { seedKurikulum } from './seeds/kurikulum';
+import { seedNews } from './seeds/news';
 
 dotenv.config({ path: '.env.local' });
 
@@ -42,6 +43,7 @@ async function main() {
 	try {
 		await seedHero(supabase, s3, { bucketName: BUCKET_NAME, cdnUrl: CDN_URL });
 		await seedKurikulum(supabase);
+		await seedNews(supabase, s3, { bucketName: BUCKET_NAME, cdnUrl: CDN_URL });
 		console.log('\n✨ All seeding processes complete!');
 	} catch (e) {
 		console.error('Fatal Error during seeding:', e);
