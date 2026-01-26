@@ -16,7 +16,7 @@ This document provides a technical overview of the Kemurnian School web applicat
 
 ## Application Architecture & Logic Flow
 
-The application is a monolith built with Next.js, logically separated into two main parts using Route Groups: the public-facing website `app/(main)` and the admin panel `app/(admin)`.
+The application is a monolith built with Next.js, logically separated into two main parts using Route Groups: the public-facing website `app/(main)` and the admin panel `app|(admin)`.
 
 ### 1. Request Lifecycle & Middleware (`middleware.ts`)
 
@@ -62,52 +62,102 @@ The public website is optimized for performance and scalability by leveraging Ne
 
 ## 🚀 Local Development Setup
 
-### 1. Prerequisites
+### 1. Choose Your Setup Method
 
--   Node.js (v18+)
--   pnpm
+**Option A: With Nix** - Automatically installs all dependencies  
+**Option B: Without Nix** - Install dependencies manually
 
-### 2. Installation & Setup
+### 2. Setup Instructions
 
-1.  **Clone & Install**:
+#### Option A: With Nix
+
+1.  **Clone the repository**:
     ```bash
     git clone https://github.com/Kemurnian-School/kemurnian-website.git
     cd kemurnian-website
-    pnpm install
     ```
 
-2.  **Environment Variables**:
-    Copy `.env.example` to `.env.local` and populate it with your credentials for Supabase and Cloudflare R2.
+2.  **Enter Nix shell**:
     ```bash
-    cp .env.example .env.local
+    nix develop
     ```
 
-3.  **Hosts File Configuration**:
-    To enable local subdomain routing for the admin panel, add the following to your `hosts` file:
-    ```
-    127.0.0.1   admin.localhost
-    ```
-    -   **Windows**: `C:\Windows\System32\drivers\etc\hosts`
-    -   **macOS/Linux**: `/etc/hosts`
+3.  **Continue to step 3 below**
 
-4.  **Run Development Server**:
+#### Option B: Without Nix
+
+1.  **Clone the repository**:
     ```bash
-    pnpm dev
-    ```
-    -   Public site: `http://localhost:3000`
-    -   Admin panel: `http://admin.localhost:3000`
-
-    NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
-    NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-    SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+    git clone https://github.com/Kemurnian-School/kemurnian-website.git
+    cd kemurnian-website
     ```
 
-4.  **Run the development server:**
-    ```bash
-    pnpm dev
-    ```
+2.  **Install dependencies manually**:
+    -   Node.js (v18+)
+    -   pnpm
+    -   Docker & Docker Compose
+    -   Supabase CLI
+    -   just
 
-    The application will be available at `http://localhost:3000`.
+3.  **Continue to step 3 below**
+
+### 3. Environment Variables
+
+Copy `.env.example` to `.env.local`:
+```bash
+cp .env.example .env.local
+```
+
+The `.env.local` file should contain:
+```env
+DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:54322/postgres"
+NEXT_PUBLIC_SUPABASE_URL="http://127.0.0.1:54321"
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_secret_service_key
+R2_ACCOUNT_ID="minio"
+R2_ACCESS_KEY_ID="minioadmin"
+R2_SECRET_ACCESS_KEY="minioadmin"
+R2_BUCKET_NAME="kemurnian-bucket"
+R2_PUBLIC_URL="http://127.0.0.1:9000/kemurnian-bucket"
+R2_CDN="http://127.0.0.1:9000/kemurnian-bucket"
+```
+
+### 4. Hosts File Configuration
+
+To enable local subdomain routing for the admin panel, add the following to your `hosts` file:
+```
+127.0.0.1   admin.localhost
+```
+-   **Windows**: `C:\Windows\System32\drivers\etc\hosts`
+-   **macOS/Linux**: `/etc/hosts`
+
+### 5. Start Development
+
+```bash
+just install    # Install Node.js dependencies
+just start      # Start Docker and Supabase
+just dev        # Start Next.js development server
+```
+
+-   Public site: `http://localhost:3000`
+-   Admin panel: `http://admin.localhost:3000`
+
+### Available Commands
+
+```bash
+just              # List all available commands
+just install      # Install pnpm dependencies
+just start        # Start Docker Compose and Supabase
+just dev          # Start Next.js dev server
+just stop         # Stop all services
+just reset        # Stop and restart all services
+just setup        # Start Supabase and run setup script
+just db-migrate   # Push database migrations
+just db-reset     # Reset database
+just db-seed      # Seed database with initial data
+```
+
+---
 
 ## Deployment
 

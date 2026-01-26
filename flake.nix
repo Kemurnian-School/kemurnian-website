@@ -11,6 +11,7 @@
     {
       devShells.${system}.default = pkgs.mkShell {
         packages = with pkgs; [
+					just
           nodejs
           nodePackages.pnpm
           nodePackages.vercel
@@ -18,6 +19,7 @@
           minio-client
           postgresql
           openssl
+					docker-compose
         ];
 
         shellHook = ''
