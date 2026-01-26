@@ -17,9 +17,15 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.57.0
         version: 2.57.0
+      '@types/mime-types':
+        specifier: ^3.0.1
+        version: 3.0.1
       isomorphic-dompurify:
         specifier: ^2.26.0
         version: 2.26.0
+      mime-types:
+        specifier: ^3.0.2
+        version: 3.0.2
       next:
         specifier: ^15.5.7
         version: 15.5.9(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -774,6 +780,9 @@ packages:
   '@tailwindcss/postcss@4.1.12':
     resolution: {integrity: sha512-5PpLYhCAwf9SJEeIsSmCDLgyVfdBhdBpzX1OJ87anT9IVR0Z9pjM0FNixCAUAHGnMBGB8K99SwAheXrT0Kh6QQ==}
 
+  '@types/mime-types@3.0.1':
+    resolution: {integrity: sha512-xRMsfuQbnRq1Ef+C+RKaENOxXX87Ygl38W1vDfPHRku02TgQr+Qd8iivLtAMcR0KF5/29xlnFihkTlbqFrGOVQ==}
+
   '@types/node@20.19.12':
     resolution: {integrity: sha512-lSOjyS6vdO2G2g2CWrETTV3Jz2zlCXHpu1rcubLKpz9oj+z/1CceHlj+yq53W+9zgb98nSov/wjEKYDNauD+Hw==}
 
@@ -998,6 +1007,14 @@ packages:
 
   magic-string@0.30.18:
     resolution: {integrity: sha512-yi8swmWbO17qHhwIBNeeZxTceJMeBvWJaId6dyvTSOwTipqeHhMhOrz6513r1sOKnpvQ7zkhlG8tPrpilwTxHQ==}
+
+  mime-db@1.54.0:
+    resolution: {integrity: sha512-aU5EJuIN2WDemCcAp2vFBfp/m4EAhWJnUNSSw0ixs7/kXbd6Pg64EmwJkNdFhB8aWt1sH2CTXrLxo/iAGV3oPQ==}
+    engines: {node: '>= 0.6'}
+
+  mime-types@3.0.2:
+    resolution: {integrity: sha512-Lbgzdk0h4juoQ9fCKXW4by0UJqj+nOOrI9MJ1sSj4nI8aI2eo1qmvQEie4VD1glsS250n15LsWsYtCugiStS5A==}
+    engines: {node: '>=18'}
 
   minipass@7.1.2:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
@@ -2327,6 +2344,8 @@ snapshots:
       postcss: 8.5.6
       tailwindcss: 4.1.12
 
+  '@types/mime-types@3.0.1': {}
+
   '@types/node@20.19.12':
     dependencies:
       undici-types: 6.21.0
@@ -2543,6 +2562,12 @@ snapshots:
   magic-string@0.30.18:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  mime-db@1.54.0: {}
+
+  mime-types@3.0.2:
+    dependencies:
+      mime-db: 1.54.0
 
   minipass@7.1.2: {}
 
