@@ -9,7 +9,7 @@ default:
 start:
     {{nix_cmd}} docker compose up -d
     {{nix_cmd}} supabase start
-		@echo "Infrastructure ready. Run 'just dev' to start Next.js"
+    @echo "Infrastructure ready. Run 'just dev' to start Next.js"
 
 dev:
     {{nix_cmd}} pnpm run dev
