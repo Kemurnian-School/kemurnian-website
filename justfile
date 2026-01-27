@@ -40,4 +40,4 @@ db-reset:
     {{nix_cmd}} supabase db reset
 
 db-seed:
-	{{nix_cmd}} npx tsx scripts/main.ts 
+    {{nix_cmd}} npx tsx scripts/main.ts 
