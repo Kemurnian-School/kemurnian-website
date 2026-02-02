@@ -5,6 +5,7 @@ import { seedHero } from './seeds/hero';
 import { seedKurikulum } from './seeds/kurikulum';
 import { seedNews } from './seeds/news';
 import { seedEnrollment } from './seeds/enrollment';
+import { seedFasilitas } from './seeds/fasilitas';
 
 dotenv.config({ path: '.env.local' });
 
@@ -46,6 +47,7 @@ async function main() {
 		await seedKurikulum(supabase);
 		await seedNews(supabase, s3, { bucketName: BUCKET_NAME, cdnUrl: CDN_URL });
     await seedEnrollment(supabase, s3, { bucketName: BUCKET_NAME, cdnUrl: CDN_URL });
+    await seedFasilitas(supabase, s3, { bucketName: BUCKET_NAME, cdnUrl: CDN_URL });
 		console.log('\n✨ All seeding processes complete!');
 	} catch (e) {
 		console.error('Fatal Error during seeding:', e);

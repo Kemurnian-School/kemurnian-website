@@ -1,25 +1,25 @@
 [
   {
     "title": "RUANG KELAS",
-    "filename": "https://cdn.mystiatesting.online/fasilitas/Sekolah Kemurnian I/1759734655034_0_RUANG_KELAS_facility_0_kelas_kota.webp",
+    "filename": "kemurnian-1/1.webp",
     "nama_sekolah": "sekolah-kemurnian-1",
     "order": null
   },
   {
     "title": "RUANG KELAS TK",
-    "filename": "https://cdn.mystiatesting.online/fasilitas/Sekolah Kemurnian I/1759734656190_1_RUANG_KELAS_TK_facility_1_sk1-ruang-kelas-TK-2.webp",
+    "filename": "kemurnian-1/2.webp",
     "nama_sekolah": "sekolah-kemurnian-1",
     "order": null
   },
   {
     "title": "BALLROOM",
-    "filename": "https://cdn.mystiatesting.online/fasilitas/Sekolah Kemurnian II/1759739834657_0_BALLROOM_facility_0_sk2-ballroom-gv.webp",
+    "filename": "kemurnian-2/1.webp",
     "nama_sekolah": "sekolah-kemurnian-2",
     "order": null
   },
   {
     "title": "LOBBY",
-    "filename": "https://cdn.mystiatesting.online/fasilitas/Sekolah Kemurnian II/1759739835378_1_LOBBY_facility_1_loby_gv.webp",
+    "filename": "kemurnian-2/2.webp",
     "nama_sekolah": "sekolah-kemurnian-2",
     "order": null
   }
