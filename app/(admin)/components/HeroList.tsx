@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import ConfirmationModal from "@admin/components/ConfirmationModal";
 import Image from "next/image";
 import { reorderHeroBanners } from "@server/hero/reorderHeroBanners";
 import { deleteHeroBanner } from "@server/hero/deleteHeroBanner";
