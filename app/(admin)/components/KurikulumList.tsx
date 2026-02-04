@@ -2,6 +2,7 @@
 
 import { useState, startTransition } from "react";
 import { deleteKurikulum } from "@server/kurikulum/deleteKurikulum";
+import QuillRenderer from "@component/QuillRenderer";
 
 interface Kurikulum {
   id: number;
@@ -79,11 +80,11 @@ export default function KurikulumList({
                     {item.title}
                   </h3>
                 </div>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  {item.body.length > 30
-                    ? item.body.substring(0, 30) + "..."
-                    : item.body}
-                </p>
+                <div className="text-gray-600 text-sm leading-relaxed">
+                  <QuillRenderer 
+                    content={item.body.length > 100 ? item.body.substring(0, 100) + "..." : item.body} 
+                  />
+                </div>
               </div>
 
               <div className="flex flex-col md:flex-row items-start md:items-center space-y-2 md:space-y-0 md:space-x-2 text-gray-500 text-xs mt-2 md:mt-0">
