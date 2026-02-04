@@ -16,6 +16,7 @@ export default function HeroList({ initialImages }: { initialImages: Hero[] }) {
   const [images, setImages] = useState<Hero[]>(initialImages);
   const [dragIdx, setDragIdx] = useState<number | null>(null);
   const [dragPos, setDragPos] = useState({ x: 0, y: 0 });
+  const [itemToDelete, setItemToDelete] = useState<Hero | null>(null);
   const dragStartPos = useRef({ x: 0, y: 0 });
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -79,6 +80,27 @@ export default function HeroList({ initialImages }: { initialImages: Hero[] }) {
     document.body.style.userSelect = "none";
   }
 
+  function handleDeleteClick(e: React.MouseEvent, hero: Hero) {
+    e.stopPropagation();
+    setItemToDelete(hero);
+  }
+
+  async function handleConfirmDelete() {
+    if (!itemToDelete) return;
+
+    const formData = new FormData();
+    formData.append("id", itemToDelete.id.toString());
+    
+    await deleteHeroBanner(formData);
+    
+    setImages(images.filter(img => img.id !== itemToDelete.id));
+    setItemToDelete(null);
+  }
+
+  function handleCancelDelete() {
+    setItemToDelete(null);
+  }
+
   return (
     <div className="relative">
       <div className="space-y-4">
@@ -112,18 +134,14 @@ export default function HeroList({ initialImages }: { initialImages: Hero[] }) {
                 {img.header_text}
               </p>
             </div>
-            <form
-              action={deleteHeroBanner}
+            <button
+              type="button"
+              onClick={(e) => handleDeleteClick(e, img)}
               onMouseDown={(e) => e.stopPropagation()}
+              className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors pointer-events-auto cursor-pointer"
             >
-              <input type="hidden" name="id" value={img.id} />
-              <button
-                type="submit"
-                className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors pointer-events-auto cursor-pointer"
-              >
-                Delete
-              </button>
-            </form>
+              Delete
+            </button>
           </div>
         ))}
       </div>
@@ -175,6 +193,14 @@ export default function HeroList({ initialImages }: { initialImages: Hero[] }) {
           Save Order
         </button>
       </form>
+
+      {itemToDelete && (
+        <ConfirmationModal
+          item={{ title: itemToDelete.header_text }}
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+        />
+      )}
     </div>
   );
 }
