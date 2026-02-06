@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { deleteFromR2 } from "@/utils/r2/delete";
+import { deleteFromStorage } from "@/utils/storage/delete";
 import { newsRepository } from "@/utils/supabase/repository/news";
 
 export async function deleteNewsImage(formData: FormData) {
@@ -13,7 +13,7 @@ export async function deleteNewsImage(formData: FormData) {
   const record = await repo.getById(id);
   if (!record) throw new Error("News not found");
 
-  await deleteFromR2(url);
+  await deleteFromStorage(url);
 
   const nextImages = record.image_urls.filter((u) => u !== url);
   await repo.updateNews({ id, image_urls: nextImages });

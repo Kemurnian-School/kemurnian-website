@@ -1,13 +1,13 @@
 'use server'
 
-import { getR2Client } from '@/utils/r2/client'
+import { getStorageClient } from '@/utils/storage/client'
 import { DeleteObjectCommand } from '@aws-sdk/client-s3'
 
-const BUCKET = process.env.R2_BUCKET_NAME!
-const CDN_URL = process.env.R2_CDN!
+const BUCKET = process.env.STORAGE_BUCKET_NAME!
+const CDN_URL = process.env.STORAGE_CDN!
 
 /**
- * Extracts the R2 object key from its CDN URL.
+ * Extracts the storage object key from its CDN URL.
  * Example:
  *   https://cdn.example.com/hero-banners/desktop/123_image.png
  * → hero-banners/desktop/123_image.png
@@ -17,28 +17,28 @@ function extractKeyFromUrl(url: string): string {
 }
 
 /**
- * A Universal R2 delete function
+ * A Universal storage delete function
  *
  * @param url - The CDN URL of the object to delete
  * @returns true if success, false otherwise
  */
-export async function deleteFromR2(url: string | null): Promise<boolean> {
+export async function deleteFromStorage(url: string | null): Promise<boolean> {
   if (!url) return false
 
-  const r2 = getR2Client()
+  const storage = getStorageClient()
   const key = extractKeyFromUrl(url)
 
   try {
-    await r2.send(
+    await storage.send(
       new DeleteObjectCommand({
         Bucket: BUCKET,
         Key: key,
       })
     )
-    console.log(`Deleted from R2: ${key}`)
+    console.log(`Deleted from storage: ${key}`)
     return true
   } catch (error) {
-    console.error(`Failed to delete from R2: ${key}`, error)
+    console.error(`Failed to delete from storage: ${key}`, error)
     return false
   }
 }

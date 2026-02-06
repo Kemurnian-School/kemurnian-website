@@ -1,8 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { uploadToR2 } from "@/utils/r2/upload";
-import { deleteFromR2 } from "@/utils/r2/delete";
+import { uploadToStorage } from "@/utils/storage/upload";
+import { deleteFromStorage } from "@/utils/storage/delete";
 import { newsRepository } from "@/utils/supabase/repository/news";
 
 export async function uploadNews(formData: FormData) {
@@ -24,12 +24,12 @@ export async function uploadNews(formData: FormData) {
   const uploadedImagesUrls: string[] = [];
 
   try {
-    // upload all files to R2
+    // upload all files to storage
     for (let i = 0; i < images.length; i++) {
       const image = images[i];
       if (!image || image.size === 0) continue;
 
-      const url = await uploadToR2(image, "news", {
+      const url = await uploadToStorage(image, "news", {
         subfolder: `${year}/${month}/${sanitizedTitle}`,
         filenamePrefix: `${Date.now()}_${i}_`,
       });
@@ -55,7 +55,7 @@ export async function uploadNews(formData: FormData) {
     console.error("Upload failed:", error);
 
     // Rollback: delete any files already uploaded
-    await Promise.all(uploadedImagesUrls.map((url) => deleteFromR2(url)));
+    await Promise.all(uploadedImagesUrls.map((url) => deleteFromStorage(url)));
 
     throw new Error("Upload failed, rolled back uploaded files.");
   }

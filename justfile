@@ -38,6 +38,8 @@ db-migrate:
 
 db-reset:
     {{nix_cmd}} supabase db reset
+    rm -rf ./minio-data/*
+    {{nix_cmd}} docker compose restart minio create-buckets
 
 db-seed:
     {{nix_cmd}} npx tsx scripts/main.ts 

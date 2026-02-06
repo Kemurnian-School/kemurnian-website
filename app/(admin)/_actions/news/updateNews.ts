@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { uploadToR2 } from "@/utils/r2/upload";
+import { uploadToStorage } from "@/utils/storage/upload";
 import { newsRepository } from "@/utils/supabase/repository/news";
 
 export async function updateNews(formData: FormData) {
@@ -29,7 +29,7 @@ export async function updateNews(formData: FormData) {
     for (let i = 0; i < newFiles.length; i++) {
       const file = newFiles[i];
       if (!file.size) continue;
-      const url = await uploadToR2(file, "news", {
+      const url = await uploadToStorage(file, "news", {
         subfolder: `${year}/${month}/${sanitizedTitle}`,
         filenamePrefix: `${Date.now()}_${i}_`,
       });

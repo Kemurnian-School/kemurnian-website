@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { enrollmentRepository } from "@repository/enrollment";
-import { uploadToR2 } from "@/utils/r2/upload";
-import { deleteFromR2 } from "@/utils/r2/delete";
+import { uploadToStorage } from "@/utils/storage/upload";
+import { deleteFromStorage } from "@/utils/storage/delete";
 
 export async function updateEnrollment(formData: FormData) {
   const repo = await enrollmentRepository();
@@ -23,9 +23,9 @@ export async function updateEnrollment(formData: FormData) {
 
   // Replace image if new one uploaded
   if (newImage && newImage.size > 0) {
-    if (existingImageUrl) await deleteFromR2(existingImageUrl);
+    if (existingImageUrl) await deleteFromStorage(existingImageUrl);
 
-    const uploadedUrl = await uploadToR2(newImage, "enrollment");
+    const uploadedUrl = await uploadToStorage(newImage, "enrollment");
     if (!uploadedUrl) throw new Error("Image upload failed");
 
     image_url = uploadedUrl;

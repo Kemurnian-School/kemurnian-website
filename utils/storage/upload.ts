@@ -1,20 +1,20 @@
 "use server";
 
-import { getR2Client } from "@/utils/r2/client";
+import { getStorageClient } from "@/utils/storage/client";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 
-const BUCKET = process.env.R2_BUCKET_NAME!;
-const CDN_URL = process.env.R2_CDN!;
+const BUCKET = process.env.STORAGE_BUCKET_NAME!;
+const CDN_URL = process.env.STORAGE_CDN!;
 
 /**
- * A Universal R2 upload function
+ * A Universal storage upload function
  *
  * @param file - The File object to upload
  * @param folder - Folder name
  * @param options - Optional params like subfolder, device type, or custom filename
  * @returns CDN URL of the uploaded file
  */
-export async function uploadToR2(
+export async function uploadToStorage(
   file: File | null,
   folder: string,
   options?: {
@@ -34,10 +34,10 @@ export async function uploadToR2(
 
   const filename = `${subpath}/${options?.filenamePrefix ?? ""}${timestamp}_${sanitizedName}`;
 
-  const r2 = getR2Client();
+  const storage = getStorageClient();
   const arrayBuffer = await file.arrayBuffer();
 
-  await r2.send(
+  await storage.send(
     new PutObjectCommand({
       Bucket: BUCKET,
       Key: filename,

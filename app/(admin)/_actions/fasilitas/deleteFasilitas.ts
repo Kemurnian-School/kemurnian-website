@@ -1,12 +1,12 @@
 "use server";
 
-import { deleteFromR2 } from "@/utils/r2/delete";
+import { deleteFromStorage } from "@/utils/storage/delete";
 import { fasilitasRepository } from "@repository/fasilitas";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
 /**
- * Deletes a facility from both the database and R2 storage.
+ * Deletes a facility from both the database and storage.
  */
 export async function deleteFacility(id: number) {
   if (!id) throw new Error("Missing facility ID");
@@ -21,7 +21,7 @@ export async function deleteFacility(id: number) {
     const imageUrl = record.image_urls;
     const namaSekolah = record.nama_sekolah;
 
-    await deleteFromR2(imageUrl);
+    await deleteFromStorage(imageUrl);
     await repo.deleteFasilitas(id);
 
     revalidatePath(`/${namaSekolah}`);

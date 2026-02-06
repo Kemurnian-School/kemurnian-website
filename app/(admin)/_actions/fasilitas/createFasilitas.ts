@@ -1,8 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { uploadToR2 } from "@/utils/r2/upload";
-import { deleteFromR2 } from "@/utils/r2/delete";
+import { uploadToStorage } from "@/utils/storage/upload";
+import { deleteFromStorage } from "@/utils/storage/delete";
 import { fasilitasRepository } from "@repository/fasilitas";
 import type { FasilitasRecord } from "@/utils/supabase/models/fasilitas";
 
@@ -37,14 +37,14 @@ export async function uploadFacilities(formData: FormData) {
   const uploadedFasilitas: FasilitasRecord[] = [];
 
   try {
-    // Upload each file to R2 and prepare DB records
+    // Upload each file to storage and prepare DB records
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const title = titles[i];
 
       if (!file || !title || title.trim() === "") continue;
 
-      const uploadedUrl = await uploadToR2(file, "fasilitas", {
+      const uploadedUrl = await uploadToStorage(file, "fasilitas", {
         subfolder: folderName,
         filenamePrefix: `${Date.now()}_${i}_`,
       });
@@ -55,7 +55,7 @@ export async function uploadFacilities(formData: FormData) {
         nama_sekolah: namaSekolah,
         title: title.trim(),
         image_urls: uploadedUrl,
-        storage_path: uploadedUrl.replace(`${process.env.R2_CDN}/`, ""),
+        storage_path: uploadedUrl.replace(`${process.env.STORAGE_CDN}/`, ""),
       });
     }
 
@@ -77,7 +77,7 @@ export async function uploadFacilities(formData: FormData) {
     console.error("Upload failed:", error);
 
     // Rollback: delete already uploaded files
-    await Promise.all(uploadedFasilitas.map((f) => deleteFromR2(f.image_urls)));
+    await Promise.all(uploadedFasilitas.map((f) => deleteFromStorage(f.image_urls)));
 
     throw new Error(
       "Upload failed — all uploaded files have been rolled back.",

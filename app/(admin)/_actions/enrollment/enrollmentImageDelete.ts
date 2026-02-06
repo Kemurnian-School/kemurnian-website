@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { enrollmentRepository } from "@repository/enrollment";
-import { deleteFromR2 } from "@/utils/r2/delete";
+import { deleteFromStorage } from "@/utils/storage/delete";
 
 export async function deleteEnrollmentImage(formData: FormData) {
   const id = formData.get("id") as string;
@@ -13,7 +13,7 @@ export async function deleteEnrollmentImage(formData: FormData) {
 
   if (!imageUrl) throw new Error("No image to delete");
 
-  await deleteFromR2(imageUrl);
+  await deleteFromStorage(imageUrl);
   await repo.update(id, { image_url: null });
 
   revalidatePath("/");

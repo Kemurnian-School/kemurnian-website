@@ -1,12 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { uploadToR2 } from "@/utils/r2/upload";
+import { uploadToStorage } from "@/utils/storage/upload";
 import { heroRepository } from "@repository/hero";
 
 /**
  * Creates a new hero banner entry in the database.
- * Uploads the provided desktop/tablet/mobile images to R2,
+ * Uploads the provided desktop/tablet/mobile images to storage,
  * assigns the next available display order,
  * and revalidates the admin pages.
  */
@@ -24,13 +24,13 @@ export async function uploadHeroBanner(formData: FormData) {
   try {
     const repo = await heroRepository();
 
-    const desktopUrl = await uploadToR2(desktopFile, "hero-banners", {
+    const desktopUrl = await uploadToStorage(desktopFile, "hero-banners", {
       subfolder: "desktop",
     });
-    const tabletUrl = await uploadToR2(tabletFile, "hero-banners", {
+    const tabletUrl = await uploadToStorage(tabletFile, "hero-banners", {
       subfolder: "tablet",
     });
-    const mobileUrl = await uploadToR2(mobileFile, "hero-banners", {
+    const mobileUrl = await uploadToStorage(mobileFile, "hero-banners", {
       subfolder: "mobile",
     });
 

@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { deleteFromR2 } from "@/utils/r2/delete";
+import { deleteFromStorage } from "@/utils/storage/delete";
 import { newsRepository } from "@/utils/supabase/repository/news";
 import { revalidatePath } from "next/cache";
 
@@ -11,9 +11,9 @@ export async function deleteNews(id: number) {
 
   if (!newsRecord) throw new Error("News not found");
 
-  // Delete all R2 files concurrently
+  // Delete all storage files concurrently
   if (newsRecord.image_urls?.length) {
-    await Promise.all(newsRecord.image_urls.map((url) => deleteFromR2(url)));
+    await Promise.all(newsRecord.image_urls.map((url) => deleteFromStorage(url)));
   }
 
   // Delete record from database
