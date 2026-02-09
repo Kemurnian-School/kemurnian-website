@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const CDN_URL = process.env.R2_CDN!;
+const CDN_URL = process.env.STORAGE_CDN!;
 const CDN_HOSTNAME = new URL(CDN_URL).hostname;
 
 const nextConfig: NextConfig = {
