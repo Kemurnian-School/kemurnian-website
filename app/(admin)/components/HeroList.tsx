@@ -12,6 +12,8 @@ interface Hero {
   header_text: string;
 }
 
+const icon = "w-4 h-4 text-white";
+
 export default function HeroList({ initialImages }: { initialImages: Hero[] }) {
   const [images, setImages] = useState<Hero[]>(initialImages);
   const [dragIdx, setDragIdx] = useState<number | null>(null);
@@ -90,9 +92,9 @@ export default function HeroList({ initialImages }: { initialImages: Hero[] }) {
 
     const formData = new FormData();
     formData.append("id", itemToDelete.id.toString());
-    
+
     await deleteHeroBanner(formData);
-    
+
     // Remove from local state
     setImages(images.filter(img => img.id !== itemToDelete.id));
     setItemToDelete(null);
@@ -139,8 +141,16 @@ export default function HeroList({ initialImages }: { initialImages: Hero[] }) {
               type="button"
               onClick={(e) => handleDeleteClick(e, img)}
               onMouseDown={(e) => e.stopPropagation()}
-              className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors pointer-events-auto cursor-pointer"
+              className="flex items-center px-3 py-2 bg-red-700 hover:bg-red-800 text-white rounded-full hover:bg-red-700 transition-colors pointer-events-auto cursor-pointer gap-1"
             >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className={icon}
+              >
+                <path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 4V6H15V4H9Z"></path>
+              </svg>
               Delete
             </button>
           </div>
