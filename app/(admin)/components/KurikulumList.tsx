@@ -81,63 +81,59 @@ export default function KurikulumList({
                   </h3>
                 </div>
                 <div className="text-gray-600 text-sm leading-relaxed">
-                  <QuillRenderer 
-                    content={item.body.length > 100 ? item.body.substring(0, 100) + "..." : item.body} 
+                  <QuillRenderer
+                    content={item.body.length > 100 ? item.body.substring(0, 100) + "..." : item.body}
                   />
                 </div>
-              </div>
-
-              <div className="flex flex-col md:flex-row items-start md:items-center space-y-2 md:space-y-0 md:space-x-2 text-gray-500 text-xs mt-2 md:mt-0">
-                <span>
+                <span className="text-sm text-gray-700">
                   {new Date(item.created_at).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
                     year: "numeric",
                   })}
                 </span>
-                <div className="flex items-center space-x-2">
-                  <a
-                    href={`/admin/kurikulum/edit/${item.id}`}
-                    className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 p-2 rounded-full transition-colors duration-200"
+              </div>
+
+              <div className="flex flex-col text-white gap-2">
+                <a
+                  href={`/admin/kurikulum/edit/${item.id}`}
+                  className="px-3 py-2 bg-blue-700 flex justify-center items-center gap-1 rounded-full"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                      ></path>
-                    </svg>
-                  </a>
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    disabled={loadingId === item.id}
-                    className={`${
-                      loadingId === item.id
-                        ? "opacity-50 cursor-not-allowed"
-                        : "text-red-600 hover:text-red-800 hover:bg-red-50"
-                    } p-2 rounded-full transition-colors duration-200 cursor-pointer`}
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    ></path>
+                  </svg>
+                  Edit
+                </a>
+                <button
+                  onClick={() => handleDelete(item.id)}
+                  disabled={loadingId === item.id}
+                  className="px-3 py-2 bg-red-700 flex justify-center items-center gap-1 rounded-full cursor-pointer"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    ></path>
+                  </svg>
+                  Delete
+                </button>
               </div>
             </div>
           ))}
