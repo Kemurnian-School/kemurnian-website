@@ -235,11 +235,6 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
       {
-        source: "/pidato_smp.html",
-        destination: "/news-detail/44",
-        permanent: false,
-      },
-      {
         source: "/pidato_sd.html",
         destination: "/news-detail/43",
         permanent: false,
