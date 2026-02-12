@@ -116,7 +116,7 @@ export default function ConfirmationModal({
       <main className={`${overlay} ${isVisible ? "opacity-100" : "opacity-0"}`} onClick={handleCancel}>
         <div
           className={card}
-          onClick={(e) => e.stopPropagation}
+          onClick={(e) => e.stopPropagation()}
           style={{
             animation: isVisible ? "bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)" : "none",
             transform: "translate3d(0, 0, 0)"
