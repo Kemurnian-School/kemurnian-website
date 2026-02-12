@@ -11,6 +11,9 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.988.0
         version: 3.988.0
+      '@remixicon/react':
+        specifier: ^4.9.0
+        version: 4.9.0(react@19.1.0)
       '@supabase/ssr':
         specifier: ^0.7.0
         version: 0.7.0(@supabase/supabase-js@2.95.3)
@@ -436,6 +439,11 @@ packages:
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
+
+  '@remixicon/react@4.9.0':
+    resolution: {integrity: sha512-5/jLDD4DtKxH2B4QVXTobvV1C2uL8ab9D5yAYNtFt+w80O0Ys1xFOrspqROL3fjrZi+7ElFUWE37hBfaAl6U+Q==}
+    peerDependencies:
+      react: '>=18.2.0'
 
   '@smithy/abort-controller@4.2.8':
     resolution: {integrity: sha512-peuVfkYHAmS5ybKxWcfraK7WBBP0J+rkfUcbHJJKQ4ir3UAUNQI+Y4Vt/PqSzGqgloJ5O1dk7+WzNL8wcCSXbw==}
@@ -1731,6 +1739,10 @@ snapshots:
 
   '@next/swc-win32-x64-msvc@15.5.12':
     optional: true
+
+  '@remixicon/react@4.9.0(react@19.1.0)':
+    dependencies:
+      react: 19.1.0
 
   '@smithy/abort-controller@4.2.8':
     dependencies:

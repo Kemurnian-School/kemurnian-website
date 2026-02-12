@@ -4,6 +4,7 @@ import ConfirmationModal from "@admin/components/ConfirmationModal";
 import Image from "next/image";
 import { reorderHeroBanners } from "@server/hero/reorderHeroBanners";
 import { deleteHeroBanner } from "@server/hero/deleteHeroBanner";
+import { RiDeleteBinLine, RiCheckboxCircleLine } from "@remixicon/react"
 
 interface Hero {
   id: number;
@@ -143,14 +144,9 @@ export default function HeroList({ initialImages }: { initialImages: Hero[] }) {
               onMouseDown={(e) => e.stopPropagation()}
               className="flex items-center px-3 py-2 bg-red-700 hover:bg-red-800 text-white rounded-full hover:bg-red-700 transition-colors pointer-events-auto cursor-pointer gap-1"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className={icon}
-              >
-                <path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 4V6H15V4H9Z"></path>
-              </svg>
+              <RiDeleteBinLine
+                size={18}
+              />
               Delete
             </button>
           </div>
@@ -201,7 +197,9 @@ export default function HeroList({ initialImages }: { initialImages: Hero[] }) {
           type="submit"
           className="px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors flex items-center gap-2 cursor-pointer"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12ZM12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM17.4571 9.45711L16.0429 8.04289L11 13.0858L8.20711 10.2929L6.79289 11.7071L11 15.9142L17.4571 9.45711Z"></path></svg>
+          <RiCheckboxCircleLine
+            size={20}
+          />
           Save Order
         </button>
       </form>
