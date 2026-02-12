@@ -97,7 +97,7 @@ export default function KurikulumList({
               <div className="flex flex-col text-white gap-2">
                 <a
                   href={`/admin/kurikulum/edit/${item.id}`}
-                  className="px-3 py-2 bg-blue-700 flex justify-center items-center gap-1 rounded-full"
+                  className="px-3 py-2 bg-blue-700 hover:bg-blue-800 active:bg-blue-900 flex justify-center items-center gap-1 rounded-full"
                 >
                   <svg
                     className="w-4 h-4"
@@ -117,7 +117,7 @@ export default function KurikulumList({
                 <button
                   onClick={() => handleDelete(item.id)}
                   disabled={loadingId === item.id}
-                  className="px-3 py-2 bg-red-700 flex justify-center items-center gap-1 rounded-full cursor-pointer"
+                  className="px-3 py-2 bg-red-700 hover:bg-red-800 active:bg-red-900 flex justify-center items-center gap-1 rounded-full cursor-pointer"
                 >
                   <svg
                     className="w-4 h-4"
