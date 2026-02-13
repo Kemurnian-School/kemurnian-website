@@ -18,23 +18,34 @@ const fromOptions = [
   'TK Kemurnian III', 'SD Kemurnian III', 'Kemurnian III'
 ]
 
+interface FormState {
+  title: string;
+  body: string;
+  date: string;
+  from: string;
+  embed: string;
+  existingImages: string[];
+  imagesToDelete: string[];
+  newImages: File[];
+}
+
 export default function EditNewsForm({ initialData }: { initialData: any }) {
   const router = useRouter()
 
-  const [state, setState] = useState({
+  const [state, setState] = useState<FormState>({
     title: initialData.title,
     body: initialData.body,
     date: initialData.date,
     from: initialData.from,
     embed: initialData.embed ?? '',
-    existingImages: initialData.image_urls ?? [],
+    existingImages: initialData.image_urls ?? [] as string[],
+    imagesToDelete: [] as string[],
     newImages: [] as File[],
   })
 
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const [compressing, setCompressing] = useState(false)
-  const [deletingImage, setDeletingImage] = useState<string | null>(null)
 
   const modules = {
     toolbar: [
@@ -69,17 +80,15 @@ export default function EditNewsForm({ initialData }: { initialData: any }) {
     }
   }
 
-  async function handleDeleteImage(url: string) {
-    setDeletingImage(url)
-    const form = new FormData()
-    form.append('newsId', initialData.id)
-    form.append('imageUrl', url)
-    await deleteNewsImage(form)
-    setState(prev => ({
-      ...prev,
-      existingImages: prev.existingImages.filter((img: string) => img !== url),
-    }))
-    setDeletingImage(null)
+  function toggleImageDeletion(url: string) {
+    setState(prev => {
+      const isMarked = prev.imagesToDelete.includes(url)
+      if (isMarked) {
+        return { ...prev, imagesToDelete: prev.imagesToDelete.filter(item => item !== url) }
+      } else {
+        return { ...prev, imagesToDelete: [...prev.imagesToDelete, url] }
+      }
+    })
   }
 
   function removeNewImage(index: number) {
@@ -96,18 +105,33 @@ export default function EditNewsForm({ initialData }: { initialData: any }) {
     }
 
     setLoading(true)
-    const form = new FormData()
-    form.append('id', initialData.id)
-    form.append('title', state.title)
-    form.append('body', state.body)
-    form.append('date', state.date)
-    form.append('from', state.from)
-    form.append('embed', state.embed)
-    form.append('existingImages', JSON.stringify(state.existingImages))
-    for (const img of state.newImages) form.append('images', img)
 
     try {
-      await updateNews(form)
+      const deletePromises = state.imagesToDelete.map(url => {
+        const deleteForm = new FormData()
+        deleteForm.append('newsId', initialData.id)
+        deleteForm.append('imageUrl', url)
+        return deleteNewsImage(deleteForm)
+      })
+
+      const updateForm = new FormData()
+      updateForm.append('id', initialData.id)
+      updateForm.append('title', state.title)
+      updateForm.append('body', state.body)
+      updateForm.append('date', state.date)
+      updateForm.append('from', state.from)
+      updateForm.append('embed', state.embed)
+
+      const remainingImages = state.existingImages.filter(img => !state.imagesToDelete.includes(img))
+      updateForm.append('existingImages', JSON.stringify(remainingImages))
+
+      for (const img of state.newImages) updateForm.append('images', img)
+
+      await Promise.all([
+        ...deletePromises,
+        updateNews(updateForm)
+      ])
+
       setMessage('News updated successfully!')
       router.push('/admin/news?success=' + encodeURIComponent("News updated successfully!"))
     } catch (err) {
@@ -181,20 +205,34 @@ export default function EditNewsForm({ initialData }: { initialData: any }) {
             <p className="text-gray-500">No images</p>
           ) : (
             <div className="flex flex-wrap gap-2">
-              {state.existingImages.map((url: string, idx: number) => (
-                <div key={idx} className="relative border rounded p-1">
-                  <img src={url} alt="" className="w-24 h-24 object-cover rounded" />
-                  <button
-                    type="button"
-                    onClick={() => handleDeleteImage(url)}
-                    disabled={deletingImage === url}
-                    className={`absolute top-0 right-0 px-1 rounded text-white ${deletingImage === url ? 'bg-gray-400' : 'bg-red-500 hover:bg-red-600'
-                      }`}
-                  >
-                    {deletingImage === url ? '...' : '×'}
-                  </button>
-                </div>
-              ))}
+              {state.existingImages.map((url: string, idx: number) => {
+                const isMarked = state.imagesToDelete.includes(url)
+                return (
+                  <div key={idx} className={`relative border rounded p-1 transition-all ${isMarked ? 'bg-red-100 border-red-300' : 'bg-white'}`}>
+                    <img
+                      src={url}
+                      alt=""
+                      className={`w-24 h-24 object-cover rounded transition-opacity ${isMarked ? 'opacity-40 grayscale' : 'opacity-100'}`}
+                    />
+
+                    {isMarked && (
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <span className="text-red-700 font-bold text-xs bg-white/80 px-1 rounded">DELETED</span>
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() => toggleImageDeletion(url)}
+                      className={`absolute top-0 right-0 px-2 py-0.5 rounded text-xs text-white z-10 ${isMarked ? 'bg-blue-500 hover:bg-blue-600' : 'bg-red-500 hover:bg-red-600'
+                        }`}
+                      title={isMarked ? "Restore image" : "Mark for deletion"}
+                    >
+                      {isMarked ? 'Restore' : '×'}
+                    </button>
+                  </div>
+                )
+              })}
             </div>
           )}
         </div>
