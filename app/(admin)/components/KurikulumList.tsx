@@ -86,36 +86,39 @@ export default function KurikulumList({
                     content={item.body.length > 100 ? item.body.substring(0, 100) + "..." : item.body}
                   />
                 </div>
-                <span className="text-sm text-gray-700">
+              </div>
+
+              <article className="flex flex-col justify-end text-white gap-2">
+                <div className="flex flex-row gap-2">
+                  <a
+                    href={`/admin/kurikulum/edit/${item.id}`}
+                    className="px-3 py-2 bg-blue-700 hover:bg-blue-800 active:bg-blue-900 flex justify-end items-center gap-1 rounded-full"
+                  >
+                    <RiEditLine
+                      size={17}
+                    />
+                    Edit
+                  </a>
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    disabled={loadingId === item.id}
+                    className="px-3 py-2 bg-red-700 hover:bg-red-800 active:bg-red-900 flex justify-center items-center gap-1 rounded-full cursor-pointer"
+                  >
+                    <RiDeleteBinLine
+                      size={18}
+                    />
+                    Delete
+                  </button>
+                </div>
+
+                <span className="text-sm text-gray-700 text-end mr-1">
                   {new Date(item.created_at).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
                     year: "numeric",
                   })}
                 </span>
-              </div>
-
-              <div className="flex flex-col text-white gap-2">
-                <a
-                  href={`/admin/kurikulum/edit/${item.id}`}
-                  className="px-3 py-2 bg-blue-700 hover:bg-blue-800 active:bg-blue-900 flex justify-center items-center gap-1 rounded-full"
-                >
-                  <RiEditLine
-                    size={17}
-                  />
-                  Edit
-                </a>
-                <button
-                  onClick={() => handleDelete(item.id)}
-                  disabled={loadingId === item.id}
-                  className="px-3 py-2 bg-red-700 hover:bg-red-800 active:bg-red-900 flex justify-center items-center gap-1 rounded-full cursor-pointer"
-                >
-                  <RiDeleteBinLine
-                    size={18}
-                  />
-                  Delete
-                </button>
-              </div>
+              </article>
             </div>
           ))}
         </div>
