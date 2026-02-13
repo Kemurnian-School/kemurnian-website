@@ -19,8 +19,8 @@ const title = "text-xl font-semibold mb-2 text-center text-gray-800";
 const description = "text-gray-600 mb-6 text-center";
 const buttonContainer = "flex gap-3 justify-center";
 const button = "flex items-center justify-center px-2 py-2 rounded-full font-medium transition-all duration-200 cursor-pointer relative overflow-hidden w-30 gap-1";
-const cancelButton = `${button} bg-gray-700 text-white hover:bg-gray-600 hover:shadow-lg`;
-const deleteButton = `${button} bg-red-700 text-white hover:shadow-lg`;
+const cancelButton = `${button} bg-gray-700 text-white hover:bg-gray-800 active:bg-gray-900 hover:shadow-lg`;
+const deleteButton = `${button} bg-red-700 hover:bg-red-800 text-white hover:shadow-lg`;
 
 export default function ConfirmationModal({
   item,
@@ -145,7 +145,7 @@ export default function ConfirmationModal({
               className={deleteButton}
             >
               <span
-                className="absolute inset-0 bg-red-800 transition-all duration-75"
+                className="absolute inset-0 bg-red-900 transition-all duration-75"
                 style={{
                   width: `${progress}%`,
                   left: 0
