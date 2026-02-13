@@ -4,6 +4,7 @@ import { useState, startTransition } from "react";
 import { deleteKurikulum } from "@server/kurikulum/deleteKurikulum";
 import { RiEditLine, RiDeleteBinLine } from "@remixicon/react";
 import QuillRenderer from "@component/QuillRenderer";
+import ConfirmationModal from "@admin/components/ConfirmationModal";
 
 interface Kurikulum {
   id: number;
@@ -19,9 +20,20 @@ export default function KurikulumList({
 }) {
   const [kurikulums, setKurikulums] = useState<Kurikulum[]>(initialKurikulums);
   const [loadingId, setLoadingId] = useState<number | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<Kurikulum | null>(null);
 
-  async function handleDelete(id: number) {
-    if (!confirm("Are you sure you want to delete this curriculum?")) return;
+  function handleDeleteClick(item: Kurikulum) {
+    setItemToDelete(item);
+  }
+
+  function handleCancelDelete() {
+    setItemToDelete(null);
+  }
+
+  async function handleConfirmDelete() {
+    if (!itemToDelete) return;
+    
+    const id = itemToDelete.id;
     setLoadingId(id);
 
     try {
@@ -29,9 +41,11 @@ export default function KurikulumList({
       startTransition(() => {
         setKurikulums((prev) => prev.filter((k) => k.id !== id));
       });
+      setItemToDelete(null);
     } catch (err) {
       alert("Failed to delete curriculum.");
       console.error(err);
+      setItemToDelete(null);
     } finally {
       setLoadingId(null);
     }
@@ -83,7 +97,11 @@ export default function KurikulumList({
                 </div>
                 <div className="text-gray-600 text-sm leading-relaxed">
                   <QuillRenderer
-                    content={item.body.length > 100 ? item.body.substring(0, 100) + "..." : item.body}
+                    content={
+                      item.body.length > 100
+                        ? item.body.substring(0, 100) + "..."
+                        : item.body
+                    }
                   />
                 </div>
               </div>
@@ -94,19 +112,15 @@ export default function KurikulumList({
                     href={`/admin/kurikulum/edit/${item.id}`}
                     className="px-3 py-2 bg-blue-700 hover:bg-blue-800 active:bg-blue-900 flex justify-end items-center gap-1 rounded-full"
                   >
-                    <RiEditLine
-                      size={17}
-                    />
+                    <RiEditLine size={17} />
                     Edit
                   </a>
                   <button
-                    onClick={() => handleDelete(item.id)}
+                    onClick={() => handleDeleteClick(item)}
                     disabled={loadingId === item.id}
                     className="px-3 py-2 bg-red-700 hover:bg-red-800 active:bg-red-900 flex justify-center items-center gap-1 rounded-full cursor-pointer"
                   >
-                    <RiDeleteBinLine
-                      size={18}
-                    />
+                    <RiDeleteBinLine size={18} />
                     Delete
                   </button>
                 </div>
@@ -122,6 +136,14 @@ export default function KurikulumList({
             </div>
           ))}
         </div>
+      )}
+
+      {itemToDelete && (
+        <ConfirmationModal
+          item={{ title: itemToDelete.title }}
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+        />
       )}
     </div>
   );
