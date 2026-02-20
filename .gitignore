@@ -43,9 +43,6 @@ next-env.d.ts
 # Prevent Windows ADS files from being committed
 *:[Zz]one.Identifier
 
-/app/generated/prisma
-
 /minio-data
 
-/app/generated/prisma
 supabase/.temp
