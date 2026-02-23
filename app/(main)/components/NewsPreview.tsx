@@ -16,7 +16,7 @@ export default function NewsPreview({ news }: NewsPreviewProps) {
           className="flex flex-col items-center w-[calc(50%-8px)] sm:w-[260px]"
           href={`/news-detail/${item.id}`}
         >
-          <Image
+          <img
             src={item.image_urls[0]}
             alt={item.title}
             width={300}
