@@ -12,37 +12,15 @@ import {
 } from "@remixicon/react";
 
 const linkStyle =
-  "block w-full py-6 pl-6 hover:bg-btn-hover cursor-pointer text-left border-red-800";
+  "block w-full py-6 pl-6 cursor-pointer text-left border-red-800 transition-all duration-300 ease-in-out hover:bg-red-800 active:bg-red-900 active:scale-95";
 
 const menuLinks = [
-  {
-    href: "/admin/",
-    label: "Dashboard",
-    icon: <RiHome9Fill className="inline-block mr-3 size-5" />
-  },
-  {
-    href: "/admin/hero",
-    label: "Hero Section",
-    icon: <RiImageFill className="inline-block mr-3 size-5" />
-  },
-  {
-    href: "/admin/kurikulum",
-    label: "Kurikulum Section",
-    icon: <RiBookMarkedFill className="inline-block mr-3 size-5" />
-  },
-  {
-    href: "/admin/news",
-    label: "News",
-    icon: <RiNewsFill className="inline-block mr-3 size-5" />
-  },
-  { href: "/admin/enrollment",
-    label: "Enrollment",
-    icon: <RiMegaphone2Fill className="inline-block mr-3 size-5" />
-  },
-  { href: "/admin/fasilitas",
-    label: "Fasilitas",
-    icon: <RiSettings6Fill className="inline-block mr-3 size-5" />
-  },
+  { href: "/admin/", label: "Dashboard", icon: <RiHome9Fill className="inline-block mr-3 size-5" /> },
+  { href: "/admin/hero", label: "Hero Section", icon: <RiImageFill className="inline-block mr-3 size-5" /> },
+  { href: "/admin/kurikulum", label: "Kurikulum Section", icon: <RiBookMarkedFill className="inline-block mr-3 size-5" /> },
+  { href: "/admin/news", label: "News", icon: <RiNewsFill className="inline-block mr-3 size-5" /> },
+  { href: "/admin/enrollment", label: "Enrollment", icon: <RiMegaphone2Fill className="inline-block mr-3 size-5" /> },
+  { href: "/admin/fasilitas", label: "Fasilitas", icon: <RiSettings6Fill className="inline-block mr-3 size-5" /> },
 ];
 
 export default function AdminSidebar() {
@@ -58,20 +36,22 @@ export default function AdminSidebar() {
         />
       </div>
 
-      {/* Menu Links */}
       <div className="flex flex-col">
         {menuLinks.map((link) => (
           <Link
             key={link.href}
             href={link.href}
-            className={`flex items-center ${linkStyle}`}
+            className={`flex items-center origin-left ${linkStyle}`}
           >
-            {link.icon && link.icon}
-            {link.label}
+            {link.icon}
+            <span>{link.label}</span>
           </Link>
         ))}
       </div>
-      <button className="mx-2 mb-2 py-2 bg-btn-primary">Logout</button>
+      
+      <button className="mx-2 mb-2 py-2 bg-btn-primary transition-transform active:scale-95">
+        Logout
+      </button>
     </nav>
   );
 }
