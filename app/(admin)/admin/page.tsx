@@ -53,11 +53,10 @@ export default function AdminHome() {
             <button
               key={preset.label}
               onClick={() => handleWidthChange(preset.value)}
-              className={`px-3 py-1 text-sm rounded border transition-colors ${
-                width === preset.value
+              className={`px-3 py-1 text-sm rounded border transition-colors ${width === preset.value
                   ? "bg-blue-600 text-white border-blue-600"
                   : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-              }`}
+                }`}
             >
               {preset.label}
             </button>
@@ -66,18 +65,16 @@ export default function AdminHome() {
       </div>
 
       {/* Iframe Preview */}
-      <div className="flex-1 flex justify-center items-start overflow-auto bg-gray-100 p-4 rounded-lg">
-        <div
-          className="border rounded-lg shadow-lg bg-white"
-          style={{ width: `${width}px`, height: "100%" }}
-        >
-          <iframe
-            src={WEB_PAGE}
-            className="w-full h-full border-none"
-            loading="lazy"
-            allowFullScreen
-          />
-        </div>
+      <div
+        className="shadow-lg bg-white rounded-lg"
+        style={{ width: `${width}px`, height: "100%" }}
+      >
+        <iframe
+          src={WEB_PAGE}
+          className="w-full h-full border-none rounded-lg"
+          loading="lazy"
+          allowFullScreen
+        />
       </div>
     </div>
   );
