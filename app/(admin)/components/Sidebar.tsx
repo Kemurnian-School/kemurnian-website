@@ -12,13 +12,12 @@ import {
 } from "@remixicon/react";
 
 const linkStyle =
-  "block w-full py-4 pl-6 hover:bg-btn-hover cursor-pointer text-left border-b border-red-800";
+  "block w-full py-6 pl-6 hover:bg-btn-hover cursor-pointer text-left border-red-800";
 
 const menuLinks = [
   {
     href: "/admin/",
     label: "Dashboard",
-    borderTop: true,
     icon: <RiHome9Fill className="inline-block mr-3 size-5" />
   },
   {
@@ -65,7 +64,7 @@ export default function AdminSidebar() {
           <Link
             key={link.href}
             href={link.href}
-            className={`flex items-center ${linkStyle} ${link.borderTop ? "border-t" : ""}`}
+            className={`flex items-center ${linkStyle}`}
           >
             {link.icon && link.icon}
             {link.label}
