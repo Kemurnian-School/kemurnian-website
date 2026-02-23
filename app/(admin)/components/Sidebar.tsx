@@ -12,7 +12,7 @@ import {
 } from "@remixicon/react";
 
 const linkStyle =
-  "block w-full py-6 pl-6 cursor-pointer text-left border-red-800 transition-all duration-300 ease-in-out hover:bg-red-800 active:bg-red-900 active:scale-95";
+  "block w-full py-6 pl-6 cursor-pointer text-left border-red-800 transition-all duration-180 ease-in-out hover:bg-red-800 active:bg-red-900 active:scale-95";
 
 const menuLinks = [
   { href: "/admin/", label: "Dashboard", icon: <RiHome9Fill className="inline-block mr-3 size-5" /> },
@@ -48,7 +48,7 @@ export default function AdminSidebar() {
           </Link>
         ))}
       </div>
-      
+
       <button className="mx-2 mb-2 py-2 bg-btn-primary transition-transform active:scale-95">
         Logout
       </button>
