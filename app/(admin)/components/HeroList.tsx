@@ -13,8 +13,6 @@ interface Hero {
   header_text: string;
 }
 
-const icon = "w-4 h-4 text-white";
-
 export default function HeroList({ initialImages }: { initialImages: Hero[] }) {
   const [images, setImages] = useState<Hero[]>(initialImages);
   const [dragIdx, setDragIdx] = useState<number | null>(null);

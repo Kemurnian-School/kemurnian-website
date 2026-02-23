@@ -2,17 +2,48 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import {
+  RiHome9Fill,
+  RiImageFill,
+  RiBookMarkedFill,
+  RiNewsFill,
+  RiMegaphone2Fill,
+  RiSettings6Fill,
+} from "@remixicon/react";
 
 const linkStyle =
   "block w-full py-4 pl-6 hover:bg-btn-hover cursor-pointer text-left border-b border-red-800";
 
 const menuLinks = [
-  { href: "/admin/", label: "Dashboard", borderTop: true },
-  { href: "/admin/hero", label: "Hero Section" },
-  { href: "/admin/kurikulum", label: "Kurikulum Section" },
-  { href: "/admin/news", label: "News" },
-  { href: "/admin/enrollment", label: "Enrollment" },
-  { href: "/admin/fasilitas", label: "Fasilitas" },
+  {
+    href: "/admin/",
+    label: "Dashboard",
+    borderTop: true,
+    icon: <RiHome9Fill className="inline-block mr-3 size-5" />
+  },
+  {
+    href: "/admin/hero",
+    label: "Hero Section",
+    icon: <RiImageFill className="inline-block mr-3 size-5" />
+  },
+  {
+    href: "/admin/kurikulum",
+    label: "Kurikulum Section",
+    icon: <RiBookMarkedFill className="inline-block mr-3 size-5" />
+  },
+  {
+    href: "/admin/news",
+    label: "News",
+    icon: <RiNewsFill className="inline-block mr-3 size-5" />
+  },
+  { href: "/admin/enrollment",
+    label: "Enrollment",
+    icon: <RiMegaphone2Fill className="inline-block mr-3 size-5" />
+  },
+  { href: "/admin/fasilitas",
+    label: "Fasilitas",
+    icon: <RiSettings6Fill className="inline-block mr-3 size-5" />
+  },
 ];
 
 export default function AdminSidebar() {
@@ -34,8 +65,9 @@ export default function AdminSidebar() {
           <Link
             key={link.href}
             href={link.href}
-            className={`${linkStyle} ${link.borderTop ? "border-t" : ""}`}
+            className={`flex items-center ${linkStyle} ${link.borderTop ? "border-t" : ""}`}
           >
+            {link.icon && link.icon}
             {link.label}
           </Link>
         ))}
