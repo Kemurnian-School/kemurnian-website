@@ -48,7 +48,7 @@ const menuLinks = [
 
 export default function AdminSidebar() {
   return (
-    <nav className="sticky top-0 w-64 bg-red-primary h-screen text-white flex-shrink-0">
+    <nav className="sticky top-0 w-64 bg-red-primary h-screen text-white flex flex-col justify-between">
       <div className="my-8 mx-4 h-12 relative">
         <Image
           src="/nav_logo.webp"
@@ -72,6 +72,7 @@ export default function AdminSidebar() {
           </Link>
         ))}
       </div>
+      <button className="mx-2 mb-2 py-2 bg-btn-primary">Logout</button>
     </nav>
   );
 }
