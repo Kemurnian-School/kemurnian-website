@@ -28,7 +28,7 @@ export default function AdminHome() {
           max={1920}
           value={width}
           onChange={(e) => handleWidthChange(Number(e.target.value))}
-          className="w-48 accent-red-primary"
+          className="w-48 accent-red-primary cursor-pointer"
         />
 
         {/* Typable input */}
