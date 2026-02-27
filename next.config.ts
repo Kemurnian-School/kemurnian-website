@@ -4,7 +4,6 @@ const CDN_URL = process.env.STORAGE_CDN!;
 const CDN_HOSTNAME = new URL(CDN_URL).hostname;
 
 const nextConfig: NextConfig = {
-  output: 'export',
   images: {
     unoptimized: true,
     remotePatterns: [
