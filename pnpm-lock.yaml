@@ -23,6 +23,9 @@ importers:
       '@types/mime-types':
         specifier: ^3.0.1
         version: 3.0.1
+      basic-ftp:
+        specifier: ^5.2.0
+        version: 5.2.0
       mime-types:
         specifier: ^3.0.2
         version: 3.0.2
@@ -803,6 +806,10 @@ packages:
 
   '@types/ws@8.18.1':
     resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
+
+  basic-ftp@5.2.0:
+    resolution: {integrity: sha512-VoMINM2rqJwJgfdHq6RiUudKt2BV+FY5ZFezP/ypmwayk68+NzzAQy4XXLlqsGD4MCzq3DrmNFD/uUmBJuGoXw==}
+    engines: {node: '>=10.0.0'}
 
   bowser@2.14.1:
     resolution: {integrity: sha512-tzPjzCxygAKWFOJP011oxFHs57HzIhOEracIgAePE4pqB3LikALKnSzUyU4MGs9/iCEUuHlAJTjTc5M+u7YEGg==}
@@ -2221,6 +2228,8 @@ snapshots:
   '@types/ws@8.18.1':
     dependencies:
       '@types/node': 20.19.33
+
+  basic-ftp@5.2.0: {}
 
   bowser@2.14.1: {}
 

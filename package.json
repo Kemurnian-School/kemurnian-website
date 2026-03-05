@@ -13,6 +13,7 @@
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.95.3",
     "@types/mime-types": "^3.0.1",
+    "basic-ftp": "^5.2.0",
     "mime-types": "^3.0.2",
     "next": "^15.5.12",
     "react": "19.1.0",
