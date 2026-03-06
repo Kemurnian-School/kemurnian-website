@@ -1,10 +1,7 @@
 "use server";
 
-import { getStorageClient } from "@/utils/storage/client";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
-
-const BUCKET = process.env.STORAGE_BUCKET_NAME!;
-const CDN_URL = process.env.STORAGE_CDN!;
+import * as ftp from "basic-ftp";
+import { Readable } from "stream";
 
 /**
  * A Universal storage upload function
@@ -27,25 +24,38 @@ export async function uploadToStorage(
   const timestamp = Date.now();
   const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
 
-  // for subfolder (example: "hero-banners/desktop")
   const subpath = options?.subfolder
     ? `${folder}/${options.subfolder}`
     : folder;
 
-  const filename = `${subpath}/${options?.filenamePrefix ?? ""}${timestamp}_${sanitizedName}`;
+  const exactFilename = `${options?.filenamePrefix ?? ""}${timestamp}_${sanitizedName}`;
 
-  const storage = getStorageClient();
   const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  const stream = Readable.from(buffer);
 
-  await storage.send(
-    new PutObjectCommand({
-      Bucket: BUCKET,
-      Key: filename,
-      Body: Buffer.from(arrayBuffer),
-      ContentType: file.type,
-      CacheControl: "public, max-age=31536000, immutable",
-    }),
-  );
+  const client = new ftp.Client();
+  client.ftp.verbose = false;
 
-  return `${CDN_URL}/${filename}`;
+  try {
+    await client.access({
+      host: process.env.FTP_HOST!,
+      user: process.env.FTP_USER!,
+      password: process.env.FTP_PASSWORD!,
+      secure: false, 
+    });
+
+    const targetDirectory = `uploads/${subpath}`;
+    await client.ensureDir(targetDirectory);
+
+    await client.uploadFrom(stream, exactFilename);
+
+    return `${process.env.STORAGE_CDN}/uploads/${subpath}/${exactFilename}`;
+
+  } catch (error) {
+    console.error("FTP Upload failed:", error);
+    throw error;
+  } finally {
+    client.close();
+  }
 }
