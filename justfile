@@ -36,7 +36,6 @@ db-migrate:
 
 db-reset:
     {{nix_cmd}} supabase db reset
-    sudo rm -rf ./minio-data/*
 
 db-seed:
     {{nix_cmd}} npx tsx scripts/main.ts 
