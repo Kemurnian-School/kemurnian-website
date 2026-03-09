@@ -45,12 +45,12 @@ export async function uploadToStorage(
       secure: false, 
     });
 
-    const targetDirectory = `contents/${subpath}`;
+    const targetDirectory = `content/${subpath}`;
     await client.ensureDir(targetDirectory);
 
     await client.uploadFrom(stream, exactFilename);
 
-    return `${process.env.STORAGE_CDN}/contents/${subpath}/${exactFilename}`;
+    return `${process.env.STORAGE_CDN}/content/${subpath}/${exactFilename}`;
 
   } catch (error) {
     console.error("FTP Upload failed:", error);
