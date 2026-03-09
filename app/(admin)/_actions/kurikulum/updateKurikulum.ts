@@ -9,14 +9,14 @@ export async function updateKurikulum(formData: FormData) {
   const body = formData.get("body") as string;
   const preview = (formData.get("preview") as string) || null;
 
-  if (!id || !title || !body)
-    throw new Error("ID, title, and body are required");
+  if (!id)
+    throw new Error("ID required!");
 
   try {
     const repo = await kurikulumRepository();
     await repo.updateKurikulum({ id, title, body, preview });
 
-    revalidatePath(`/${id}`);
+    revalidatePath(`/kurikulum/${id}`);
     revalidatePath("/");
     return { success: true };
   } catch (error) {

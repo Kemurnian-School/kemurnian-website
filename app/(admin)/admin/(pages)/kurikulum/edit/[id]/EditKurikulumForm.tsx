@@ -39,24 +39,25 @@ export default function EditKurikulumForm({ initialData }: { initialData: Kuriku
   ]
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setMessage('')
+    e.preventDefault();
+    setIsSubmitting(true);
+    setMessage('');
 
     try {
-      const formData = new FormData()
-      Number(formData.get('id'))
-      formData.append('title', title)
-      formData.append('body', content)
-      if (preview !== null) formData.append('preview', preview)
+      const formData = new FormData();
+      formData.append('id', initialData.id.toString());
+      formData.append('title', title);
+      const cleanContent = content.replace(/&nbsp;|\u00A0/g, ' ');
+      formData.append('body', cleanContent);
+      if (preview !== null) formData.append('preview', preview);
 
-      await updateKurikulum(formData)
-      setMessage('Kurikulum updated successfully!')
+      await updateKurikulum(formData);
+      setMessage('Kurikulum updated successfully!');
     } catch (err: any) {
-      console.error(err)
-      setMessage('Failed to update kurikulum.')
+      console.error(err);
+      setMessage('Failed to update kurikulum.');
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
   }
 
