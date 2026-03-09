@@ -14,7 +14,6 @@
 					just
           nodejs
           nodePackages.pnpm
-          nodePackages.vercel
           supabase-cli
           minio-client
           postgresql
@@ -25,7 +24,6 @@
         shellHook = ''
           echo "node  : $(node -v)"
           echo "pnpm  : $(pnpm -v)"
-          echo "vercel: $(vercel --version)"
         '';
       };
     };
