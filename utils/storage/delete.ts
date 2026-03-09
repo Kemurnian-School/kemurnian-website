@@ -5,7 +5,7 @@ import * as ftp from "basic-ftp"
 /**
  * Extracts the storage object key from its CDN URL.
  * Example:
- * https://sekolahkemurnian.sch.id/uploads/hero-banners/desktop/123_image.png
+ * https://sekolahkemurnian.sch.id/contents/hero-banners/desktop/123_image.png
  * → uploads/hero-banners/desktop/123_image.png
  */
 function extractKeyFromUrl(url: string, cdnUrl: string): string {
