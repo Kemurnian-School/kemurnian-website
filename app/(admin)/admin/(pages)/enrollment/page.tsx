@@ -1,17 +1,18 @@
 import { enrollmentRepository } from "@repository/enrollment";
 import Link from "next/link";
+import ActionButton from "@admin/components/ActionButton";
 
 export default async function EnrollmentManagement() {
   const repo = await enrollmentRepository();
   const enrollment = await repo.get();
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">Enrollment Management</h1>
-
+    <div className="flex p-8 bg-gray-100 w-full min-h-screen">
+      <h1 className="flex justify-start text-3xl font-bold mb-6">Enrollment Management</h1>
       {!enrollment ? (
-        <div className="p-6 bg-white rounded shadow text-gray-600">
+        <div className="flex flex-col justify-center items-center text-gray-600 text-center gap-3">
           No enrollment data found.
+          <ActionButton href="/admin/enrollment/create" label="+ Add Enrollment" />
         </div>
       ) : (
         <div className="p-6 bg-white rounded shadow flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
