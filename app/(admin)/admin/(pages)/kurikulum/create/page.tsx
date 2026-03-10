@@ -150,7 +150,7 @@ export default function NewKurikulumForm() {
       <div className="flex items-center gap-4">
         <button
           onClick={handleSubmit}
-          className={`rounded px-4 py-2 text-white transition-colors ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800'
+          className={`rounded-full px-4 py-2 text-white transition-colors cursor-pointer ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800'
             }`}
           disabled={isSubmitting || !title.trim() || !content.trim()}
         >
@@ -166,7 +166,7 @@ export default function NewKurikulumForm() {
               setErrorMessage('')
               setSuccessMessage('')
             }}
-            className="rounded px-4 py-2 text-gray-600 border border-gray-300 hover:bg-gray-50 transition-colors"
+            className="rounded-full px-4 py-2 text-gray-600 border border-gray-300 hover:bg-gray-50 transition-colors cursor-pointer"
           >
             Reset
           </button>

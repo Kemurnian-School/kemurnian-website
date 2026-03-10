@@ -113,7 +113,7 @@ export default function EditKurikulumForm({ initialData }: { initialData: Kuriku
         <button
           type="submit"
           disabled={isSubmitting || !title.trim() || !content.trim()}
-          className={`px-4 py-2 rounded text-white ${isSubmitting ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'}`}
+          className={`px-4 py-2 rounded-full text-white cursor-pointer ${isSubmitting ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'}`}
         >
           {isSubmitting ? 'Updating...' : 'Update'}
         </button>
