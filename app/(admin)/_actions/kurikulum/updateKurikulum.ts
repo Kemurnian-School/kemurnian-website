@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { kurikulumRepository } from "@repository/kurikulum";
 
 export async function updateKurikulum(formData: FormData) {
@@ -18,7 +19,10 @@ export async function updateKurikulum(formData: FormData) {
 
     revalidatePath(`/kurikulum/${id}`);
     revalidatePath("/");
-    return { success: true };
+    redirect(
+      "/admin/kurikulum?success=" +
+        encodeURIComponent("Kurikulum updated successfully"),
+    );
   } catch (error) {
     console.error("Update failed:", error);
     throw error;
