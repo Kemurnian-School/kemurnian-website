@@ -1,5 +1,6 @@
 import NewsList from "@/app/(admin)/components/NewsList";
 import { newsRepository } from "@repository/news";
+import ActionButton from "@admin/components/ActionButton";
 
 export default async function AdminNews() {
   const repo = await newsRepository();
@@ -10,12 +11,7 @@ export default async function AdminNews() {
       {/* Header Section */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900">News Management</h1>
-        <a
-          href="/admin/news/create"
-          className="bg-btn-primary hover:bg-red-primary text-white px-6 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200"
-        >
-          <span>+ New Article</span>
-        </a>
+        <ActionButton href="/admin/news/create" label="+ Add News" />
       </div>
       <NewsList initialNews={news || []} />
     </section>
