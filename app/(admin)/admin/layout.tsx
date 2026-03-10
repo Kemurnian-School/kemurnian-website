@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "../../globals.css";
 import Sidebar from "../components/Sidebar"
 import Snackbar from "../components/Snackbar"
+import LoadingProgress from "../components/LoadingProgress"
 import { Suspense } from 'react'
 
 const poppins = Poppins({
@@ -27,7 +28,10 @@ export default function AdminLayout({
         <Suspense fallback={<div>Loading...</div>}>
           <Sidebar />
           <Snackbar success={true} message="message" />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1">
+            <LoadingProgress />
+            {children}
+          </main>
         </Suspense>
       </div>
     </div>
