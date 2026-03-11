@@ -224,11 +224,11 @@ export default function EditNewsForm({ initialData }: { initialData: any }) {
                     <button
                       type="button"
                       onClick={() => toggleImageDeletion(url)}
-                      className={`absolute top-0 right-0 px-2 py-0.5 rounded text-xs text-white z-10 ${isMarked ? 'bg-blue-500 hover:bg-blue-600' : 'bg-red-500 hover:bg-red-600'
+                      className={`absolute top-1 right-1 px-2 pt-[4px] pb-[5px] rounded-full text-xs text-white z-10 cursor-pointer ${isMarked ? 'bg-blue-500 hover:bg-blue-600' : 'bg-red-500 hover:bg-red-600'
                         }`}
                       title={isMarked ? "Restore image" : "Mark for deletion"}
                     >
-                      {isMarked ? 'Restore' : '×'}
+                      {isMarked ? 'Cancel' : '×'}
                     </button>
                   </div>
                 )
@@ -281,7 +281,7 @@ export default function EditNewsForm({ initialData }: { initialData: any }) {
           type="button"
           onClick={handleSubmit}
           disabled={loading || compressing}
-          className={`px-4 py-2 rounded text-white ${loading || compressing
+          className={`px-4 py-2 rounded-full text-white ${loading || compressing
             ? 'bg-gray-400 cursor-not-allowed'
             : 'bg-blue-600 hover:bg-blue-700 cursor-pointer'
             }`}
