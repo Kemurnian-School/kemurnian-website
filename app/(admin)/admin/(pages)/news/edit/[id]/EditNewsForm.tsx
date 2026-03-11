@@ -281,7 +281,9 @@ export default function EditNewsForm({ initialData }: { initialData: any }) {
           type="button"
           onClick={handleSubmit}
           disabled={loading || compressing}
-          className={`px-4 py-2 rounded text-white ${loading || compressing ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+          className={`px-4 py-2 rounded text-white ${loading || compressing
+            ? 'bg-gray-400 cursor-not-allowed'
+            : 'bg-blue-600 hover:bg-blue-700 cursor-pointer'
             }`}
         >
           {loading ? 'Updating...' : compressing ? 'Compressing...' : 'Update'}

@@ -255,7 +255,7 @@ export default function NewNewsForm() {
           disabled={isSubmitting || isCompressing}
           className={`px-4 py-2 rounded text-white transition-colors ${isSubmitting || isCompressing
             ? 'bg-gray-400 cursor-not-allowed'
-            : 'bg-blue-600 hover:bg-blue-700'
+            : 'bg-blue-600 hover:bg-blue-700 cursor-pointer'
             }`}
         >
           {isSubmitting ? 'Saving...' : isCompressing ? 'Compressing...' : 'Save'}

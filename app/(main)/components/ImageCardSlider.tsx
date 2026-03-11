@@ -107,7 +107,7 @@ export default function ImageCardSlider({ images, alt, title }: ImageCardSliderP
         <>
           <button
             onClick={prevImage}
-            className="absolute mx-4 left-2 top-1/2 -translate-y-1/2 bg-transparent hover:opacity-70 transition-opacity duration-200 z-10"
+            className="absolute mx-4 left-2 top-1/2 -translate-y-1/2 bg-transparent hover:opacity-70 transition-opacity duration-200 z-10 cursor-pointer"
             aria-label="Previous image"
           >
             <Image
