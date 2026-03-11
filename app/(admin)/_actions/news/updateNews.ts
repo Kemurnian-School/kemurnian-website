@@ -9,7 +9,9 @@ export async function updateNews(formData: FormData) {
 
   const id = Number(formData.get("id"));
   const title = formData.get("title") as string;
-  const body = formData.get("body") as string;
+  const body = (formData.get("body") as string)
+    .replace(/&nbsp;|\u00A0/gi, " ")
+    .trim();
   const date = formData.get("date") as string;
   const from = formData.get("from") as string;
   const embed = (formData.get("embed") as string) || null;
@@ -46,7 +48,7 @@ export async function updateNews(formData: FormData) {
       image_urls: imageUrls,
     });
 
-    revalidatePath(`/news/${id}`);
+    revalidatePath(`/news-detail/${id}`);
     revalidatePath("/");
     revalidatePath("/news");
   } catch (err) {
