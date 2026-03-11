@@ -253,7 +253,7 @@ export default function NewNewsForm() {
           type="button"
           onClick={handleSubmit}
           disabled={isSubmitting || isCompressing}
-          className={`px-4 py-2 rounded text-white transition-colors ${isSubmitting || isCompressing
+          className={`px-4 py-2 rounded-full text-white transition-colors ${isSubmitting || isCompressing
             ? 'bg-gray-400 cursor-not-allowed'
             : 'bg-blue-600 hover:bg-blue-700 cursor-pointer'
             }`}
