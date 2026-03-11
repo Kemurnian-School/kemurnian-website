@@ -85,7 +85,7 @@ export default function ImageCardSlider({ images, alt, title }: ImageCardSliderP
               : 0;
             
             return (
-              <div key={idx} className="flex-shrink-0 w-full max-h-[300px] flex justify-center items-center flex-col">
+              <div key={idx} className="flex-shrink-0 w-full max-h-[400px] object-contain flex justify-center items-center flex-col">
                 <h2 className="font-raleway font-extrabold text-lg mb-2">
                   {title && title[actualIndex]}
                 </h2>
@@ -93,7 +93,7 @@ export default function ImageCardSlider({ images, alt, title }: ImageCardSliderP
                   src={image}
                   alt={alt}
                   width={400}
-                  height={300}
+                  height={400}
                   className="rounded object-cover"
                   unoptimized
                 />
