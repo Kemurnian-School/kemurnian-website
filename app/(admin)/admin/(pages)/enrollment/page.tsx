@@ -7,15 +7,15 @@ export default async function EnrollmentManagement() {
   const enrollment = await repo.get();
 
   return (
-    <div className="flex p-8 bg-gray-100 w-full min-h-screen">
-      <h1 className="flex justify-start text-3xl font-bold mb-6">Enrollment Management</h1>
+    <div className="flex flex-col p-8 bg-gray-100 w-full min-h-screen">
+      <h1 className="flex flex-col justify-start text-3xl font-bold mb-6">Enrollment Management</h1>
       {!enrollment ? (
         <div className="flex flex-col justify-center items-center text-gray-600 text-center gap-3">
           No enrollment data found.
           <ActionButton href="/admin/enrollment/create" label="+ Add Enrollment" />
         </div>
       ) : (
-        <div className="p-6 bg-white rounded shadow flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="p-6 bg-white rounded shadow flex md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h2 className="text-xl font-semibold text-gray-900">
               {enrollment.title}
