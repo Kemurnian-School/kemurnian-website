@@ -7,7 +7,9 @@ import { newsRepository } from "@/utils/supabase/repository/news";
 
 export async function uploadNews(formData: FormData) {
   const title = formData.get("title") as string;
-  const body = formData.get("body") as string;
+  const body = (formData.get("body") as string)
+    .replace(/&nbsp;|\u00A0/gi, " ")
+    .trim();
   const date = formData.get("date") as string;
   const embed = formData.get("embed") as string | null;
   const from = formData.get("from") as string;
