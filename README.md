@@ -105,15 +105,15 @@ cp .env.example .env.local
 The `.env.local` file should contain:
 ```env
 DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:54322/postgres"
+
 NEXT_PUBLIC_SUPABASE_URL="http://127.0.0.1:54321"
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_secret_service_key
-STORAGE_ACCOUNT_ID="minio"
-STORAGE_ACCESS_KEY_ID="minioadmin"
-STORAGE_SECRET_ACCESS_KEY="minioadmin"
-STORAGE_BUCKET_NAME="kemurnian-bucket"
-STORAGE_PUBLIC_URL="http://127.0.0.1:9000/kemurnian-bucket"
-STORAGE_CDN="http://127.0.0.1:9000/kemurnian-bucket"
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_publishable_key
+NEXT_PUBLIC_SITE_DOMAIN=localhost:3000
+
+FTP_HOST="192.168.1.1"
+FTP_USER="project.username"
+FTP_PASSWORD="your_password" 
+STORAGE_CDN="your_storage_domain_cdn"
 ```
 
 ### 4. Hosts File Configuration
