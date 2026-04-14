@@ -1,7 +1,5 @@
 # Kemurnian School Website - Documentation
 
-This document provides a technical overview of the Kemurnian School web application, focusing on its architecture, data flow, and caching strategies.
-
 ---
 
 ## Core Technologies
@@ -9,14 +7,14 @@ This document provides a technical overview of the Kemurnian School web applicat
 -   **Framework**: Next.js (App Router)
 -   **Language**: TypeScript
 -   **Backend-as-a-Service**: Supabase (PostgreSQL, Auth)
--   **File Storage**: Cloudflare R2 (S3-compatible object storage)
+-   **File Storage**: Generic FTP Server Storage (Hostinger FTP)
 -   **Package Manager**: pnpm
 
 ---
 
 ## Application Architecture & Logic Flow
 
-The application is a monolith built with Next.js, logically separated into two main parts using Route Groups: the public-facing website `app/(main)` and the admin panel `app|(admin)`.
+This is a monolith application, logically separated into two main parts using Route Groups: the public-facing website `app/(main)` and the admin panel `app|(admin)`.
 
 ### 1. Request Lifecycle & Middleware (`middleware.ts`)
 
@@ -33,30 +31,28 @@ All incoming requests are first processed by the `middleware.ts` file, which is 
 
 ### 2. Data Management Strategy (`utils/`)
 
-The `utils/` directory centralizes all interactions with external services, forming a robust data access layer.
+The `utils/` directory centralizes all interactions with external services, forming a data access layer.
 
 -   **`utils/supabase/repository/`**: This is the primary Data Access Layer (DAL). It abstracts all Supabase queries (select, insert, update, delete) into a set of repository functions. Both the admin panel's Server Actions and the public site's Server Components use this layer to interact with the database, ensuring a single source of truth for data logic.
--   **`utils/r2/`**: This module handles all file operations (uploads and deletions) with the Cloudflare R2 bucket. Server Actions that manage image content call these functions.
+-   **`utils/storage/`**: This module handles all file operations (uploads and deletions). Server Actions that manage image content call these functions.
 
 ### 3. Admin Panel (`app/(admin)`) - The Mutation Layer
 
 The admin panel is designed for content management and is the primary source of data mutations.
 
--   **CRUD Operations via Server Actions (`_actions/`)**: All CUD (Create, Update, Delete) operations are implemented as Next.js Server Actions. These server-side functions are called directly from client-side forms. They orchestrate the mutation logic:
+-   **CRUD Operations via Server Actions (`_actions/`)**: All CUD (Create, Update, Delete) operations are implemented as Server Actions. The mutation logics are:
     1.  Validate input data.
     2.  Call the appropriate function from the `utils/supabase/repository` to update the database.
-    3.  If an image is involved, call `utils/r2/` to upload or delete the file from object storage.
--   **Cache Invalidation (`revalidatePath`)**: After a successful mutation, the Server Action immediately calls `revalidatePath()` or `revalidateTag()`. This is a critical step that purges the Next.js Data Cache for the specified path(s) on the public-facing site. This on-demand revalidation ensures that content changes are reflected instantly on the public site without requiring a full rebuild or waiting for a time-based revalidation to expire.
+    3.  If an image is involved, call `utils/storage/` to upload or delete the file from FTP server storage.
+-   **Cache Invalidation (`revalidatePath`)**: After a successful mutation, the Server Action immediately calls `revalidatePath()` or `revalidateTag()`.
 
 ### 4. Public Website (`app/(main)`) - The Read Layer
 
-The public website is optimized for performance and scalability by leveraging Next.js caching mechanisms.
-
--   **Data Fetching in Server Components**: Pages on the public site are primarily React Server Components (RSCs). They fetch data by directly calling functions from the `utils/supabase/repository`.
+-   **Data Fetching in Server Components**: Pages on the public site are primarily React Server Components (RSCs).
 -   **Aggressive Caching Strategy**:
-    -   Next.js `fetch` requests are automatically cached by default. The application leverages this by allowing data to be cached indefinitely (`force-cache`).
-    -   This results in an **aggressive ISR (Incremental Static Regeneration) cooldown**, where pages are served statically from the cache on almost every visit. This minimizes database queries and serverless function compute time, leading to extremely fast page loads and reduced operational costs.
-    -   The "freshness" of the data is not reliant on a time-based cooldown but is instead guaranteed by the on-demand `revalidatePath` calls from the admin panel's Server Actions. When content is updated, the cache is surgically invalidated, and the page is re-rendered only on the next request. This provides the benefits of a static site with the dynamism of a server-rendered one.
+    -   `fetch` requests are automatically cached by default. 
+    -   This results in an **aggressive ISR (Incremental Static Regeneration) cooldown**, where pages are served statically from the cache on almost every visit to minimizes database queries 
+    -   The "freshness" of the data is not reliant on a time-based cooldown but is instead guaranteed by the on-demand `revalidatePath` calls from the admin panel's Server Actions.
 
 ---
 
@@ -65,7 +61,7 @@ The public website is optimized for performance and scalability by leveraging Ne
 ### 1. Choose Your Setup Method
 
 **Option A: With Nix** - Automatically installs all dependencies  
-**Option B: Without Nix** - Install dependencies manually
+**Option B: Manual**
 
 ### 2. Setup Instructions
 
@@ -84,7 +80,7 @@ The public website is optimized for performance and scalability by leveraging Ne
 
 3.  **Continue to step 3 below**
 
-#### Option B: Without Nix
+#### Option B: Manual
 
 1.  **Clone the repository**:
     ```bash
@@ -92,7 +88,7 @@ The public website is optimized for performance and scalability by leveraging Ne
     cd kemurnian-website
     ```
 
-2.  **Install dependencies manually**:
+2.  **Install dependencies**:
     -   Node.js (v18+)
     -   pnpm
     -   Docker & Docker Compose
@@ -114,19 +110,19 @@ DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:54322/postgres"
 NEXT_PUBLIC_SUPABASE_URL="http://127.0.0.1:54321"
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_secret_service_key
-R2_ACCOUNT_ID="minio"
-R2_ACCESS_KEY_ID="minioadmin"
-R2_SECRET_ACCESS_KEY="minioadmin"
-R2_BUCKET_NAME="kemurnian-bucket"
-R2_PUBLIC_URL="http://127.0.0.1:9000/kemurnian-bucket"
-R2_CDN="http://127.0.0.1:9000/kemurnian-bucket"
+STORAGE_ACCOUNT_ID="minio"
+STORAGE_ACCESS_KEY_ID="minioadmin"
+STORAGE_SECRET_ACCESS_KEY="minioadmin"
+STORAGE_BUCKET_NAME="kemurnian-bucket"
+STORAGE_PUBLIC_URL="http://127.0.0.1:9000/kemurnian-bucket"
+STORAGE_CDN="http://127.0.0.1:9000/kemurnian-bucket"
 ```
 
 ### 4. Hosts File Configuration
 
 To enable local subdomain routing for the admin panel, add the following to your `hosts` file:
 ```
-127.0.0.1   admin.localhost
+127.0.0.1   portal.localhost
 ```
 -   **Windows**: `C:\Windows\System32\drivers\etc\hosts`
 -   **macOS/Linux**: `/etc/hosts`
@@ -140,7 +136,7 @@ just dev        # Start Next.js development server
 ```
 
 -   Public site: `http://localhost:3000`
--   Admin panel: `http://admin.localhost:3000`
+-   Admin panel: `http://portal.localhost:3000`
 
 ### Available Commands
 
@@ -156,9 +152,3 @@ just db-migrate   # Push database migrations
 just db-reset     # Reset database
 just db-seed      # Seed database with initial data
 ```
-
----
-
-## Deployment
-
-This Next.js application can be deployed to any platform that supports Node.js, such as Vercel, Netlify, or a custom server. Ensure that you set the environment variables in your deployment environment.
