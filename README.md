@@ -95,8 +95,6 @@ The admin panel is designed for content management and is the primary source of 
     -   Supabase CLI
     -   just
 
-3.  **Continue to step 3 below**
-
 ### 3. Environment Variables
 
 Copy `.env.example` to `.env.local`:
