@@ -28,12 +28,12 @@ export async function middleware(request: NextRequest) {
   );
   if (isStaticAsset) return NextResponse.next();
 
-  const isAdminSubdomain = hostname.startsWith("admin.");
+  const isAdminSubdomain = hostname.startsWith("portal.");
 
   // --- 2. Prevent access to admin routes from public site ---
   if (
     !isAdminSubdomain &&
-    (url.pathname.startsWith("/admin") || url.pathname === "/login")
+    (url.pathname.startsWith("/portal") || url.pathname === "/login")
   ) {
     return NextResponse.json({ message: "Not Found" }, { status: 404 });
   }
