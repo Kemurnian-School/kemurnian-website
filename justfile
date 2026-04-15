@@ -16,7 +16,6 @@ dev:
 # Setup project
 setup:
     {{nix_cmd}} supabase start
-    {{nix_cmd}} npx tsx scripts/main.ts
 
 # Stop all services
 stop:
