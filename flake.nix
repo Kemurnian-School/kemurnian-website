@@ -27,9 +27,10 @@
           echo "node  : $(node -v)"
           echo "pnpm  : $(pnpm -v)"
 
-          mkdir -p /tmp/ftp-root
+          mkdir -p public/tmp/ftp-static
+
           if ! pgrep -f pyftpdlib > /dev/null; then
-            python3 -m pyftpdlib -d /tmp/ftp-root -u dev -P dev -p 2121 -w &
+            python3 -m pyftpdlib -d public/tmp/ftp-static -u dev -P dev -p 2121 -w &
             echo "ftp   : ftp://127.0.0.1:2121"
           fi
         '';

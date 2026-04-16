@@ -40,6 +40,7 @@ export async function uploadToStorage(
   try {
     await client.access({
       host: process.env.FTP_HOST!,
+			port: parseInt(process.env.FTP_PORT ?? "21"),
       user: process.env.FTP_USER!,
       password: process.env.FTP_PASSWORD!,
       secure: false, 
