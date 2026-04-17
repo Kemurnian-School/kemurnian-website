@@ -1,4 +1,4 @@
-import { login } from './actions'
+import { login } from '@server/login'
 
 export default function LoginPage() {
   return (
