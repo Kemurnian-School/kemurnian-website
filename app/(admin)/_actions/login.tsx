@@ -4,14 +4,14 @@ import { redirect } from 'next/navigation'
 import { createClientAuth } from '@/utils/supabase/server'
 
 export async function login(formData: FormData) {
-  const supabase = await createClientAuth()
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
-  const { error } = await supabase.auth.signInWithPassword({ email, password })
-  if (error) {
-					console.log("❌ Login Error:", error.message)
-    redirect('/login?error=true')
-  }
-  revalidatePath('/admin')
-  redirect('/admin')
+	const supabase = await createClientAuth()
+	const email = formData.get('email') as string
+	const password = formData.get('password') as string
+	const { error } = await supabase.auth.signInWithPassword({ email, password })
+	if (error) {
+		console.log("❌ Login Error:", error.message)
+		redirect('/login?error=true')
+	}
+	revalidatePath('/admin')
+	redirect('/admin')
 }

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { RiLogoutBoxLine } from "@remixicon/react";
+import { logout } from "@server/logout";
 
 import {
 	RiHome9Fill,
@@ -51,11 +52,13 @@ export default function AdminSidebar() {
 				))}
 			</div>
 
-			<button className="flex justify-center items-center gap-1 mx-2 mb-2 py-2 bg-white transition-transform active:scale-95 cursor-pointer rounded-full text-red-primary">
-				<RiLogoutBoxLine
-					size={20} />
-				Logout
-			</button>
+			<form action={logout} className="flex justify-center items mx-2 mb-2 py-2 bg-white transition-transform active:scale-95 cursor-pointer rounded-full text-red-primary">
+				<button className="flex justify-center items-center gap-1">
+					<RiLogoutBoxLine
+						size={20} />
+					Logout
+				</button>
+			</form>
 		</nav>
 	);
 }
